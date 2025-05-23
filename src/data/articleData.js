@@ -2,7 +2,7 @@
 export const articleData = {
   id: "fashion-day-inside-wow-2024",
   title: "HAPPY HOUR - FASHION DAY: INSIDE WOW! THAM GIA WORKSHOP DRAW YOUR TEE & LỄ TRAO GIẢI STYLE UP WITH ACFC",
-  thumbnailUrl: "/image/tintuc1.jpg",
+  thumbnailUrl: "/assets/images/tintuc1.jpg",
   thumbnailCaption: "Fashion Day Inside WOW - Sự kiện thời trang đặc biệt của ACFC & VFBS",
   publishedAt: "2024-08-09T00:00:00.000Z",
   contentBlocks: [
@@ -12,7 +12,7 @@ export const articleData = {
     },
     {
       type: "image",
-      url: "/image/1.2.jpg",
+      url: "/assets/images/1.2.jpg",
       caption: "Không khí sôi động tại Fashion Day Inside WOW"
     },
     {
@@ -21,12 +21,12 @@ export const articleData = {
     },
     {
       type: "image",
-      url: "/image/1.3.png",
+      url: "/assets/images/1.3.png",
       caption: "Workshop Draw Your Tee - Các thành viên sáng tạo những thiết kế độc đáo"
     },
     {
       type: "image",
-      url: "/image/1.4.png",
+      url: "/assets/images/1.4.png",
       caption: "Master Kiệt Quách hướng dẫn các thành viên trong workshop"
     },
     {
@@ -39,7 +39,7 @@ export const articleData = {
     },
     {
       type: "image",
-      url: "/image/1.5.png",
+      url: "/assets/images/1.5.png",
       caption: "Những màn trình diễn catwalk ấn tượng khiến khán giả liên tục \"WOW\""
     },
     {
@@ -52,7 +52,7 @@ export const articleData = {
     },
     {
       type: "image",
-      url: "/image/1.6.png",
+      url: "/assets/images/1.6.png",
       caption: "Lễ trao giải Style Up With ACFC - Những khoảnh khắc vinh danh đáng nhớ"
     },
     {
@@ -65,17 +65,17 @@ export const articleData = {
     },
     {
       type: "image",
-      url: "/image/1.7.png",
+      url: "/assets/images/1.7.png",
       caption: "Những khoảnh khắc đáng nhớ tại Fashion Day Inside WOW"
     },
     {
       type: "image",
-      url: "/image/1.8.png",
+      url: "/assets/images/1.8.png",
       caption: "Tinh thần đoàn kết và nhiệt huyết của các thành viên ACFC & VFBS"
     },
     {
       type: "image",
-      url: "/image/1.9.png",
+      url: "/assets/images/1.9.png",
       caption: "Những tác phẩm nghệ thuật độc đáo từ Workshop Draw Your Tee"
     }
   ]

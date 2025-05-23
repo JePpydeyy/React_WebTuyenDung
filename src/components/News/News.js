@@ -2,13 +2,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import './News.css';
 
 const bannerImages = [
-  '/assets/image/BANNER5.jpg',
-  '/assets/image/BANNER6.jpg',
-  '/assets/image/BANNER7.jpg',
+  '/assets/images/BANNER5.jpg',
+  '/assets/images/BANNER6.jpg',
+  '/assets/images/BANNER7.jpg',
 ];
 
 const latestPost = {
-  image: '/image/tintuc1.jpg',
+  image: '/assets/images/tintuc1.jpg',
   title: 'HAPPY HOUR - FASHION DAY: INSIDE WOW! THAM GIA WORKSHOP DRAW YOUR TEE & LỄ TRAO GIẢI STYLE UP WITH ACFC',
   date: '09/08/2024',
   excerpt: 'Tuần vừa qua, đại gia đình ACFC & VFBS đã cùng nhau tạo nên một Happy Hour - Fashion Day với chủ đề INSIDE WOW, chương trình đã thu hút đông đảo tín đồ thời trang nhà ACFC & VFBS nhiệt tình tham gia, để lại thật nhiều ấn tượng và cảm xúc!'
@@ -16,31 +16,31 @@ const latestPost = {
 
 const postsGrid = [
   {
-    image: '/image/tintuc2.png',
+    image: '/assets/images/tintuc2.png',
     title: 'CÙNG SINH VIÊN HUTECH THAM GIA ACFC COMPANY TOUR',
     date: '07/08/2024',
     excerpt: 'Lần đầu tiên, ACFC tổ chức chuyến tham quan thực tế Company Tour đầy ý nghĩa dành cho các bạn sinh viên chuyên ngành Kinh doanh Quốc tế - trường Đại học Công nghệ TPHCM (HUTECH) vào ngày 30/7/2024.'
   },
   {
-    image: '/image/tintuc3.jpg',
+    image: '/assets/images/tintuc3.jpg',
     title: 'ACFC ĐỒNG HÀNH CÙNG SINH VIÊN THỜI TRANG TẠI SR FASHION CAREER DAY 2024',
     date: '16/07/2024',
     excerpt: 'Tại sự kiện SR Fashion Career Day 2024 vào ngày 13/7/2024, ACFC rất vinh dự khi được mời đến để giao lưu và kết nối với các bạn sinh viên có niềm đam mê với thời trang. Với chủ đề "Những hướng đi trong ngành thời trang bán lẻ", đại diện Nhân sự của ACFC đã chia sẻ về công ty và các cơ hội nghề nghiệp trong tại ACFC nói riêng và trong ngành thời trang bán lẻ hiện nay.'
   },
   {
-    image: '/image/tintuc4.png',
+    image: '/assets/images/tintuc4.png',
     title: 'STYLE UP WITH ACFC: CUỘC THI ẢNH THỜI TRANG CỦA NHÀ ACFC VÀ VFBS',
     date: '02/07/2024',
     excerpt: 'Tháng 6 vừa qua, ACFC đã mang đến một sân chơi thú vị dành cho các tín đồ thời trang: Cuộc thi ảnh thời trang "Style Up With ACFC" độc đáo, đậm chất thời trang dành cho các ACFC-ers và VFBS-ers.'
   },
   {
-    image: '/image/tintuc8.jpg',
+    image: '/assets/images/tintuc8.jpg',
     title: 'ACFC RA MẮT BỘ SƯU TẬP THỜI TRANG MỚI',
     date: '25/06/2024',
     excerpt: 'ACFC tự hào giới thiệu bộ sưu tập thời trang mới, kết hợp xu hướng hiện đại và phong cách độc đáo, mang đến trải nghiệm mới mẻ cho khách hàng.'
   },
   {
-    image: '/image/tintuc9.jpg',
+    image: '/assets/images/tintuc9.jpg',
     title: 'HỘI THẢO THỜI TRANG BỀN VỮNG CÙNG ACFC',
     date: '20/06/2024',
     excerpt: 'ACFC tổ chức hội thảo về thời trang bền vững, chia sẻ các sáng kiến bảo vệ môi trường và trách nhiệm xã hội trong ngành thời trang.'
@@ -49,7 +49,7 @@ const postsGrid = [
 ];
 
 const featuredPost = {
-  image: '/image/tintinnoibat.png',
+  image: '/assets/images/tintinnoibat.png',
   title: 'ACFC CHINH PHỤC THỊ TRƯỜNG THỜI TRANG VIỆT NAM',
   date: '01/06/2024',
   excerpt: 'ACFC không ngừng đổi mới và phát triển để mang đến những trải nghiệm thời trang đẳng cấp cho khách hàng Việt Nam.'
@@ -57,19 +57,19 @@ const featuredPost = {
 
 const featuredGrid = [
   {
-    image: '/image/tintuc5.jpg',
+    image: '/assets/images/tintuc5.jpg',
     title: 'HÀNH TRÌNH PHÁT TRIỂN BỀN VỮNG CỦA ACFC',
     date: '15/05/2024',
     excerpt: 'ACFC cam kết phát triển bền vững, chú trọng đến môi trường và cộng đồng trong mọi hoạt động kinh doanh.'
   },
   {
-    image: '/image/tintuc6.png',
+    image: '/assets/images/tintuc6.png',
     title: 'ACFC ĐỒNG HÀNH CÙNG CỘNG ĐỒNG',
     date: '10/04/2024',
     excerpt: 'Nhiều hoạt động thiện nguyện và hỗ trợ cộng đồng được ACFC tổ chức thường xuyên, lan tỏa giá trị tích cực.'
   },
   {
-    image: '/image/tintuc10.jpg',
+    image: '/assets/images/tintuc10.jpg',
     title: 'ACFC HỖ TRỢ SINH VIÊN KHỞI NGHIỆP',
     date: '05/04/2024',
     excerpt: 'ACFC tổ chức chương trình hỗ trợ sinh viên khởi nghiệp, cung cấp cơ hội học hỏi và phát triển kỹ năng trong ngành thời trang.'
