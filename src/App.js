@@ -8,6 +8,7 @@ import Dashboard from './Admin/pages/Dashboard';
 import SubmitProfile from './Admin/pages/SubmitProfile';
 import Job from './Admin/pages/Job';
 import AdminNews from './Admin/pages/News'; // Đổi tên import này
+import Login from './Admin/pages/Login';
 import './App.css';
 
 function App() {
@@ -19,10 +20,12 @@ function App() {
           <Route path="/News" element={<News />} />
           <Route path="/News/:id" element={<NewsDetail />} />
           <Route path="/About" element={<About />} />
+          <Route path="/admin/login" element={<Login />} />
           <Route path="/admin" element={<Dashboard />} />
           <Route path="/admin/submit-profile" element={<SubmitProfile />} />
           <Route path="/admin/Job" element={<Job />} />
           <Route path="/admin/News" element={<AdminNews />} /> {/* Sửa ở đây */}
+
         </Routes>
       </div>
     </Router>
