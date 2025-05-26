@@ -82,13 +82,15 @@ const NewsDetail = () => {
                 )
               )}
             </div>
-            <a href="#" className="back-button" onClick={goBack}>← Quay lại</a>
-            <div className="share-section fade-in">
-              <h3 className="share-title">Chia sẻ bài viết</h3>
-              <div className="share-buttons">
-                <a href="#" className="share-btn facebook" onClick={shareOnFacebook} title="Facebook">📘</a>
-              </div>
-            </div>
+            <button
+              type="button"
+              className="share-btn facebook"
+              onClick={shareOnFacebook}
+              title="Facebook"
+              style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
+            >
+              📘
+            </button>
           </div>
           <div className="sidebar">
             <h2 className="sidebar-title">Tin tức khác</h2>
