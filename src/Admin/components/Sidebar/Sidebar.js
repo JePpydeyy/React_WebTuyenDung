@@ -4,7 +4,9 @@ import styles from './Sidebar.module.css';
 const Sidebar = () => (
   <div className={styles.sidebar}>
     <div className={styles.logo}>
-      <img src="https://api-tuyendung-cty.onrender.com/images/Logo.svg" alt="Logo" />
+      <a href="/admin">
+        <img src="https://api-tuyendung-cty.onrender.com/images/Logo.svg" alt="Logo" />
+        </a>
     </div>
     <ul>
       <li>

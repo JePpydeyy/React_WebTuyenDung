@@ -25,6 +25,13 @@ const getStatusInfo = (status) => {
   }
 };
 
+// Hàm chuyển đổi chuỗi ngày thành đối tượng Date
+const parseDate = (dateStr) => {
+  if (!dateStr) return new Date(0); // Trả về ngày 0 nếu không có ngày
+  const [day, month, year] = dateStr.split('/');
+  return new Date(`${year}-${month}-${day}`); // Chuyển thành định dạng YYYY-MM-DD
+};
+
 // Component cho biểu đồ cột (Column Chart)
 const ColumnChart = ({ allProfiles }) => {
   const [chartError, setChartError] = useState(null);
@@ -72,7 +79,7 @@ const ColumnChart = ({ allProfiles }) => {
 
         const options = {
           title: 'Tỷ lệ trạng thái hồ sơ (%)',
-          colors: ['#4A90E2', '#F5A623', '#50C878', '#E94E77'], // Màu đậm hơn
+          colors: ['#4A90E2', '#F5A623', '#50C878', '#E94E77'],
           chartArea: { width: '80%', height: '70%' },
           legend: { position: 'bottom' },
           vAxis: { 
@@ -157,7 +164,7 @@ const StatusChart = ({ allProfiles }) => {
         const options = {
           title: 'Thống kê trạng thái hồ sơ',
           pieHole: 0,
-          colors: ['#4A90E2', '#F5A623', '#50C878', '#E94E77'], // Màu đậm hơn
+          colors: ['#4A90E2', '#F5A623', '#50C878', '#E94E77'],
           chartArea: { width: '80%', height: '80%' },
           legend: { position: 'bottom' },
         };
@@ -207,8 +214,15 @@ const MainContent = () => {
           throw new Error('Không thể lấy dữ liệu hồ sơ từ API');
         }
         const profileData = await profileResponse.json();
+        // Log dữ liệu để kiểm tra
+        console.log('Profile Data:', profileData);
         setAllProfiles(profileData);
-        const sortedProfiles = profileData.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 4);
+        const sortedProfiles = profileData.sort((a, b) => {
+          const dateA = parseDate(a.date);
+          const dateB = parseDate(b.date);
+          console.log(`Comparing ${a.date} (${dateA}) with ${b.date} (${dateB})`);
+          return dateB - dateA; // Sắp xếp giảm dần
+        }).slice(0, 4);
         setDisplayProfiles(sortedProfiles);
 
         // Fetch dữ liệu bài đăng
@@ -238,23 +252,23 @@ const MainContent = () => {
   }
 
   return (
-    
     <div className={styles.mainContent}>
       <h1 className={styles.heading}>
-        Chào mừng quản trị viên<br />
-      </h1>
+      Chào mừng quản trị viên<br />
+    </h1>
 
       <div className={styles.metrics}>
         <div className={styles.card}>
-          <h3>Tổng bài đăng tin tức</h3>
+          <h3>Tổng bài đăng tin tức <i class="fa-solid fa-newspaper"></i></h3>
           <div className={styles.value}>{allJobs.length}</div>
+          
         </div>
         <div className={styles.card}>
-          <h3>Tổng hồ sơ ứng tuyển</h3>
+          <h3>Tổng hồ sơ ứng tuyển <i class="fa-solid fa-file-pen"></i></h3>
           <div className={styles.value}>{allProfiles.length}</div>
         </div>
         <div className={styles.card}>
-          <h3>Tổng hồ sơ tiếp nhận</h3>
+          <h3>Tổng hồ sơ tiếp nhận <i class="fa-regular fa-paste"></i></h3>
           <div className={styles.value}>
             {allProfiles.filter(p => getStatusInfo(p.status).text === 'Đã tuyển dụng').length}
           </div>
@@ -285,12 +299,10 @@ const MainContent = () => {
                   <td>{profile.phone}</td>
                   <td>{profile.position}</td>
                   <td>
-                    {new Date(profile.date).toLocaleDateString('vi-VN', {
+                    {new Date(parseDate(profile.date)).toLocaleDateString('vi-VN', {
                       day: '2-digit',
                       month: '2-digit',
                       year: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit',
                     })}
                   </td>
                   <td>

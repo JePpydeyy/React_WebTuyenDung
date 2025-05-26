@@ -1,7 +1,7 @@
 .heading {
   font-size: 28px;
   font-weight: bold;
-  color: #333;
+  color: #070049;
   text-align: left;
 }
 
@@ -20,32 +20,37 @@
 
 .card {
   text-align: center;
-  background: #ffffff;
+  background: #ffffe9;
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
   height: 150px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
 }
 
 .card h3 {
-  font-size: 25px;
+  font-size: 22px;
   color: #666;
   margin-bottom: 10px;
 }
 
-.card .value {
-  font-size: 24px;
+.value {
+  font-size: 32px;
   font-weight: bold;
-  color: #333;
+  color: #000000;
 }
-
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
 .card .change {
   font-size: 12px;
   margin-left: 10px;
 }
 
 .recentOrders {
-  background: #fff;
+  background: #f7f7f7;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
@@ -70,7 +75,7 @@ td {
 }
 
 th {
-  background: #f8f9fa;
+  background: #969696;
   color: #666;
 }
 
