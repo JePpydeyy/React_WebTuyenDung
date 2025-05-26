@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import './About.css';
+import styles from './About.module.css'; // Import CSS Module
 
 const bannerImages = [
   '/assets/images/BANNER2.jpg',
@@ -46,7 +46,6 @@ const About = () => {
   useEffect(() => {
     startBannerAuto();
     return stopBannerAuto;
-    // eslint-disable-next-line
   }, [bannerIdx]);
 
   function showBannerSlide(idx) {
@@ -76,14 +75,12 @@ const About = () => {
       wrapper.removeEventListener('mouseenter', stopBannerAuto);
       wrapper.removeEventListener('mouseleave', startBannerAuto);
     };
-    // eslint-disable-next-line
   }, []);
 
   // Testimonial auto slide
   useEffect(() => {
     startTestimonialAuto();
     return stopTestimonialAuto;
-    // eslint-disable-next-line
   }, [testimonialIdx]);
 
   function showTestimonialSlide(idx) {
@@ -113,39 +110,53 @@ const About = () => {
       slider.removeEventListener('mouseenter', stopTestimonialAuto);
       slider.removeEventListener('mouseleave', startTestimonialAuto);
     };
-    // eslint-disable-next-line
   }, []);
 
   return (
     <div>
       {/* Banner */}
-      <section className="banner">
-        <div className="banner-wrapper" ref={bannerWrapperRef}>
+      <section className={styles.banner}>
+        <div className={styles.bannerWrapper} ref={bannerWrapperRef}>
           {bannerImages.map((src, idx) => (
             <img
               key={src}
-              className={
-                'banner-image' +
-                (idx === bannerIdx ? ' active' : '') +
-                (idx === (bannerIdx - 1 + bannerImages.length) % bannerImages.length ? ' prev' : '')
-              }
+              className={`${styles.bannerImage} ${idx === bannerIdx ? styles.active : ''} ${
+                idx === (bannerIdx - 1 + bannerImages.length) % bannerImages.length ? styles.prev : ''
+              }`}
               src={src}
               alt={`Banner ${idx + 1}`}
               style={{ pointerEvents: idx === bannerIdx ? 'auto' : 'none' }}
             />
           ))}
-          <button className="banner-btn banner-btn-left" aria-label="Previous Slide" onClick={() => { prevBannerSlide(); stopBannerAuto(); }}>
+          <button
+            className={`${styles.bannerBtn} ${styles.bannerBtnLeft}`}
+            aria-label="Previous Slide"
+            onClick={() => {
+              prevBannerSlide();
+              stopBannerAuto();
+            }}
+          >
             <i className="fa-solid fa-angle-left"></i>
           </button>
-          <button className="banner-btn banner-btn-right" aria-label="Next Slide" onClick={() => { nextBannerSlide(); stopBannerAuto(); }}>
+          <button
+            className={`${styles.bannerBtn} ${styles.bannerBtnRight}`}
+            aria-label="Next Slide"
+            onClick={() => {
+              nextBannerSlide();
+              stopBannerAuto();
+            }}
+          >
             <i className="fa-solid fa-angle-right"></i>
           </button>
-          <div className="banner-indicators">
+          <div className={styles.bannerIndicators}>
             {bannerImages.map((_, idx) => (
               <span
                 key={idx}
-                className={'indicator' + (idx === bannerIdx ? ' active' : '')}
-                onClick={() => { showBannerSlide(idx); stopBannerAuto(); }}
+                className={`${styles.indicator} ${idx === bannerIdx ? styles.active : ''}`}
+                onClick={() => {
+                  showBannerSlide(idx);
+                  stopBannerAuto();
+                }}
               ></span>
             ))}
           </div>
@@ -153,10 +164,10 @@ const About = () => {
       </section>
 
       {/* Features */}
-      <div className="features">
+      <div className={styles.features}>
         {features.map((f, idx) => (
-          <div className="feature" key={idx}>
-            <img src={f.img} alt={f.title + ' Icon'} />
+          <div className={styles.feature} key={idx}>
+            <img src={f.img} alt={`${f.title} Icon`} />
             <h2>{f.title}</h2>
             <p>{f.desc}</p>
           </div>
@@ -164,43 +175,47 @@ const About = () => {
       </div>
 
       {/* About */}
-      <div className="about">
+      <div className={styles.about}>
         <h1>ACFC Việt Nam</h1>
-        <p>ACFC - Thành viên thuộc tập đoàn Imex Pan Pacific Group (IPPG), là nhà phân phối và quản lý các thương hiệu thời trang quốc tế hàng đầu Việt Nam. Với hệ thống hơn 300 cửa hàng tại các trung tâm thành phố lớn trên toàn quốc, ACFC mang sứ mệnh đưa người Việt đến gần hơn với kinh đô thời trang hàng hiệu. Đến với ACFC, chúng tôi mang đến các dịch vụ mua sắm hàng hiệu chính hãng, đẳng cấp; kèm theo đó là các đặc quyền ưu đãi dành cho khách hàng thành viên, khách hàng VIP với sự quy tụ của hơn 25 thương hiệu thời trang quốc tế. ACFC định hướng mang đến làn gió mới cho những người yêu thời trang, thích cái đẹp và muốn lan tỏa đam mê thời trang đến với cộng đồng.</p>
-        <p>Các thương hiệu ACFC phân phối độc quyền tại thị trường Việt Nam như NIKE, Mango, Levi's, Gap, Old Navy, Calvin Klein, Tommy Hilfiger, Mothercare, OVS, Banana Republic, Owndays, French Connection, Parfois, Cotton:on, Typo, Polo Ralph Lauren, Dockers, Sunnies Studios, Sunnies Face, Swarovski, Guess, Sisley, United Colors Of Benetton, ...</p>
+        <p>
+          ACFC - Thành viên thuộc tập đoàn Imex Pan Pacific Group (IPPG), là nhà phân phối và quản lý các thương hiệu thời trang quốc tế hàng đầu Việt Nam. Với hệ thống hơn 300 cửa hàng tại các trung tâm thành phố lớn trên toàn quốc, ACFC mang sứ mệnh đưa người Việt đến gần hơn với kinh đô thời trang hàng hiệu. Đến với ACFC, chúng tôi mang đến các dịch vụ mua sắm hàng hiệu chính hãng, đẳng cấp; kèm theo đó là các đặc quyền ưu đãi dành cho khách hàng thành viên, khách hàng VIP với sự quy tụ của hơn 25 thương hiệu thời trang quốc tế. ACFC định hướng mang đến làn gió mới cho những người yêu thời trang, thích cái đẹp và muốn lan tỏa đam mê thời trang đến với cộng đồng.
+        </p>
+        <p>
+          Các thương hiệu ACFC phân phối độc quyền tại thị trường Việt Nam như NIKE, Mango, Levi's, Gap, Old Navy, Calvin Klein, Tommy Hilfiger, Mothercare, OVS, Banana Republic, Owndays, French Connection, Parfois, Cotton:on, Typo, Polo Ralph Lauren, Dockers, Sunnies Studios, Sunnies Face, Swarovski, Guess, Sisley, United Colors Of Benetton, ...
+        </p>
         <img src="/assets/images/about.png" alt="About ACFC Image" loading="lazy" />
       </div>
 
       {/* Stats */}
-      <div className="stats-section">
-        <h2 className="stats-title">NHỮNG CON SỐ ẤN TƯỢNG</h2>
-        <div className="stats-container">
-          <div className="stat-item">
-            <div className="stat-number">25+</div>
-            <div className="stat-description">THƯƠNG HIỆU QUỐC TẾ<br />CHUYÊN PHÂN PHỐI ĐỘC QUYỀN</div>
+      <div className={styles.statsSection}>
+        <h2 className={styles.statsTitle}>NHỮNG CON SỐ ẤN TƯỢNG</h2>
+        <div className={styles.statsContainer}>
+          <div className={styles.statItem}>
+            <div className={styles.statNumber}>25+</div>
+            <div className={styles.statDescription}>THƯƠNG HIỆU QUỐC TẾ<br />CHUYÊN PHÂN PHỐI ĐỘC QUYỀN</div>
           </div>
-          <div className="stat-item">
-            <div className="stat-number">300+</div>
-            <div className="stat-description">CỬA HÀNG<br />THỜI TRANG - MỸ PHẨM</div>
+          <div className={styles.statItem}>
+            <div className={styles.statNumber}>300+</div>
+            <div className={styles.statDescription}>CỬA HÀNG<br />THỜI TRANG - MỸ PHẨM</div>
           </div>
-          <div className="stat-item">
-            <div className="stat-number">3700+</div>
-            <div className="stat-description">NHÂN VIÊN</div>
+          <div className={styles.statItem}>
+            <div className={styles.statNumber}>3700+</div>
+            <div className={styles.statDescription}>NHÂN VIÊN</div>
           </div>
         </div>
       </div>
 
       {/* Route */}
-      <div className="route">
+      <div className={styles.route}>
         <img src="/assets/images/lo_trinh_phat_trien_2024.jpg" alt="Development Roadmap 2024" loading="lazy" />
       </div>
 
       {/* Brand */}
-      <div className="brand">
+      <div className={styles.brand}>
         <h2>Thương hiệu phân phối</h2>
-        <div className="brand-logos">
+        <div className={styles.brandLogos}>
           {brandLogos.map((logo, idx) => (
-            <div className="brand-item" key={idx}>
+            <div className={styles.brandItem} key={idx}>
               <img src={`/assets/images/${logo}`} alt={logo.replace('.svg', '') + ' Logo'} />
             </div>
           ))}
@@ -208,39 +223,54 @@ const About = () => {
       </div>
 
       {/* Testimonial */}
-      <div className="testimonial-section">
-        <div className="testimonial-slider" ref={testimonialSliderRef}>
+      <div className={styles.testimonialSection}>
+        <div className={styles.testimonialSlider} ref={testimonialSliderRef}>
           {testimonials.map((item, idx) => (
             <div
-              className={
-                'testimonial-slide' +
-                (idx === testimonialIdx ? ' active' : '') +
-                (idx === (testimonialIdx - 1 + testimonials.length) % testimonials.length ? ' prev' : '')
-              }
+              className={`${styles.testimonialSlide} ${idx === testimonialIdx ? styles.active : ''} ${
+                idx === (testimonialIdx - 1 + testimonials.length) % testimonials.length ? styles.prev : ''
+              }`}
               key={idx}
             >
-              <div className="testimonial-image">
+              <div className={styles.testimonialImage}>
                 <img src={item.img} alt={item.author} loading="lazy" />
               </div>
-              <div className="testimonial-content">
-                <div className="testimonial-quote">{`"${item.quote}"`}</div>
-                <div className="testimonial-author">{item.author}</div>
+              <div className={styles.testimonialContent}>
+                <div className={styles.testimonialQuote}>{`"${item.quote}"`}</div>
+                <div className={styles.testimonialAuthor}>{item.author}</div>
               </div>
             </div>
           ))}
         </div>
-        <button className="banner-btn banner-btn-left" aria-label="Previous Testimonial" onClick={() => { prevTestimonialSlide(); stopTestimonialAuto(); }}>
+        <button
+          className={`${styles.bannerBtn} ${styles.bannerBtnLeft}`}
+          aria-label="Previous Testimonial"
+          onClick={() => {
+            prevTestimonialSlide();
+            stopTestimonialAuto();
+          }}
+        >
           <i className="fa-solid fa-angle-left"></i>
         </button>
-        <button className="banner-btn banner-btn-right" aria-label="Next Testimonial" onClick={() => { nextTestimonialSlide(); stopTestimonialAuto(); }}>
+        <button
+          className={`${styles.bannerBtn} ${styles.bannerBtnRight}`}
+          aria-label="Next Testimonial"
+          onClick={() => {
+            nextTestimonialSlide();
+            stopTestimonialAuto();
+          }}
+        >
           <i className="fa-solid fa-angle-right"></i>
         </button>
-        <div className="banner-indicators">
+        <div className={styles.bannerIndicators}>
           {testimonials.map((_, idx) => (
             <span
               key={idx}
-              className={'indicator' + (idx === testimonialIdx ? ' active' : '')}
-              onClick={() => { showTestimonialSlide(idx); stopTestimonialAuto(); }}
+              className={`${styles.indicator} ${idx === testimonialIdx ? styles.active : ''}`}
+              onClick={() => {
+                showTestimonialSlide(idx);
+                stopTestimonialAuto();
+              }}
             ></span>
           ))}
         </div>
