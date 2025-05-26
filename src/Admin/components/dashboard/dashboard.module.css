@@ -1,0 +1,89 @@
+.mainContent {
+  margin-left: 250px;
+  padding: 20px;
+  width: calc(100% - 250px);
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin: 70px 0px 50px 0px;
+}
+
+.card {
+  text-align: center;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+  height: 150px;
+}
+
+.card h3 {
+  font-size: 25px;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.card .value {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+}
+
+.card .change {
+  font-size: 12px;
+  margin-left: 10px;
+}
+
+.recentOrders {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  margin-bottom: 20px;
+}
+
+.recentOrders h3 {
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 10px;
+  text-align: left;
+  font-size: 17px;
+}
+
+th {
+  background: #f8f9fa;
+  color: #666;
+}
+
+td img {
+  width: 40px;
+  height: 40px;
+}
+
+.status {
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 12px;
+}
+
+.statusDangChoXetDuyet {
+  background: #ffd700;
+  color: #333;
+}
+
+.statusDaDuyet {
+  background: #28a745;
+  color: #fff;
+}

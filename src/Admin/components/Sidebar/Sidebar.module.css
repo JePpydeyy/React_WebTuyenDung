@@ -1,0 +1,74 @@
+/* Biến CSS cho màu sắc và kích thước */
+:root {
+  --secondary-color: #100f27;
+  --spacing-lg: 20px;
+  --border-radius: 5px;
+}
+
+/* Thanh bên */
+.sidebar {
+  width: 250px;
+  background: var(--secondary-color);
+  color: #fff;
+  padding: var(--spacing-lg);
+  position: fixed;
+  height: 100%;
+  will-change: transform;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+.logo img {
+  width: 170px;
+  height: auto;
+}
+
+ul {
+  list-style: none;
+}
+
+ul li {
+  margin: var(--spacing-lg) 0;
+}
+
+ul li a {
+  color: #b0b7c3;
+  text-decoration: none;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s ease;
+}
+
+ul li a.active {
+  color: #fff;
+}
+
+ul li a i {
+  margin-right: 10px;
+}
+
+ul li a:hover,
+ul li a:focus {
+  color: #fff;
+  outline: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 200px;
+  }
+}
+
+@media (max-width: 576px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+  }
+}
