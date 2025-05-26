@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import './NewsDetail.css';
-import { articleData } from '../../data/articleData';
-import { otherNewsData } from '../../data/otherNewsData';
 
 function formatDate(dateString) {
   const date = new Date(dateString);
@@ -13,25 +12,37 @@ function formatDate(dateString) {
 }
 
 const NewsDetail = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState({ open: false, src: '', caption: '' });
+  const [article, setArticle] = useState(null);
+  const [otherNews, setOtherNews] = useState([]);
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1000);
-    return () => clearTimeout(timer);
-  }, []);
+    setLoading(true);
+    fetch('https://api-tuyendung-cty.onrender.com/api/new')
+      .then(res => res.json())
+      .then(data => {
+        const found = data.find(item => item.id === id);
+        setArticle(found);
+        setOtherNews(data.filter(item => item.id !== id));
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, [id]);
 
   const shareOnFacebook = (e) => {
     e.preventDefault();
+    if (!article) return;
     const url = encodeURIComponent(window.location.href);
-    const title = encodeURIComponent(articleData.title);
-    window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}"e=${title}`, '_blank', 'width=600,height=400');
+    const title = encodeURIComponent(article.title);
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}&e=${title}`, '_blank', 'width=600,height=400');
   };
 
   const goBack = (e) => {
     e.preventDefault();
-    if (window.history.length > 1) window.history.back();
-    else alert('Không có trang trước đó để quay lại');
+    navigate(-1);
   };
 
   return (
@@ -41,18 +52,18 @@ const NewsDetail = () => {
           <div className="spinner"></div>
           Đang tải bài viết...
         </div>
-      ) : (
+      ) : article ? (
         <div className="main-layout">
           <div className="article-detail">
             <div className="article-header fade-in">
-              <img className="thumbnail" src={articleData.thumbnailUrl} alt={articleData.thumbnailCaption || articleData.title} />
+              <img className="thumbnail" src={article.thumbnailUrl} alt={article.thumbnailCaption || article.title} />
               <div className="article-title">
-                <h1>{articleData.title}</h1>
-                <div className="publish-date">Ngày đăng: {formatDate(articleData.publishedAt)}</div>
+                <h1>{article.title}</h1>
+                <div className="publish-date">Ngày đăng: {formatDate(article.publishedAt)}</div>
               </div>
             </div>
             <div className="article-content fade-in">
-              {articleData.contentBlocks.map((block, idx) =>
+              {article.contentBlocks.map((block, idx) =>
                 block.type === 'text' ? (
                   <div className="content-block" key={idx}>
                     <div className="content-text">{block.content}</div>
@@ -82,14 +93,28 @@ const NewsDetail = () => {
           <div className="sidebar">
             <h2 className="sidebar-title">Tin tức khác</h2>
             <div className="news-grid">
-              {otherNewsData.map((news, idx) => (
-                <div className="grid-item" key={idx}>
+              {otherNews.map((news, idx) => (
+                <div className="grid-item" key={news._id || idx}>
                   <div className="grid-image">
-                    <img src={news.image} alt={news.title} />
+                    <img src={news.thumbnailUrl} alt={news.title} />
                   </div>
-                  <a href="#" className="grid-title">{news.title}</a>
-                  <div className="grid-date">Ngày đăng {news.date}</div>
-                  <div className="grid-excerpt">{news.excerpt}</div>
+                  <a
+                    href="#"
+                    className="grid-title"
+                    onClick={e => {
+                      e.preventDefault();
+                      navigate(`/news/${news.id}`);
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                  >
+                    {news.title}
+                  </a>
+                  <div className="grid-date">Ngày đăng {formatDate(news.publishedAt)}</div>
+                  <div className="grid-excerpt">
+                    {news.contentBlocks && news.contentBlocks[0] && news.contentBlocks[0].content
+                      ? news.contentBlocks[0].content.slice(0, 80) + '...'
+                      : ''}
+                  </div>
                 </div>
               ))}
             </div>
@@ -111,6 +136,8 @@ const NewsDetail = () => {
             </div>
           )}
         </div>
+      ) : (
+        <div style={{ padding: 40, textAlign: 'center', color: 'red' }}>Không tìm thấy bài viết!</div>
       )}
     </div>
   );
