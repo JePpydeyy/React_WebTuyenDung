@@ -1,0 +1,79 @@
+.container {
+  margin-left: 250px;
+  width: calc(100% - 250px);
+}
+.newsList {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.newsListTitle {
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+.addNewsBtn {
+  background: #100f27;
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 14px;
+  margin-bottom: 15px;
+  display: inline-block;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 15px;
+  text-align: left;
+  font-size: 17px;
+}
+
+th {
+  background: #f8f9fa;
+  color: #666;
+}
+
+.status {
+  padding: 10px 15px;
+  border-radius: 5px;
+  font-size: 12px;
+}
+
+.statusDanghienthi {
+  background: #28a745;
+  color: #fff;
+}
+
+.statusDangcho {
+  background: #ffd700;
+  color: #333;
+}
+
+.actionBtn {
+  padding: 10px 15px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 12px;
+  margin-right: 5px;
+  border: none;
+  cursor: pointer;
+}
+
+.actionBtnEdit {
+  background: #100f27;
+  color: #fff;
+}
+
+.actionBtnDelete {
+  background: #dc3545;
+  color: #fff;
+}

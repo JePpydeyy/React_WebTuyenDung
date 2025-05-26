@@ -1,0 +1,293 @@
+/* Biến CSS cho màu sắc và kích thước */
+:root {
+  --primary-color: #007bff;
+  --secondary-color: #100f27;
+  --text-color: #333;
+  --text-muted: #666;
+  --border-color: #ddd;
+  --background-light: #fff;
+  --background-gray: #f4f5f7;
+  --status-new-bg: #e3f2fd;
+  --status-new-text: #0d47a1;
+  --status-interview-bg: #fff8e1;
+  --status-interview-text: #ff6f00;
+  --status-hired-bg: #e8f5e9;
+  --status-hired-text: #1b5e20;
+  --status-rejected-bg: #ffebee;
+  --status-rejected-text: #b71c1c;
+  --spacing-sm: 8px;
+  --spacing-md: 15px;
+  --spacing-lg: 20px;
+  --border-radius: 5px;
+  --box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Container chính */
+.container {
+  margin-left: 250px;
+  width: calc(100% - 250px);
+}
+
+/* Bộ lọc */
+.filters {
+  background: var(--background-light);
+  padding: var(--spacing-lg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  margin-bottom: var(--spacing-lg);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.filters select,
+.filters input {
+  padding: var(--spacing-sm);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  font-size: 0.875rem;
+}
+
+.filters select:focus,
+.filters input:focus {
+  border-color: var(--primary-color);
+  outline: none;
+}
+
+.filters button {
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--secondary-color);
+  color: #fff;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: background-color 0.2s ease;
+}
+
+.filters button:hover {
+  background: #1a1a3b;
+}
+
+/* Danh sách hồ sơ */
+.applications {
+  background: var(--background-light);
+  padding: var(--spacing-lg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  margin-bottom: var(--spacing-lg);
+}
+
+.applications h3 {
+  font-size: 1.125rem;
+  margin-bottom: var(--spacing-md);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 12px;
+  text-align: left;
+  font-size: 0.875rem;
+  border-bottom: 1px solid #eee;
+}
+
+th {
+  background: #f8f9fa;
+  color: var(--text-muted);
+}
+
+.status {
+  padding: 5px 10px;
+  border-radius: var(--border-radius);
+  font-size: 14px;
+}
+
+.moi {
+  background: var(--status-new-bg);
+  color: var(--status-new-text);
+}
+
+.phongVan {
+  background: var(--status-interview-bg);
+  color: var(--status-interview-text);
+}
+
+.duocNhan {
+  background: var(--status-hired-bg);
+  color: var(--status-hired-text);
+}
+
+.tuChoi {
+  background: var(--status-rejected-bg);
+  color: var(--status-rejected-text);
+}
+
+.actionButtons {
+  display: flex;
+  gap: 5px;
+}
+
+.actionButtons button {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: background-color 0.2s ease;
+}
+
+.actionButtons .view {
+  background: var(--status-new-bg);
+  color: var(--status-new-text);
+}
+
+.actionButtons .viewCV {
+  background: var(--status-interview-bg);
+  color: var(--status-interview-text);
+}
+
+.actionButtons .delete {
+  background: var(--status-rejected-bg);
+  color: var(--status-rejected-text);
+}
+
+.actionButtons button:hover {
+  opacity: 0.9;
+}
+
+/* Phân trang */
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--spacing-lg);
+  gap: 5px;
+}
+
+.pagination button {
+  padding: 5px 10px;
+  border: 1px solid var(--border-color);
+  background: var(--background-light);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.pagination button.active,
+.pagination button:hover {
+  background: var(--primary-color);
+  color: #fff;
+  border-color: var(--primary-color);
+}
+
+/* Modal */
+.modal {
+  display: block;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modalContent {
+  background: var(--background-light);
+  margin: 5% auto;
+  padding: var(--spacing-lg);
+  border-radius: var(--border-radius);
+  width: 80%;
+  max-width: 800px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 1.75rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.close:hover {
+  color: var(--text-color);
+}
+
+.candidateDetails {
+  margin-top: var(--spacing-lg);
+}
+
+.detailRow {
+  display: flex;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
+}
+
+.detailGroup {
+  flex: 1;
+}
+
+.detailGroup.full {
+  flex: 100%;
+  margin-bottom: var(--spacing-md);
+}
+
+.detailGroup label {
+  font-weight: bold;
+  color: var(--text-muted);
+  display: block;
+  margin-bottom: 5px;
+}
+
+.detailGroup p {
+  margin: 0;
+}
+
+.detailAction {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: var(--spacing-lg);
+  justify-content: center;
+}
+
+.statusBtn {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.875rem;
+  transition: background-color 0.2s ease;
+}
+
+.moi {
+  background: var(--status-new-bg);
+  color: var(--status-new-text);
+}
+
+.phongVan {
+  background: var(--status-interview-bg);
+  color: var(--status-interview-text);
+}
+
+.duocNhan {
+  background: var(--status-hired-bg);
+  color: var(--status-hired-text);
+}
+
+.tuChoi {
+  background: var(--status-rejected-bg);
+  color: var(--status-rejected-text);
+}
+
+.statusBtn:hover {
+  opacity: 0.9;
+}

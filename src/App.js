@@ -1,8 +1,7 @@
-// src/App.js
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
-import News from './pages/News';
+import News from './pages/News'; // Trang tin tức cho người dùng
 import About from './pages/About';
 import Contact from './pages/Contact';
 import NewsDetail from './pages/NewsDetail';

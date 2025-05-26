@@ -1,0 +1,385 @@
+/* Biến CSS cho màu sắc và kích thước */
+:root {
+  --primary-color: #007bff;
+  --secondary-color: #100f27;
+  --background-light: #fff;
+  --text-muted: #666;
+  --border-color: #ddd;
+  --status-hired-bg: #e8f5e9;
+  --status-hired-text: #1b5e20;
+  --status-rejected-bg: #ffebee;
+  --status-rejected-text: #b71c1c;
+  --status-new-bg: #e3f2fd;
+  --status-new-text: #0d47a1;
+  --status-interview-bg: #fff8e1;
+  --status-interview-text: #ff6f00;
+  --spacing-sm: 8px;
+  --spacing-md: 15px;
+  --spacing-lg: 20px;
+  --border-radius: 5px;
+  --box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Reset và kiểu chung */
+
+/* Container chính */
+.container {
+  margin-left: 250px;
+  width: calc(100% - 250px);
+}
+
+/* Bộ lọc */
+.filters {
+  background: var(--background-light);
+  padding: var(--spacing-lg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  margin-bottom: var(--spacing-lg);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.filters select,
+.filters input {
+  padding: var(--spacing-sm);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  font-size: 0.875rem;
+}
+
+.filters select:focus,
+.filters input:focus {
+  border-color: var(--primary-color);
+  outline: none;
+}
+
+.filters button {
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--secondary-color);
+  color: #fff;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: background-color 0.2s ease;
+}
+
+.filters button:hover {
+  background: #1a1a3b;
+}
+
+/* Bảng công việc */
+.jobs {
+  background: var(--background-light);
+  padding: var(--spacing-lg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  margin-bottom: var(--spacing-lg);
+  overflow-x: auto; /* Thêm scroll ngang nếu cần */
+}
+
+.jobs h3 {
+  font-size: 1.125rem;
+  margin-bottom: var(--spacing-md);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.jobs h3 button {
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--primary-color);
+  color: #fff;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: background-color 0.2s ease;
+  white-space: nowrap;
+}
+
+.jobs h3 button:hover {
+  background: #0056b3;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed; /* Cố định layout để kiểm soát độ rộng cột */
+}
+
+th,
+td {
+  padding: 8px 12px;
+  text-align: left;
+  font-size: 0.875rem;
+  border-bottom: 1px solid #eee;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+th {
+  background: #f8f9fa;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+/* Thiết lập độ rộng cho từng cột */
+th:nth-child(1), td:nth-child(1) { width: 18%; } /* Tên Công Việc */
+th:nth-child(2), td:nth-child(2) { width: 15%; } /* Thương Hiệu */
+th:nth-child(3), td:nth-child(3) { width: 10%; } /* Cấp Bậc */
+th:nth-child(4), td:nth-child(4) { width: 12%; } /* Mức Lương */
+th:nth-child(5), td:nth-child(5) { width: 15%; } /* Địa Điểm */
+th:nth-child(6), td:nth-child(6) { width: 10%; } /* Hạn Nộp */
+th:nth-child(7), td:nth-child(7) { width: 10%; } /* Trạng Thái */
+th:nth-child(8), td:nth-child(8) { width: 10%; } /* Thao Tác */
+
+/* Ngăn xuống dòng cho các cột quan trọng */
+td:nth-child(3), /* Cột Cấp Bậc */
+td:nth-child(4), /* Cột Mức Lương */
+td:nth-child(6), /* Cột Hạn Nộp */
+td:nth-child(7), /* Cột Trạng Thái */
+td:nth-child(8)  /* Cột Thao Tác */ {
+  white-space: nowrap;
+}
+
+/* Cho phép xuống dòng nhưng giới hạn chiều cao cho cột có nội dung dài */
+td:nth-child(1), /* Tên Công Việc */
+td:nth-child(2)  /* Thương Hiệu */ {
+  white-space: normal;
+  word-wrap: break-word;
+  line-height: 1.3;
+  max-height: 60px;
+  overflow: hidden;
+}
+
+/* Hoặc bạn có thể thêm class riêng */
+.no-wrap {
+  white-space: nowrap;
+}
+
+.status {
+  padding: 5px 10px;
+  border-radius: var(--border-radius);
+  font-size: 14px;
+  white-space: nowrap; /* Ngăn xuống dòng cho status badge */
+}
+
+.active {
+  background: var(--status-hired-bg);
+  color: var(--status-hired-text);
+}
+
+.inactive {
+  background: var(--status-rejected-bg);
+  color: var(--status-rejected-text);
+}
+
+.actionButtons {
+  display: flex;
+  gap: 5px;
+  white-space: nowrap; /* Ngăn xuống dòng cho action buttons */
+}
+
+.actionButtons button {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: background-color 0.2s ease;
+}
+
+.actionButtons .view {
+  background: var(--status-new-bg);
+  color: var(--status-new-text);
+}
+
+.actionButtons .edit {
+  background: var(--status-interview-bg);
+  color: var(--status-interview-text);
+}
+
+.actionButtons .delete {
+  background: var(--status-rejected-bg);
+  color: var(--status-rejected-text);
+}
+
+.actionButtons button:hover {
+  opacity: 0.9;
+}
+
+/* Modal */
+.modal {
+  display: block;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modalContent {
+  background: var(--background-light);
+  margin: 5% auto;
+  padding: var(--spacing-lg);
+  border-radius: var(--border-radius);
+  width: 80%;
+  max-width: 800px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 1.75rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.close:hover {
+  color: var(--text-color);
+}
+
+.jobDetails {
+  margin-top: var(--spacing-lg);
+}
+
+.detailRow {
+  display: flex;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
+}
+
+.detailGroup {
+  flex: 1;
+}
+
+.detailGroup.full {
+  flex: 100%;
+  margin-bottom: var(--spacing-md);
+}
+
+.detailGroup label {
+  font-weight: bold;
+  color: var(--text-muted);
+  display: block;
+  margin-bottom: 5px;
+}
+
+.detailGroup p {
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .container {
+    margin-left: 200px;
+    width: calc(100% - 200px);
+  }
+  
+  /* Điều chỉnh độ rộng cột trên tablet */
+  th:nth-child(1), td:nth-child(1) { width: 20%; }
+  th:nth-child(2), td:nth-child(2) { width: 18%; }
+  th:nth-child(3), td:nth-child(3) { width: 12%; }
+  th:nth-child(4), td:nth-child(4) { width: 15%; }
+  th:nth-child(5), td:nth-child(5) { width: 18%; }
+  th:nth-child(6), td:nth-child(6) { width: 12%; }
+  th:nth-child(7), td:nth-child(7) { width: 12%; }
+  th:nth-child(8), td:nth-child(8) { width: 10%; }
+}
+
+@media (max-width: 768px) {
+  .container {
+    margin-left: 200px;
+    width: calc(100% - 200px);
+  }
+
+  .modalContent {
+    width: 90%;
+  }
+  
+  /* Ẩn một số cột không quan trọng trên mobile */
+  th:nth-child(2), td:nth-child(2), /* Thương Hiệu */
+  th:nth-child(5), td:nth-child(5)  /* Địa Điểm */ {
+    display: none;
+  }
+  
+  /* Điều chỉnh lại độ rộng cột còn lại */
+  th:nth-child(1), td:nth-child(1) { width: 25%; }
+  th:nth-child(3), td:nth-child(3) { width: 15%; }
+  th:nth-child(4), td:nth-child(4) { width: 20%; }
+  th:nth-child(6), td:nth-child(6) { width: 15%; }
+  th:nth-child(7), td:nth-child(7) { width: 15%; }
+  th:nth-child(8), td:nth-child(8) { width: 10%; }
+}
+
+@media (max-width: 576px) {
+  .container {
+    margin-left: 0;
+    width: 100%;
+  }
+  
+  /* Cho phép xuống dòng trên mobile nhỏ */
+  td:nth-child(3),
+  td:nth-child(4),
+  td:nth-child(6),
+  td:nth-child(7),
+  td:nth-child(8) {
+    white-space: normal;
+  }
+  
+  /* Giảm padding cho mobile */
+  th, td {
+    padding: 6px 8px;
+    font-size: 0.8rem;
+  }
+}
+.errorInput {
+  border: 1px solid red;
+}
+
+.error {
+  color: red;
+  font-size: 0.8rem;
+  margin-top: 0.2rem;
+}
+
+.formActions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+.formActions button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.formActions button[type="submit"] {
+  background-color: #28a745;
+  color: white;
+}
+
+.formActions button[type="button"] {
+  background-color: #dc3545;
+  color: white;
+}
+
+.detailGroup textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+}
