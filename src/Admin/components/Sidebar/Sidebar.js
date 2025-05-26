@@ -13,7 +13,7 @@ const Sidebar = () => (
         </a>
       </li>
       <li>
-        <a href="#">
+        <a href="/admin/news">
           <i className="fa-regular fa-newspaper"></i> Tin Tức
         </a>
       </li>

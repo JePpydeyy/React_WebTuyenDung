@@ -1,6 +1,5 @@
 .container {
   margin-left: 250px;
-  padding: var(--spacing-lg);
   width: calc(100% - 250px);
 }
 .newsList {
