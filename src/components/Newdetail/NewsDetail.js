@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './NewsDetail.css';
 import { articleData } from '../../data/articleData';
 import { otherNewsData } from '../../data/otherNewsData';
+import { Link, useNavigate } from 'react-router-dom';
 
 function formatDate(dateString) {
   const date = new Date(dateString);
@@ -15,6 +16,7 @@ function formatDate(dateString) {
 const NewsDetail = () => {
   const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState({ open: false, src: '', caption: '' });
+  const navigate = useNavigate();
 
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 1000);
@@ -25,13 +27,12 @@ const NewsDetail = () => {
     e.preventDefault();
     const url = encodeURIComponent(window.location.href);
     const title = encodeURIComponent(articleData.title);
-    window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}"e=${title}`, '_blank', 'width=600,height=400');
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}&e=${title}`, '_blank', 'width=600,height=400');
   };
 
   const goBack = (e) => {
     e.preventDefault();
-    if (window.history.length > 1) window.history.back();
-    else alert('Không có trang trước đó để quay lại');
+    navigate(-1);
   };
 
   return (
@@ -71,13 +72,15 @@ const NewsDetail = () => {
                 )
               )}
             </div>
-            <a href="#" className="back-button" onClick={goBack}>← Quay lại</a>
-            <div className="share-section fade-in">
-              <h3 className="share-title">Chia sẻ bài viết</h3>
-              <div className="share-buttons">
-                <a href="#" className="share-btn facebook" onClick={shareOnFacebook} title="Facebook">📘</a>
-              </div>
-            </div>
+            <button
+              type="button"
+              className="share-btn facebook"
+              onClick={shareOnFacebook}
+              title="Facebook"
+              style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
+            >
+              📘
+            </button>
           </div>
           <div className="sidebar">
             <h2 className="sidebar-title">Tin tức khác</h2>
@@ -87,7 +90,7 @@ const NewsDetail = () => {
                   <div className="grid-image">
                     <img src={news.image} alt={news.title} />
                   </div>
-                  <a href="#" className="grid-title">{news.title}</a>
+                  <Link to={`/News/${news.id}`} className="grid-title">{news.title}</Link>
                   <div className="grid-date">Ngày đăng {news.date}</div>
                   <div className="grid-excerpt">{news.excerpt}</div>
                 </div>
