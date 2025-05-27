@@ -25,6 +25,7 @@ const JobManagement = () => {
     status: 'show',
   });
   const [formErrors, setFormErrors] = useState({});
+  const [imagePreview, setImagePreview] = useState(''); // State để hiển thị preview hình ảnh
 
   const statusDisplayMap = {
     show: 'Đang tuyển',
@@ -80,7 +81,11 @@ const JobManagement = () => {
   const fetchJobs = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`${API_JOBS_URL}?status=show`);
+      const response = await fetch(`${API_JOBS_URL}?status=show`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`, // Thêm token để xác thực
+        },
+      });
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || `Không thể tải danh sách công việc: ${response.status}`);
@@ -100,6 +105,7 @@ const JobManagement = () => {
         benefits: sanitizeText(job.Welfare),
         slot: job.Slot,
         postDate: formatDate(job['Post-date']),
+        image: job.Image || '', // Thêm trường image
       }));
     } catch (error) {
       showNotification(`Lỗi khi tải danh sách công việc: ${error.message}`, 'error');
@@ -119,7 +125,11 @@ const JobManagement = () => {
   const handleViewJob = async (jobId) => {
     setIsLoading(true);
     try {
-      const response = await fetch(`${API_JOBS_URL}/${jobId}`);
+      const response = await fetch(`${API_JOBS_URL}/${jobId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`, // Thêm token để xác thực
+        },
+      });
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || `Không tìm thấy công việc: ${response.status}`);
@@ -139,6 +149,7 @@ const JobManagement = () => {
         benefits: sanitizeText(job.Welfare),
         slot: job.Slot,
         postDate: formatDate(job['Post-date']),
+        image: job.Image || '', // Thêm trường image
       });
     } catch (error) {
       showNotification(`Lỗi khi tải chi tiết công việc: ${error.message}`, 'error');
@@ -201,7 +212,10 @@ const JobManagement = () => {
       try {
         const response = await fetch(`${API_JOBS_URL}/${jobId}`, {
           method: 'DELETE',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`, // Thêm token để xác thực
+          },
         });
         if (!response.ok) {
           const errorData = await response.json();
@@ -220,7 +234,10 @@ const JobManagement = () => {
     try {
       const response = await fetch(`${API_JOBS_URL}/${jobId}/toggle-visibility`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`, // Thêm token để xác thực
+        },
       });
       if (!response.ok) {
         const errorData = await response.json();
@@ -240,6 +257,21 @@ const JobManagement = () => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     setFormErrors(prev => ({ ...prev, [name]: '' }));
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setNewJob(prev => ({ ...prev, Image: reader.result })); // Lưu base64
+        setImagePreview(reader.result); // Hiển thị preview
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setNewJob(prev => ({ ...prev, Image: '' }));
+      setImagePreview('');
+    }
   };
 
   const validateForm = () => {
@@ -306,6 +338,7 @@ const JobManagement = () => {
         Welfare: '',
         status: 'show',
       });
+      setImagePreview('');
       setFormErrors({});
       showNotification(modalMode === 'add' ? 'Thêm công việc thành công!' : 'Cập nhật công việc thành công!', 'success');
     } catch (error) {
@@ -471,6 +504,16 @@ const JobManagement = () => {
             </span>
             <h3>Chi Tiết Công Việc: {selectedJob.title}</h3>
             <div className={styles.jobDetails}>
+              {selectedJob.image && (
+                <div className={`${styles.detailGroup} ${styles.full}`}>
+                  <label>Hình ảnh:</label>
+                  <img
+                    src={selectedJob.image}
+                    alt={selectedJob.title}
+                    style={{ maxWidth: '100%', maxHeight: '200px', objectFit: 'contain' }}
+                  />
+                </div>
+              )}
               <div className={styles.detailRow}>
                 <div className={styles.detailGroup}>
                   <label>ID:</label>
@@ -659,6 +702,25 @@ const JobManagement = () => {
                   />
                   {formErrors.Slot && <p className={styles.error}>{formErrors.Slot}</p>}
                 </div>
+              </div>
+              <div className={`${styles.detailGroup} ${styles.full}`}>
+                <label>Hình ảnh:</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  name="Image"
+                  onChange={handleImageChange}
+                />
+                {imagePreview && (
+                  <div style={{ marginTop: '10px' }}>
+                    <p>Preview:</p>
+                    <img
+                      src={imagePreview}
+                      alt="Preview"
+                      style={{ maxWidth: '100%', maxHeight: '200px', objectFit: 'contain' }}
+                    />
+                  </div>
+                )}
               </div>
               <div className={`${styles.detailGroup} ${styles.full}`}>
                 <label>Mô tả công việc:</label>
