@@ -2,26 +2,27 @@ import React, { useState, useEffect } from 'react';
 import { debounce } from 'lodash';
 import styles from './JobManagement.module.css';
 
-const JobManagement = ({ onAddJobClick }) => {
+const JobManagement = () => {
   const API_JOBS_URL = 'https://api-tuyendung-cty.onrender.com/api/job';
   const [jobs, setJobs] = useState([]);
   const [filteredJobs, setFilteredJobs] = useState([]);
   const [selectedJob, setSelectedJob] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [newJob, setNewJob] = useState({
+  const [showModal, setShowModal] = useState(false);
+  const [modalMode, setModalMode] = useState('add'); // 'add' or 'edit'
+  const [formData, setFormData] = useState({
     Name: '',
     Brands: '',
     Position: '',
     Salary: '',
     Workplace: '',
+    Slot: '',
+    'Post-date': new Date().toISOString().split('T')[0],
     'Due date': '',
-    status: 'show',
     'Job Description': '',
     'Job Requirements': '',
     Welfare: '',
-    Slot: '',
-    'Post-date': new Date().toISOString().split('T')[0],
+    status: 'show',
   });
   const [formErrors, setFormErrors] = useState({});
 
@@ -40,9 +41,33 @@ const JobManagement = ({ onAddJobClick }) => {
 
   const formatDate = (dateString) => {
     if (!dateString) return '';
-    const date = new Date(dateString);
+    // Handle DD/MM/YYYY or YYYY-MM-DD
+    const parts = dateString.includes('/') ? dateString.split('/') : dateString.split('-');
+    const date = dateString.includes('/')
+      ? new Date(`${parts[2]}-${parts[1]}-${parts[0]}`)
+      : new Date(dateString);
     if (isNaN(date)) return 'Không hợp lệ';
     return date.toLocaleDateString('vi-VN');
+  };
+
+  const toBackendDate = (dateString) => {
+    if (!dateString) return '';
+    // Convert YYYY-MM-DD to DD/MM/YYYY for API
+    if (dateString.includes('-')) {
+      const [year, month, day] = dateString.split('-');
+      return `${day}/${month}/${year}`;
+    }
+    return dateString;
+  };
+
+  const toFormDate = (dateString) => {
+    if (!dateString) return '';
+    // Convert DD/MM/YYYY to YYYY-MM-DD for form
+    if (dateString.includes('/')) {
+      const [day, month, year] = dateString.split('/');
+      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    }
+    return dateString;
   };
 
   const sanitizeText = (str) => {
@@ -123,28 +148,51 @@ const JobManagement = ({ onAddJobClick }) => {
     }
   };
 
-  const handleEditJob = (jobId) => {
+  const handleOpenAddModal = () => {
+    setModalMode('add');
+    setFormData({
+      Name: '',
+      Brands: '',
+      Position: '',
+      Salary: '',
+      Workplace: '',
+      Slot: '',
+      'Post-date': new Date().toISOString().split('T')[0],
+      'Due date': '',
+      'Job Description': '',
+      'Job Requirements': '',
+      Welfare: '',
+      status: 'show',
+    });
+    setFormErrors({});
+    setShowModal(true);
+  };
+
+  const handleOpenEditModal = (jobId) => {
     const job = jobs.find(j => j.id === jobId);
     if (job) {
       const reverseStatusMap = {
         'Đang tuyển': 'show',
         'Tạm dừng': 'hidden',
       };
-      onAddJobClick({
+      setModalMode('edit');
+      setFormData({
         _id: job.id,
         Name: job.title,
         Brands: job.brand,
         Position: job.level,
         Salary: job.salary,
         Workplace: job.location,
-        'Due date': job.deadline,
-        status: reverseStatusMap[job.status] || job.status,
+        Slot: job.slot,
+        'Post-date': toFormDate(job.postDate),
+        'Due date': toFormDate(job.deadline),
         'Job Description': job.description,
         'Job Requirements': job.requirements,
         Welfare: job.benefits,
-        Slot: job.slot,
-        'Post-date': job.postDate,
+        status: reverseStatusMap[job.status] || job.status,
       });
+      setFormErrors({});
+      setShowModal(true);
     }
   };
 
@@ -190,24 +238,24 @@ const JobManagement = ({ onAddJobClick }) => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setNewJob(prev => ({ ...prev, [name]: value }));
+    setFormData(prev => ({ ...prev, [name]: value }));
     setFormErrors(prev => ({ ...prev, [name]: '' }));
   };
 
   const validateForm = () => {
     const errors = {};
-    if (!newJob.Name.trim()) errors.Name = 'Tên công việc là bắt buộc';
-    if (!newJob.Brands.trim()) errors.Brands = 'Thương hiệu là bắt buộc';
-    if (!newJob.Position.trim()) errors.Position = 'Cấp bậc là bắt buộc';
-    if (!newJob.Salary.trim()) errors.Salary = 'Mức lương là bắt buộc';
-    if (!newJob.Workplace.trim()) errors.Workplace = 'Địa điểm là bắt buộc';
-    if (!newJob['Due date']) errors['Due date'] = 'Hạn nộp là bắt buộc';
-    if (!newJob.Slot || newJob.Slot <= 0) errors.Slot = 'Số lượng tuyển phải lớn hơn 0';
+    if (!formData.Name.trim()) errors.Name = 'Tên công việc là bắt buộc';
+    if (!formData.Brands.trim()) errors.Brands = 'Thương hiệu là bắt buộc';
+    if (!formData.Position.trim()) errors.Position = 'Cấp bậc là bắt buộc';
+    if (!formData.Salary.trim()) errors.Salary = 'Mức lương là bắt buộc';
+    if (!formData.Workplace.trim()) errors.Workplace = 'Địa điểm là bắt buộc';
+    if (!formData['Due date']) errors['Due date'] = 'Hạn nộp là bắt buộc';
+    if (!formData.Slot || formData.Slot <= 0) errors.Slot = 'Số lượng tuyển phải lớn hơn 0';
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
 
-  const handleAddJobSubmit = async (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) {
       showNotification('Vui lòng điền đầy đủ thông tin bắt buộc', 'error');
@@ -216,50 +264,52 @@ const JobManagement = ({ onAddJobClick }) => {
 
     setIsLoading(true);
     try {
-      const response = await fetch(API_JOBS_URL, {
-        method: 'POST',
+      const url = modalMode === 'add' ? API_JOBS_URL : `${API_JOBS_URL}/${formData._id}`;
+      const method = modalMode === 'add' ? 'POST' : 'PUT';
+      const response = await fetch(url, {
+        method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          Name: newJob.Name,
-          Brands: newJob.Brands,
-          Position: newJob.Position,
-          Salary: newJob.Salary,
-          Workplace: newJob.Workplace,
-          'Due date': newJob['Due date'],
-          status: newJob.status,
-          'Job Description': newJob['Job Description'],
-          'Job Requirements': newJob['Job Requirements'],
-          Welfare: newJob.Welfare,
-          Slot: parseInt(newJob.Slot),
-          'Post-date': newJob['Post-date'],
+          Name: formData.Name,
+          Brands: formData.Brands,
+          Position: formData.Position,
+          Salary: formData.Salary,
+          Workplace: formData.Workplace,
+          Slot: parseInt(formData.Slot),
+          'Post-date': toBackendDate(formData['Post-date']),
+          'Due date': toBackendDate(formData['Due date']),
+          'Job Description': formData['Job Description'],
+          'Job Requirements': formData['Job Requirements'],
+          Welfare: formData.Welfare,
+          status: formData.status,
         }),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || `Không thể thêm công việc: ${response.status}`);
+        throw new Error(errorData.error || `Không thể ${modalMode === 'add' ? 'thêm' : 'cập nhật'} công việc: ${response.status}`);
       }
 
       await displayJobs();
-      setShowAddModal(false);
-      setNewJob({
+      setShowModal(false);
+      setFormData({
         Name: '',
         Brands: '',
         Position: '',
         Salary: '',
         Workplace: '',
+        Slot: '',
+        'Post-date': new Date().toISOString().split('T')[0],
         'Due date': '',
-        status: 'show',
         'Job Description': '',
         'Job Requirements': '',
         Welfare: '',
-        Slot: '',
-        'Post-date': new Date().toISOString().split('T')[0],
+        status: 'show',
       });
       setFormErrors({});
-      showNotification('Thêm công việc thành công!', 'success');
+      showNotification(modalMode === 'add' ? 'Thêm công việc thành công!' : 'Cập nhật công việc thành công!', 'success');
     } catch (error) {
-      showNotification(`Lỗi khi thêm công việc: ${error.message}`, 'error');
+      showNotification(`Lỗi khi ${modalMode === 'add' ? 'thêm' : 'cập nhật'} công việc: ${error.message}`, 'error');
       console.error(error);
     } finally {
       setIsLoading(false);
@@ -345,7 +395,7 @@ const JobManagement = ({ onAddJobClick }) => {
       <div className={styles.jobs}>
         <h3>
           Danh Sách Công Việc
-          <button onClick={() => setShowAddModal(true)}>
+          <button onClick={handleOpenAddModal}>
             <i className="fa-solid fa-plus"></i> Thêm Công Việc
           </button>
         </h3>
@@ -398,7 +448,7 @@ const JobManagement = ({ onAddJobClick }) => {
                       <button className={styles.view} onClick={() => handleViewJob(job.id)}>
                         <i className="fa-solid fa-eye"></i>
                       </button>
-                      <button className={styles.edit} onClick={() => handleEditJob(job.id)}>
+                      <button className={styles.edit} onClick={() => handleOpenEditModal(job.id)}>
                         <i className="fa-solid fa-edit"></i>
                       </button>
                       <button className={styles.delete} onClick={() => handleDeleteJob(job.id)}>
@@ -507,21 +557,21 @@ const JobManagement = ({ onAddJobClick }) => {
         </div>
       )}
 
-      {showAddModal && (
+      {showModal && (
         <div className={styles.modal}>
           <div className={styles.modalContent}>
-            <span className={styles.close} onClick={() => setShowAddModal(false)}>
+            <span className={styles.close} onClick={() => setShowModal(false)}>
               ×
             </span>
-            <h3>Thêm Công Việc Mới</h3>
-            <form onSubmit={handleAddJobSubmit}>
+            <h3>{modalMode === 'add' ? 'Thêm Công Việc Mới' : 'Chỉnh Sửa Công Việc'}</h3>
+            <form onSubmit={handleFormSubmit}>
               <div className={styles.detailRow}>
                 <div className={styles.detailGroup}>
                   <label>Tên công việc: <span style={{ color: 'red' }}>*</span></label>
                   <input
                     type="text"
                     name="Name"
-                    value={newJob.Name}
+                    value={formData.Name}
                     onChange={handleInputChange}
                     className={formErrors.Name ? styles.errorInput : ''}
                   />
@@ -532,7 +582,7 @@ const JobManagement = ({ onAddJobClick }) => {
                   <input
                     type="text"
                     name="Brands"
-                    value={newJob.Brands}
+                    value={formData.Brands}
                     onChange={handleInputChange}
                     className={formErrors.Brands ? styles.errorInput : ''}
                   />
@@ -545,7 +595,7 @@ const JobManagement = ({ onAddJobClick }) => {
                   <input
                     type="text"
                     name="Position"
-                    value={newJob.Position}
+                    value={formData.Position}
                     onChange={handleInputChange}
                     className={formErrors.Position ? styles.errorInput : ''}
                   />
@@ -556,7 +606,7 @@ const JobManagement = ({ onAddJobClick }) => {
                   <input
                     type="text"
                     name="Salary"
-                    value={newJob.Salary}
+                    value={formData.Salary}
                     onChange={handleInputChange}
                     className={formErrors.Salary ? styles.errorInput : ''}
                   />
@@ -569,7 +619,7 @@ const JobManagement = ({ onAddJobClick }) => {
                   <input
                     type="text"
                     name="Workplace"
-                    value={newJob.Workplace}
+                    value={formData.Workplace}
                     onChange={handleInputChange}
                     className={formErrors.Workplace ? styles.errorInput : ''}
                   />
@@ -580,7 +630,7 @@ const JobManagement = ({ onAddJobClick }) => {
                   <input
                     type="date"
                     name="Due date"
-                    value={newJob['Due date']}
+                    value={formData['Due date']}
                     onChange={handleInputChange}
                     className={formErrors['Due date'] ? styles.errorInput : ''}
                   />
@@ -589,18 +639,20 @@ const JobManagement = ({ onAddJobClick }) => {
               </div>
               <div className={styles.detailRow}>
                 <div className={styles.detailGroup}>
-                  <label>Trạng thái:</label>
-                  <select name="status" value={newJob.status} onChange={handleInputChange}>
-                    <option value="show">Đang tuyển</option>
-                    <option value="hidden">Tạm dừng</option>
-                  </select>
+                  <label>Ngày đăng:</label>
+                  <input
+                    type="date"
+                    name="Post-date"
+                    value={formData['Post-date']}
+                    onChange={handleInputChange}
+                  />
                 </div>
                 <div className={styles.detailGroup}>
                   <label>Số lượng tuyển: <span style={{ color: 'red' }}>*</span></label>
                   <input
                     type="number"
                     name="Slot"
-                    value={newJob.Slot}
+                    value={formData.Slot}
                     onChange={handleInputChange}
                     min="1"
                     className={formErrors.Slot ? styles.errorInput : ''}
@@ -612,7 +664,7 @@ const JobManagement = ({ onAddJobClick }) => {
                 <label>Mô tả công việc:</label>
                 <textarea
                   name="Job Description"
-                  value={newJob['Job Description']}
+                  value={formData['Job Description']}
                   onChange={handleInputChange}
                   rows="4"
                 />
@@ -621,7 +673,7 @@ const JobManagement = ({ onAddJobClick }) => {
                 <label>Yêu cầu công việc:</label>
                 <textarea
                   name="Job Requirements"
-                  value={newJob['Job Requirements']}
+                  value={formData['Job Requirements']}
                   onChange={handleInputChange}
                   rows="4"
                 />
@@ -630,16 +682,25 @@ const JobManagement = ({ onAddJobClick }) => {
                 <label>Quyền lợi:</label>
                 <textarea
                   name="Welfare"
-                  value={newJob.Welfare}
+                  value={formData.Welfare}
                   onChange={handleInputChange}
                   rows="4"
                 />
               </div>
+              <div className={styles.detailRow}>
+                <div className={styles.detailGroup}>
+                  <label>Trạng thái:</label>
+                  <select name="status" value={formData.status} onChange={handleInputChange}>
+                    <option value="show">Đang tuyển</option>
+                    <option value="hidden">Tạm dừng</option>
+                  </select>
+                </div>
+              </div>
               <div className={styles.formActions}>
                 <button type="submit" disabled={isLoading}>
-                  {isLoading ? 'Đang lưu...' : 'Lưu'}
+                  {isLoading ? 'Đang lưu...' : modalMode === 'add' ? 'Lưu' : 'Cập nhật'}
                 </button>
-                <button type="button" onClick={() => setShowAddModal(false)}>
+                <button type="button" onClick={() => setShowModal(false)}>
                   Hủy
                 </button>
               </div>
