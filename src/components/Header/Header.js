@@ -40,12 +40,12 @@ const Header = () => {
             </Link>
           </li>
           <li>
-            <Link to="/co-hoi-nghe-nghiep" onClick={() => setIsNavOpen(false)} aria-label="Go to Career Opportunities page">
+            <Link to="/job" onClick={() => setIsNavOpen(false)} aria-label="Go to Career Opportunities page">
               <i className="fas fa-briefcase"></i> Cơ hội nghề nghiệp
             </Link>
           </li>
           <li>
-            <Link to="/lien-he" onClick={() => setIsNavOpen(false)} aria-label="Go to Contact page">
+            <Link to="/contact" onClick={() => setIsNavOpen(false)} aria-label="Go to Contact page">
               <i className="fas fa-envelope"></i> Liên hệ
             </Link>
           </li>

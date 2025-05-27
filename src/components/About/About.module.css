@@ -1,15 +1,29 @@
-/* Note: Font imports should ideally be in a global stylesheet (e.g., index.css) */
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
+/* About.module.css */
 
-/* Note: Global reset should ideally be in a global stylesheet */
-:global(*) {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+/* CSS Variables for reusability */
+:root {
+    --banner-btn-size: 36px;
+    --indicator-size: 10px;
+    --indicator-size-small: 8px;
+    --indicator-size-tiny: 6px;
+    --font-size-large: clamp(2rem, 5vw, 3rem);
+    --font-size-medium: clamp(1.5rem, 4vw, 2rem);
+    --font-size-small: clamp(0.9rem, 2.5vw, 1rem);
+    --font-size-tiny: clamp(0.8rem, 2vw, 0.9rem);
+    --primary-color: #1678f2;
+    --text-dark: #222;
+    --text-medium: #444;
+    --text-light: #fff;
+    --accent-color: #ffdd00;
+    --bg-about: #80142e;
+    --bg-stats: #8a0f2d;
 }
 
 /* Banner styles */
+.banner {
+    width: 100%;
+}
+
 .bannerWrapper {
     position: relative;
     width: 100%;
@@ -26,7 +40,7 @@
     top: 0;
     opacity: 0;
     transform: translateX(100%);
-    transition: opacity 0.7s cubic-bezier(0.4,0,0.2,1), transform 0.7s cubic-bezier(0.4,0,0.2,1);
+    transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 1;
     pointer-events: none;
     object-fit: cover;
@@ -48,15 +62,17 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background: rgba(0,0,0,0.4);
-    color: #fff;
+    background: rgba(0, 0, 0, 0.4);
+    color: var(--text-light);
     border: none;
-    font-size: 1.2rem;
+    font-size: 1rem;
     padding: 0.5rem;
     cursor: pointer;
     border-radius: 50%;
     z-index: 3;
     transition: background 0.2s;
+    width: var(--banner-btn-size);
+    height: var(--banner-btn-size);
 }
 
 .bannerBtnLeft {
@@ -68,7 +84,7 @@
 }
 
 .bannerBtn:hover {
-    background: #1678f2;
+    background: var(--primary-color);
 }
 
 .bannerIndicators {
@@ -82,8 +98,8 @@
 }
 
 .indicator {
-    width: 10px;
-    height: 10px;
+    width: var(--indicator-size);
+    height: var(--indicator-size);
     background: rgba(255, 255, 255, 0.4);
     border-radius: 50%;
     cursor: pointer;
@@ -91,7 +107,7 @@
 }
 
 .indicator.active {
-    background: white;
+    background: var(--text-light);
 }
 
 /* Features styles */
@@ -127,18 +143,18 @@
     font-size: 1.8rem;
     margin: 0.5rem 0 0.25rem 0;
     font-weight: 700;
-    color: #222;
+    color: var(--text-dark);
 }
 
 .feature p {
-    font-size: 0.9rem;
-    color: #444;
+    font-size: var(--font-size-tiny);
+    color: var(--text-medium);
     margin: 0;
 }
 
 /* About styles */
 .about {
-    background-color: #80142e;
+    background-color: var(--bg-about);
     text-align: left;
     padding: 2rem 1rem;
     display: flex;
@@ -147,16 +163,16 @@
 }
 
 .about h1 {
-    color: #fff;
+    color: var(--text-light);
     font-family: 'Playfair Display', serif;
-    font-size: clamp(2rem, 5vw, 3rem);
+    font-size: var(--font-size-large);
     margin: 0.5rem 0 1.5rem 0;
     font-weight: 700;
 }
 
 .about p {
-    color: #fff;
-    font-size: clamp(1rem, 3vw, 1.2rem);
+    color: var(--text-light);
+    font-size: var(--font-size-small);
     margin: 0 0 1.5rem 0;
     max-width: 90%;
     line-height: 1.6;
@@ -171,16 +187,16 @@
 
 /* Stats styles */
 .statsSection {
-    background-color: #8a0f2d;
+    background-color: var(--bg-stats);
     background-size: cover;
     background-position: center;
-    color: white;
+    color: var(--text-light);
     padding: 3rem 1rem;
     text-align: center;
 }
 
 .statsTitle {
-    font-size: clamp(1.5rem, 4vw, 2rem);
+    font-size: var(--font-size-medium);
     font-weight: bold;
     margin-bottom: 2rem;
     text-transform: uppercase;
@@ -205,12 +221,12 @@
 .statNumber {
     font-size: clamp(1.8rem, 5vw, 2.2rem);
     font-weight: bold;
-    color: #ffdd00;
+    color: var(--accent-color);
     margin-bottom: 0.5rem;
 }
 
 .statDescription {
-    font-size: clamp(0.9rem, 2.5vw, 1rem);
+    font-size: var(--font-size-small);
     line-height: 1.4;
     text-transform: uppercase;
     font-weight: 500;
@@ -239,7 +255,7 @@
 
 .brand h2 {
     font-family: 'Montserrat', serif;
-    font-size: clamp(2rem, 5vw, 3rem);
+    font-size: var(--font-size-large);
     margin: 0.5rem 0 1.5rem 0;
     font-weight: 700;
 }
@@ -261,7 +277,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #fff;
+    background-color: var(--text-light);
     overflow: hidden;
 }
 
@@ -273,7 +289,7 @@
 
 /* Testimonial styles */
 .testimonialSection {
-    background-color: #8a0f2d;
+    background-color: var(--bg-stats);
     position: relative;
     overflow: hidden;
     width: 100%;
@@ -289,7 +305,7 @@
     display: flex;
     align-items: center;
     padding: 2rem 5%;
-    color: white;
+    color: var(--text-light);
     opacity: 0;
     position: absolute;
     width: 100%;
@@ -319,7 +335,7 @@
 .testimonialImage img {
     width: 100%;
     display: block;
-    border: 3px solid white;
+    border: 3px solid var(--text-light);
     object-fit: cover;
 }
 
@@ -330,21 +346,53 @@
 
 .testimonialQuote {
     width: 100%;
-    font-size: clamp(0.9rem, 2.5vw, 1rem);
+    font-size: var(--font-size-small);
     margin-bottom: 1rem;
     text-align: left;
 }
 
 .testimonialAuthor {
     font-style: italic;
-    font-size: clamp(0.8rem, 2vw, 0.9rem);
+    font-size: var(--font-size-tiny);
 }
 
-/* Navigation buttons */
-.bannerBtn {
-    width: 36px;
-    height: 36px;
+.testimonialBtn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.4);
+    color: var(--text-light);
+    border: none;
     font-size: 1rem;
+    padding: 0.5rem;
+    cursor: pointer;
+    border-radius: 50%;
+    z-index: 3;
+    transition: background 0.2s;
+    width: var(--banner-btn-size);
+    height: var(--banner-btn-size);
+}
+
+.testimonialBtnLeft {
+    left: 1rem;
+}
+
+.testimonialBtnRight {
+    right: 1rem;
+}
+
+.testimonialBtn:hover {
+    background: var(--primary-color);
+}
+
+.testimonialIndicators {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.5rem;
+    z-index: 3;
 }
 
 /* Media Queries for Responsiveness */
@@ -354,27 +402,28 @@
         min-height: 250px;
     }
 
-    .bannerBtn {
-        font-size: 1rem;
-        padding: 0.4rem;
+    .bannerBtn, .testimonialBtn {
+        font-size: 0.9rem;
+        width: calc(var(--banner-btn-size) - 4px);
+        height: calc(var(--banner-btn-size) - 4px);
     }
 
-    .bannerBtnLeft {
+    .bannerBtnLeft, .testimonialBtnLeft {
         left: 0.5rem;
     }
 
-    .bannerBtnRight {
+    .bannerBtnRight, .testimonialBtnRight {
         right: 0.5rem;
     }
 
-    .bannerIndicators {
+    .bannerIndicators, .testimonialIndicators {
         bottom: 0.8rem;
         gap: 0.4rem;
     }
 
     .indicator {
-        width: 8px;
-        height: 8px;
+        width: var(--indicator-size-small);
+        height: var(--indicator-size-small);
     }
 
     .features {
@@ -469,22 +518,12 @@
         margin-bottom: 1rem;
     }
 
-    .testimonialImage img {
-        width: 100%;
-    }
-
     .testimonialQuote {
         font-size: 0.9rem;
     }
 
     .testimonialAuthor {
         font-size: 0.8rem;
-    }
-
-    .bannerBtn {
-        width: 32px;
-        height: 32px;
-        font-size: 0.9rem;
     }
 }
 
@@ -494,18 +533,19 @@
         min-height: 200px;
     }
 
-    .bannerBtn {
+    .bannerBtn, .testimonialBtn {
         font-size: 0.8rem;
-        padding: 0.3rem;
+        width: calc(var(--banner-btn-size) - 8px);
+        height: calc(var(--banner-btn-size) - 8px);
     }
 
-    .bannerIndicators {
+    .bannerIndicators, .testimonialIndicators {
         bottom: 0.5rem;
     }
 
     .indicator {
-        width: 6px;
-        height: 6px;
+        width: var(--indicator-size-tiny);
+        height: var(--indicator-size-tiny);
     }
 
     .feature img {
