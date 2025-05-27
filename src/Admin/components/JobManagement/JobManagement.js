@@ -22,8 +22,10 @@ const JobManagement = ({ onAddJobClick }) => {
     Welfare: '',
     Slot: '',
     'Post-date': new Date().toISOString().split('T')[0],
+    Image: '', // Thêm trường Image
   });
   const [formErrors, setFormErrors] = useState({});
+  const [imagePreview, setImagePreview] = useState(''); // State để hiển thị preview hình ảnh
 
   const statusDisplayMap = {
     show: 'Đang tuyển',
@@ -55,7 +57,11 @@ const JobManagement = ({ onAddJobClick }) => {
   const fetchJobs = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`${API_JOBS_URL}?status=show`);
+      const response = await fetch(`${API_JOBS_URL}?status=show`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`, // Thêm token để xác thực
+        },
+      });
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || `Không thể tải danh sách công việc: ${response.status}`);
@@ -75,6 +81,7 @@ const JobManagement = ({ onAddJobClick }) => {
         benefits: sanitizeText(job.Welfare),
         slot: job.Slot,
         postDate: formatDate(job['Post-date']),
+        image: job.Image || '', // Thêm trường image
       }));
     } catch (error) {
       showNotification(`Lỗi khi tải danh sách công việc: ${error.message}`, 'error');
@@ -94,7 +101,11 @@ const JobManagement = ({ onAddJobClick }) => {
   const handleViewJob = async (jobId) => {
     setIsLoading(true);
     try {
-      const response = await fetch(`${API_JOBS_URL}/${jobId}`);
+      const response = await fetch(`${API_JOBS_URL}/${jobId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`, // Thêm token để xác thực
+        },
+      });
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || `Không tìm thấy công việc: ${response.status}`);
@@ -114,6 +125,7 @@ const JobManagement = ({ onAddJobClick }) => {
         benefits: sanitizeText(job.Welfare),
         slot: job.Slot,
         postDate: formatDate(job['Post-date']),
+        image: job.Image || '', // Thêm trường image
       });
     } catch (error) {
       showNotification(`Lỗi khi tải chi tiết công việc: ${error.message}`, 'error');
@@ -130,8 +142,7 @@ const JobManagement = ({ onAddJobClick }) => {
         'Đang tuyển': 'show',
         'Tạm dừng': 'hidden',
       };
-      onAddJobClick({
-        _id: job.id,
+      setNewJob({
         Name: job.title,
         Brands: job.brand,
         Position: job.level,
@@ -144,7 +155,10 @@ const JobManagement = ({ onAddJobClick }) => {
         Welfare: job.benefits,
         Slot: job.slot,
         'Post-date': job.postDate,
+        Image: job.image || '', // Thêm trường image
       });
+      setImagePreview(job.image || ''); // Cập nhật preview hình ảnh
+      setShowAddModal(true); // Mở modal để chỉnh sửa
     }
   };
 
@@ -153,7 +167,10 @@ const JobManagement = ({ onAddJobClick }) => {
       try {
         const response = await fetch(`${API_JOBS_URL}/${jobId}`, {
           method: 'DELETE',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`, // Thêm token để xác thực
+          },
         });
         if (!response.ok) {
           const errorData = await response.json();
@@ -172,7 +189,10 @@ const JobManagement = ({ onAddJobClick }) => {
     try {
       const response = await fetch(`${API_JOBS_URL}/${jobId}/toggle-visibility`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`, // Thêm token để xác thực
+        },
       });
       if (!response.ok) {
         const errorData = await response.json();
@@ -192,6 +212,21 @@ const JobManagement = ({ onAddJobClick }) => {
     const { name, value } = e.target;
     setNewJob(prev => ({ ...prev, [name]: value }));
     setFormErrors(prev => ({ ...prev, [name]: '' }));
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setNewJob(prev => ({ ...prev, Image: reader.result })); // Lưu base64
+        setImagePreview(reader.result); // Hiển thị preview
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setNewJob(prev => ({ ...prev, Image: '' }));
+      setImagePreview('');
+    }
   };
 
   const validateForm = () => {
@@ -218,7 +253,10 @@ const JobManagement = ({ onAddJobClick }) => {
     try {
       const response = await fetch(API_JOBS_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`, // Thêm token để xác thực
+        },
         body: JSON.stringify({
           Name: newJob.Name,
           Brands: newJob.Brands,
@@ -232,6 +270,7 @@ const JobManagement = ({ onAddJobClick }) => {
           Welfare: newJob.Welfare,
           Slot: parseInt(newJob.Slot),
           'Post-date': newJob['Post-date'],
+          Image: newJob.Image, // Gửi dữ liệu hình ảnh
         }),
       });
 
@@ -255,7 +294,9 @@ const JobManagement = ({ onAddJobClick }) => {
         Welfare: '',
         Slot: '',
         'Post-date': new Date().toISOString().split('T')[0],
+        Image: '',
       });
+      setImagePreview('');
       setFormErrors({});
       showNotification('Thêm công việc thành công!', 'success');
     } catch (error) {
@@ -421,6 +462,16 @@ const JobManagement = ({ onAddJobClick }) => {
             </span>
             <h3>Chi Tiết Công Việc: {selectedJob.title}</h3>
             <div className={styles.jobDetails}>
+              {selectedJob.image && (
+                <div className={`${styles.detailGroup} ${styles.full}`}>
+                  <label>Hình ảnh:</label>
+                  <img
+                    src={selectedJob.image}
+                    alt={selectedJob.title}
+                    style={{ maxWidth: '100%', maxHeight: '200px', objectFit: 'contain' }}
+                  />
+                </div>
+              )}
               <div className={styles.detailRow}>
                 <div className={styles.detailGroup}>
                   <label>ID:</label>
@@ -513,7 +564,7 @@ const JobManagement = ({ onAddJobClick }) => {
             <span className={styles.close} onClick={() => setShowAddModal(false)}>
               ×
             </span>
-            <h3>Thêm Công Việc Mới</h3>
+            <h3>{newJob.Name ? 'Chỉnh Sửa Công Việc' : 'Thêm Công Việc Mới'}</h3>
             <form onSubmit={handleAddJobSubmit}>
               <div className={styles.detailRow}>
                 <div className={styles.detailGroup}>
@@ -609,6 +660,25 @@ const JobManagement = ({ onAddJobClick }) => {
                 </div>
               </div>
               <div className={`${styles.detailGroup} ${styles.full}`}>
+                <label>Hình ảnh:</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  name="Image"
+                  onChange={handleImageChange}
+                />
+                {imagePreview && (
+                  <div style={{ marginTop: '10px' }}>
+                    <p>Preview:</p>
+                    <img
+                      src={imagePreview}
+                      alt="Preview"
+                      style={{ maxWidth: '100%', maxHeight: '200px', objectFit: 'contain' }}
+                    />
+                  </div>
+                )}
+              </div>
+              <div className={`${styles.detailGroup} ${styles.full}`}>
                 <label>Mô tả công việc:</label>
                 <textarea
                   name="Job Description"
@@ -639,7 +709,10 @@ const JobManagement = ({ onAddJobClick }) => {
                 <button type="submit" disabled={isLoading}>
                   {isLoading ? 'Đang lưu...' : 'Lưu'}
                 </button>
-                <button type="button" onClick={() => setShowAddModal(false)}>
+                <button type="button" onClick={() => {
+                  setShowAddModal(false);
+                  setImagePreview('');
+                }}>
                   Hủy
                 </button>
               </div>
