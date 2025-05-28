@@ -122,8 +122,7 @@
 .jobs table {
   width: 100%;
   border-collapse: collapse;
-  table-layout: fixed;
-  min-width: 800px;
+  table-layout: fixed; /* Cố định layout để kiểm soát độ rộng cột */
 }
 
 .jobs th,
@@ -145,26 +144,27 @@
 }
 
 /* Thiết lập độ rộng cho từng cột */
-.jobs th:nth-child(1), 
-.jobs td:nth-child(1) { width: 18%; } /* Tên Công Việc */
-.jobs th:nth-child(2), 
-.jobs td:nth-child(2) { width: 15%; } /* Thương Hiệu */
-.jobs th:nth-child(3), 
-.jobs td:nth-child(3) { width: 10%; } /* Cấp Bậc */
-.jobs th:nth-child(4), 
-.jobs td:nth-child(4) { width: 12%; } /* Mức Lương */
-.jobs th:nth-child(5), 
-.jobs td:nth-child(5) { width: 15%; } /* Địa Điểm */
-.jobs th:nth-child(6), 
-.jobs td:nth-child(6) { width: 10%; } /* Hạn Nộp */
-.jobs th:nth-child(7), 
-.jobs td:nth-child(7) { width: 10%; } /* Trạng Thái */
-.jobs th:nth-child(8), 
-.jobs td:nth-child(8) { width: 10%; }  /* Thao Tác */
+th:nth-child(1), td:nth-child(1) { width: 18%; } /* Tên Công Việc */
+th:nth-child(2), td:nth-child(2) { width: 15%; } /* Thương Hiệu */
+th:nth-child(3), td:nth-child(3) { width: 10%; } /* Cấp Bậc */
+th:nth-child(4), td:nth-child(4) { width: 12%; } /* Mức Lương */
+th:nth-child(5), td:nth-child(5) { width: 15%; } /* Địa Điểm */
+th:nth-child(6), td:nth-child(6) { width: 10%; } /* Hạn Nộp */
+th:nth-child(7), td:nth-child(7) { width: 10%; } /* Trạng Thái */
+th:nth-child(8), td:nth-child(8) { width: 10%; } /* Thao Tác */
 
-/* Xử lý text wrapping */
-.jobs td:nth-child(1),  /* Tên Công Việc */
-.jobs td:nth-child(2) { /* Thương Hiệu */
+/* Ngăn xuống dòng cho các cột quan trọng */
+td:nth-child(3), /* Cột Cấp Bậc */
+td:nth-child(4), /* Cột Mức Lương */
+td:nth-child(6), /* Cột Hạn Nộp */
+td:nth-child(7), /* Cột Trạng Thái */
+td:nth-child(8)  /* Cột Thao Tác */ {
+  white-space: nowrap;
+}
+
+/* Cho phép xuống dòng nhưng giới hạn chiều cao cho cột có nội dung dài */
+td:nth-child(1), /* Tên Công Việc */
+td:nth-child(2)  /* Thương Hiệu */ {
   white-space: normal;
   word-wrap: break-word;
   line-height: 1.4;
@@ -183,10 +183,8 @@
 .status {
   padding: 4px 8px;
   border-radius: var(--border-radius);
-  font-size: 12px;
-  font-weight: 500;
-  white-space: nowrap;
-  display: inline-block;
+  font-size: 14px;
+  white-space: nowrap; /* Ngăn xuống dòng cho status badge */
 }
 
 .active {
@@ -202,9 +200,8 @@
 /* Action buttons */
 .actionButtons {
   display: flex;
-  gap: 4px;
-  white-space: nowrap;
-  justify-content: center;
+  gap: 5px;
+  white-space: nowrap; /* Ngăn xuống dòng cho action buttons */
 }
 
 .actionButtons button {
@@ -212,16 +209,11 @@
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 12px;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 28px;
-  height: 28px;
+  font-size: 0.75rem;
+  transition: background-color 0.2s ease;
 }
 
-.view {
+.actionButtons .view {
   background: var(--status-new-bg);
   color: var(--status-new-text);
 }
@@ -237,8 +229,7 @@
 }
 
 .actionButtons button:hover {
-  opacity: 0.8;
-  transform: scale(1.05);
+  opacity: 0.9;
 }
 
 /* Modal */
@@ -291,7 +282,7 @@
 }
 
 .close:hover {
-  color: var(--text-color);
+  color: var(--text-muted);
 }
 
 .modalContent h3 {
@@ -520,13 +511,15 @@
     width: calc(100% - 200px);
   }
   
-  .jobs th:nth-child(1), .jobs td:nth-child(1) { width: 22%; }
-  .jobs th:nth-child(2), .jobs td:nth-child(2) { width: 16%; }
-  .jobs th:nth-child(3), .jobs td:nth-child(3) { width: 12%; }
-  .jobs th:nth-child(4), .jobs td:nth-child(4) { width: 14%; }
-  .jobs th:nth-child(5), .jobs td:nth-child(5) { width: 16%; }
-  .jobs th:nth-child(6), .jobs td:nth-child(6) { width: 10%; }
-  .jobs th:nth-child(7), .jobs td:nth-child(7) { width: 10%; }
+  /* Điều chỉnh độ rộng cột trên tablet */
+  th:nth-child(1), td:nth-child(1) { width: 20%; }
+  th:nth-child(2), td:nth-child(2) { width: 18%; }
+  th:nth-child(3), td:nth-child(3) { width: 12%; }
+  th:nth-child(4), td:nth-child(4) { width: 15%; }
+  th:nth-child(5), td:nth-child(5) { width: 18%; }
+  th:nth-child(6), td:nth-child(6) { width: 12%; }
+  th:nth-child(7), td:nth-child(7) { width: 12%; }
+  th:nth-child(8), td:nth-child(8) { width: 10%; }
 }
 
 @media (max-width: 768px) {
@@ -537,40 +530,22 @@
   }
 
   .modalContent {
-    width: 95%;
-    margin: 5% auto;
-    padding: 15px;
+    width: 90%;
   }
   
-  .detailRow {
-    flex-direction: column;
-    gap: var(--spacing-sm);
-  }
-  
-  .filters {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  
-  .filters select,
-  .filters input,
-  .searchBar {
-    min-width: auto;
-    width: 100%;
-  }
-  
-  /* Ẩn cột không quan trọng trên mobile */
-  .jobs th:nth-child(2), .jobs td:nth-child(2), /* Thương Hiệu */
-  .jobs th:nth-child(5), .jobs td:nth-child(5) { /* Địa Điểm */
+  /* Ẩn một số cột không quan trọng trên mobile */
+  th:nth-child(2), td:nth-child(2), /* Thương Hiệu */
+  th:nth-child(5), td:nth-child(5)  /* Địa Điểm */ {
     display: none;
   }
   
-  .jobs th:nth-child(1), .jobs td:nth-child(1) { width: 30%; }
-  .jobs th:nth-child(3), .jobs td:nth-child(3) { width: 15%; }
-  .jobs th:nth-child(4), .jobs td:nth-child(4) { width: 20%; }
-  .jobs th:nth-child(6), .jobs td:nth-child(6) { width: 15%; }
-  .jobs th:nth-child(7), .jobs td:nth-child(7) { width: 15%; }
-  .jobs th:nth-child(8), .jobs td:nth-child(8) { width: 5%; }
+  /* Điều chỉnh lại độ rộng cột còn lại */
+  th:nth-child(1), td:nth-child(1) { width: 25%; }
+  th:nth-child(3), td:nth-child(3) { width: 15%; }
+  th:nth-child(4), td:nth-child(4) { width: 20%; }
+  th:nth-child(6), td:nth-child(6) { width: 15%; }
+  th:nth-child(7), td:nth-child(7) { width: 15%; }
+  th:nth-child(8), td:nth-child(8) { width: 10%; }
 }
 
 @media (max-width: 576px) {
@@ -578,29 +553,69 @@
     padding: 10px;
   }
   
-  .jobs th,
-  .jobs td {
-    padding: 8px 4px;
-    font-size: 0.75rem;
+  /* Cho phép xuống dòng trên mobile nhỏ */
+  td:nth-child(3),
+  td:nth-child(4),
+  td:nth-child(6),
+  td:nth-child(7),
+  td:nth-child(8) {
+    white-space: normal;
   }
   
-  .actionButtons {
-    flex-direction: column;
-    gap: 2px;
+  /* Giảm padding cho mobile */
+  th, td {
+    padding: 6px 8px;
+    font-size: 0.8rem;
   }
-  
-  .actionButtons button {
-    min-width: 24px;
-    height: 24px;
-    font-size: 10px;
-  }
-  
-  .formActions {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  
-  .formActions button {
-    width: 100%;
-  }
+}
+.errorInput {
+  border: 1px solid red;
+}
+
+.error {
+  color: red;
+  font-size: 0.8rem;
+  margin-top: 0.2rem;
+}
+
+.formActions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+.formActions button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.formActions button[type="submit"] {
+  background-color: #28a745;
+  color: white;
+}
+
+.formActions button[type="button"] {
+  background-color: #dc3545;
+  color: white;
+}
+
+.detailGroup textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+}
+
+/* Thêm style cho hình ảnh trong modal */
+.detailGroup img {
+  max-width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+  margin-top: 10px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
 }

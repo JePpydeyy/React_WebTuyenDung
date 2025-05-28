@@ -25,15 +25,12 @@ const JobManagement = () => {
     'Job Description': '',
     'Job Requirements': '',
     Welfare: '',
-    status: 'show',
-    Image: '',
-    'Job Type': '',
-    Degree: '',
-    'Work Experience': '',
+    Slot: '',
+    'Post-date': new Date().toISOString().split('T')[0],
+    Image: '', // Thêm trường Image
   });
   const [formErrors, setFormErrors] = useState({});
-  const [imagePreview, setImagePreview] = useState('');
-  const [token] = useState(localStorage.getItem('token') || '');
+  const [imagePreview, setImagePreview] = useState(''); // State để hiển thị preview hình ảnh
 
   const statusDisplayMap = {
     show: 'Đang tuyển',
@@ -86,9 +83,9 @@ const JobManagement = () => {
   const fetchJobs = async (showHidden = false) => {
     setIsLoading(true);
     try {
-      const response = await fetch(`${API_JOBS_URL}${showHidden ? '' : '?status=show'}`, {
+      const response = await fetch(`${API_JOBS_URL}?status=show`, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`, // Thêm token để xác thực
         },
       });
       if (!response.ok) {
@@ -111,10 +108,7 @@ const JobManagement = () => {
         benefits: sanitizeText(job.Welfare),
         slot: job.Slot,
         postDate: formatDate(job['Post-date']),
-        image: job.Image || '',
-        jobType: sanitizeText(job['Job Type'] || ''),
-        degree: sanitizeText(job.Degree || ''),
-        workExperience: sanitizeText(job['Work Experience'] || ''),
+        image: job.Image || '', // Thêm trường image
       }));
     } catch (error) {
       showNotification(`Lỗi khi tải danh sách công việc: ${error.message}`, 'error');
@@ -145,7 +139,7 @@ const JobManagement = () => {
     try {
       const response = await fetch(`${API_JOBS_URL}/${jobId}`, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`, // Thêm token để xác thực
         },
       });
       if (!response.ok) {
@@ -168,9 +162,7 @@ const JobManagement = () => {
         benefits: sanitizeText(job.Welfare),
         slot: job.Slot,
         postDate: formatDate(job['Post-date']),
-        jobType: sanitizeText(job['Job Type'] || ''),
-        degree: sanitizeText(job.Degree || ''),
-        workExperience: sanitizeText(job['Work Experience'] || ''),
+        image: job.Image || '', // Thêm trường image
       });
     } catch (error) {
       showNotification(`Lỗi khi tải chi tiết công việc: ${error.message}`, 'error');
@@ -212,9 +204,7 @@ const JobManagement = () => {
         'Đang tuyển': 'show',
         'Tạm dừng': 'hidden',
       };
-      setModalMode('edit');
-      setFormData({
-        _id: job.id,
+      setNewJob({
         Name: job.title,
         Brands: job.brand,
         Position: job.level,
@@ -226,15 +216,12 @@ const JobManagement = () => {
         'Job Description': job.description,
         'Job Requirements': job.requirements,
         Welfare: job.benefits,
-        status: reverseStatusMap[job.status] || job.status,
-        Image: job.image,
-        'Job Type': job.jobType,
-        Degree: job.degree,
-        'Work Experience': job.workExperience,
+        Slot: job.slot,
+        'Post-date': job.postDate,
+        Image: job.image || '', // Thêm trường image
       });
-      setImagePreview(job.image);
-      setFormErrors({});
-      setShowModal(true);
+      setImagePreview(job.image || ''); // Cập nhật preview hình ảnh
+      setShowAddModal(true); // Mở modal để chỉnh sửa
     }
   };
 
@@ -249,7 +236,7 @@ const JobManagement = () => {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${localStorage.getItem('token')}`, // Thêm token để xác thực
           },
         });
         if (!response.ok) {
@@ -276,7 +263,7 @@ const JobManagement = () => {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`, // Thêm token để xác thực
         },
       });
       if (!response.ok) {
@@ -305,12 +292,12 @@ const JobManagement = () => {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setFormData(prev => ({ ...prev, Image: reader.result }));
-        setImagePreview(reader.result);
+        setNewJob(prev => ({ ...prev, Image: reader.result })); // Lưu base64
+        setImagePreview(reader.result); // Hiển thị preview
       };
       reader.readAsDataURL(file);
     } else {
-      setFormData(prev => ({ ...prev, Image: '' }));
+      setNewJob(prev => ({ ...prev, Image: '' }));
       setImagePreview('');
     }
   };
@@ -341,31 +328,26 @@ const JobManagement = () => {
 
     setIsLoading(true);
     try {
-      const url = modalMode === 'add' ? API_JOBS_URL : `${API_JOBS_URL}/${formData._id}`;
-      const method = modalMode === 'add' ? 'POST' : 'PUT';
-      const response = await fetch(url, {
-        method,
+      const response = await fetch(API_JOBS_URL, {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`, // Thêm token để xác thực
         },
         body: JSON.stringify({
-          Name: formData.Name,
-          Brands: formData.Brands,
-          Position: formData.Position,
-          Salary: formData.Salary,
-          Workplace: formData.Workplace,
-          Slot: parseInt(formData.Slot),
-          'Post-date': toBackendDate(formData['Post-date']),
-          'Due date': toBackendDate(formData['Due date']),
-          'Job Description': formData['Job Description'],
-          'Job Requirements': formData['Job Requirements'],
-          Welfare: formData.Welfare,
-          status: formData.status,
-          Image: formData.Image,
-          'Job Type': formData['Job Type'],
-          Degree: formData.Degree,
-          'Work Experience': formData['Work Experience'],
+          Name: newJob.Name,
+          Brands: newJob.Brands,
+          Position: newJob.Position,
+          Salary: newJob.Salary,
+          Workplace: newJob.Workplace,
+          'Due date': newJob['Due date'],
+          status: newJob.status,
+          'Job Description': newJob['Job Description'],
+          'Job Requirements': newJob['Job Requirements'],
+          Welfare: newJob.Welfare,
+          Slot: parseInt(newJob.Slot),
+          'Post-date': newJob['Post-date'],
+          Image: newJob.Image, // Gửi dữ liệu hình ảnh
         }),
       });
 
@@ -389,13 +371,10 @@ const JobManagement = () => {
         'Job Description': '',
         'Job Requirements': '',
         Welfare: '',
-        status: 'show',
+        Slot: '',
+        'Post-date': new Date().toISOString().split('T')[0],
         Image: '',
-        'Job Type': '',
-        Degree: '',
-        'Work Experience': '',
       });
-      setImagePreview('');
       setFormErrors({});
       showNotification(modalMode === 'add' ? 'Thêm công việc thành công!' : 'Cập nhật công việc thành công!', 'success');
     } catch (error) {
@@ -648,16 +627,6 @@ const JobManagement = () => {
             </span>
             <h3>Chi Tiết Công Việc: {selectedJob.title}</h3>
             <div className={styles.jobDetails}>
-              {selectedJob.image && (
-                <div className={`${styles.detailGroup} ${styles.full}`}>
-                  <label>Hình ảnh:</label>
-                  <img
-                    src={selectedJob.image}
-                    alt={selectedJob.title}
-                    style={{ maxWidth: '100%', maxHeight: '200px', objectFit: 'contain' }}
-                  />
-                </div>
-              )}
               <div className={styles.detailRow}>
                 <div className={styles.detailGroup}>
                   <label>ID:</label>
@@ -764,8 +733,8 @@ const JobManagement = () => {
             <span className={styles.close} onClick={() => setShowModal(false)}>
               ×
             </span>
-            <h3>{modalMode === 'add' ? 'Thêm Công Việc Mới' : 'Chỉnh Sửa Công Việc'}</h3>
-            <form onSubmit={handleFormSubmit}>
+            <h3>{newJob.Name ? 'Chỉnh Sửa Công Việc' : 'Thêm Công Việc Mới'}</h3>
+            <form onSubmit={handleAddJobSubmit}>
               <div className={styles.detailRow}>
                 <div className={styles.detailGroup}>
                   <label>Tên công việc: <span style={{ color: 'red' }}>*</span></label>
@@ -861,34 +830,24 @@ const JobManagement = () => {
                   {formErrors.Slot && <p className={styles.error}>{formErrors.Slot}</p>}
                 </div>
               </div>
-              <div className={styles.detailRow}>
-                <div className={styles.detailGroup}>
-                  <label>Loại công việc:</label>
-                  <input
-                    type="text"
-                    name="Job Type"
-                    value={formData['Job Type']}
-                    onChange={handleInputChange}
-                  />
-                </div>
-                <div className={styles.detailGroup}>
-                  <label>Trình độ:</label>
-                  <input
-                    type="text"
-                    name="Degree"
-                    value={formData.Degree}
-                    onChange={handleInputChange}
-                  />
-                </div>
-              </div>
               <div className={`${styles.detailGroup} ${styles.full}`}>
-                <label>Kinh nghiệm làm việc:</label>
+                <label>Hình ảnh:</label>
                 <input
-                  type="text"
-                  name="Work Experience"
-                  value={formData['Work Experience']}
-                  onChange={handleInputChange}
+                  type="file"
+                  accept="image/*"
+                  name="Image"
+                  onChange={handleImageChange}
                 />
+                {imagePreview && (
+                  <div style={{ marginTop: '10px' }}>
+                    <p>Preview:</p>
+                    <img
+                      src={imagePreview}
+                      alt="Preview"
+                      style={{ maxWidth: '100%', maxHeight: '200px', objectFit: 'contain' }}
+                    />
+                  </div>
+                )}
               </div>
               <div className={`${styles.detailGroup} ${styles.full}`}>
                 <label>Mô tả công việc:</label>
@@ -930,7 +889,10 @@ const JobManagement = () => {
                 <button type="submit" disabled={isLoading}>
                   {isLoading ? 'Đang lưu...' : modalMode === 'add' ? 'Lưu' : 'Cập nhật'}
                 </button>
-                <button type="button" onClick={() => setShowModal(false)}>
+                <button type="button" onClick={() => {
+                  setShowAddModal(false);
+                  setImagePreview('');
+                }}>
                   Hủy
                 </button>
               </div>

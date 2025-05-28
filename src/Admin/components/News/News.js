@@ -124,7 +124,6 @@ const NewsManagement = () => {
       if (!response.ok) throw new Error(`Không tìm thấy tin tức: ${response.status}`);
       const newsItem = await response.json();
       console.log('Fetched news item:', newsItem);
-      if (newsItem.status === 'hidden') return;
       setSelectedNews({
         ...newsItem,
         id: sanitizeHTML(newsItem.id.toString()),
