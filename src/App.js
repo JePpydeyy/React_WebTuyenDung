@@ -25,14 +25,6 @@ function App() {
           <Route path="/News" element={<News />} />
           <Route path="/News/:id" element={<NewsDetail />} />
           <Route path="/About" element={<About />} />
-          <Route path="/Contact" element={<Contact/>} />
-          <Route path="/Job" element={<Jobcontent />} />
-          <Route path="/DetailJob/:jobId" element={<JobDetail/>}/>
-          <Route path="/admin/login" element={<Login />} />
-          <Route path="/admin" element={<Dashboard />} />
-          <Route path="/admin/submit-profile" element={<SubmitProfile />} />
-          <Route path="/admin/Job" element={<Job />} />
-          <Route path="/admin/News" element={<AdminNews />} /> 
 
           {/* Route đăng nhập admin */}
           <Route path="/admin/login" element={<Login />} />
