@@ -185,3 +185,13 @@
     overflow: hidden;
   }
 }
+.logoutBtn {
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+  width: 100%;
+}

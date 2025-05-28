@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
+
 import styles from './dashboard.module.css';
 
 // Hàm ánh xạ trạng thái từ tiếng Anh sang tiếng Việt và gán class CSS
@@ -27,9 +30,9 @@ const getStatusInfo = (status) => {
 
 // Hàm chuyển đổi chuỗi ngày thành đối tượng Date
 const parseDate = (dateStr) => {
-  if (!dateStr) return new Date(0); // Trả về ngày 0 nếu không có ngày
+  if (!dateStr) return new Date(0);
   const [day, month, year] = dateStr.split('/');
-  return new Date(`${year}-${month}-${day}`); // Chuyển thành định dạng YYYY-MM-DD
+  return new Date(`${year}-${month}-${day}`);
 };
 
 // Component cho biểu đồ cột (Column Chart)
@@ -199,36 +202,51 @@ const StatusChart = ({ allProfiles }) => {
 };
 
 const MainContent = () => {
-  const [allProfiles, setAllProfiles] = useState([]); // Lưu toàn bộ hồ sơ từ API
-  const [displayProfiles, setDisplayProfiles] = useState([]); // Lưu 4 hồ sơ mới nhất để hiển thị
-  const [allJobs, setAllJobs] = useState([]); // Lưu toàn bộ bài đăng từ API job
+  const [allProfiles, setAllProfiles] = useState([]);
+  const [displayProfiles, setDisplayProfiles] = useState([]);
+  const [allJobs, setAllJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
+    const token = localStorage.getItem('adminToken');
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+
+    try {
+      const decodedToken = jwtDecode(token);
+
+      if (decodedToken.role !== 'admin' || decodedToken.exp * 1000 < Date.now()) {
+        navigate('/login');
+        return;
+      }
+    } catch (err) {
+      navigate('/login');
+      return;
+    }
+
     const fetchData = async () => {
       try {
-        // Fetch dữ liệu hồ sơ
-        const profileResponse = await fetch('https://api-tuyendung-cty.onrender.com/api/profile');
+        const headers = {
+          'Authorization': `Bearer ${token}`,
+        };
+
+        const profileResponse = await fetch('https://api-tuyendung-cty.onrender.com/api/profile', { headers });
         if (!profileResponse.ok) {
-          throw new Error('Không thể lấy dữ liệu hồ sơ từ API');
+          throw new Error(`Lỗi API: ${profileResponse.status} - ${await profileResponse.text()}`);
         }
         const profileData = await profileResponse.json();
-        // Log dữ liệu để kiểm tra
         console.log('Profile Data:', profileData);
         setAllProfiles(profileData);
-        const sortedProfiles = profileData.sort((a, b) => {
-          const dateA = parseDate(a.date);
-          const dateB = parseDate(b.date);
-          console.log(`Comparing ${a.date} (${dateA}) with ${b.date} (${dateB})`);
-          return dateB - dateA; // Sắp xếp giảm dần
-        }).slice(0, 4);
+        const sortedProfiles = profileData.sort((a, b) => parseDate(b.date) - parseDate(a.date)).slice(0, 4);
         setDisplayProfiles(sortedProfiles);
 
-        // Fetch dữ liệu bài đăng
-        const jobResponse = await fetch('https://api-tuyendung-cty.onrender.com/api/job');
+        const jobResponse = await fetch('https://api-tuyendung-cty.onrender.com/api/job', { headers });
         if (!jobResponse.ok) {
-          throw new Error('Không thể lấy dữ liệu bài đăng từ API');
+          throw new Error(`Lỗi API: ${jobResponse.status} - ${await jobResponse.text()}`);
         }
         const jobData = await jobResponse.json();
         setAllJobs(jobData);
@@ -241,34 +259,25 @@ const MainContent = () => {
     };
 
     fetchData();
-  }, []);
+  }, [navigate]);
 
-  if (loading) {
-    return <div className={styles.mainContent}>Đang tải...</div>;
-  }
-
-  if (error) {
-    return <div className={styles.mainContent}>Lỗi: {error}</div>;
-  }
+  if (loading) return <div className={styles.mainContent}>Đang tải...</div>;
+  if (error) return <div className={styles.mainContent}>Lỗi: {error}</div>;
 
   return (
     <div className={styles.mainContent}>
-      <h1 className={styles.heading}>
-      Chào mừng quản trị viên<br />
-    </h1>
-
+      <h1 className={styles.heading}>Chào mừng quản trị viên<br /></h1>
       <div className={styles.metrics}>
         <div className={styles.card}>
-          <h3>Tổng bài đăng tin tức <i class="fa-solid fa-newspaper"></i></h3>
+          <h3>Tổng bài đăng tin tức <i className="fa-solid fa-newspaper"></i></h3>
           <div className={styles.value}>{allJobs.length}</div>
-          
         </div>
         <div className={styles.card}>
-          <h3>Tổng hồ sơ ứng tuyển <i class="fa-solid fa-file-pen"></i></h3>
+          <h3>Tổng hồ sơ ứng tuyển <i className="fa-solid fa-file-pen"></i></h3>
           <div className={styles.value}>{allProfiles.length}</div>
         </div>
         <div className={styles.card}>
-          <h3>Tổng hồ sơ tiếp nhận <i class="fa-regular fa-paste"></i></h3>
+          <h3>Tổng hồ sơ tiếp nhận <i className="fa-regular fa-paste"></i></h3>
           <div className={styles.value}>
             {allProfiles.filter(p => getStatusInfo(p.status).text === 'Đã tuyển dụng').length}
           </div>
@@ -315,7 +324,6 @@ const MainContent = () => {
             })}
           </tbody>
         </table>
-        {/* Hiển thị hai biểu đồ cạnh nhau */}
         <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
           <div style={{ width: '48%' }}>
             <ColumnChart allProfiles={allProfiles} />

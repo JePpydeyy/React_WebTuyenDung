@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styles from './Sidebar.module.css';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../AuthContext/AuthContext'; 
 
 const Sidebar = ({ isAlwaysVisible = false }) => {
   const [isOpen, setIsOpen] = useState(false);

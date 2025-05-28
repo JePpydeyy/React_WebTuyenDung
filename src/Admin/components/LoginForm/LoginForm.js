@@ -6,11 +6,13 @@ const LoginForm = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
+    setIsLoading(true);
 
     try {
       const response = await fetch('https://api-tuyendung-cty.onrender.com/api/admin/login', {
@@ -26,15 +28,14 @@ const LoginForm = () => {
         throw new Error(data.message || 'Đăng nhập thất bại');
       }
 
-      // Lưu token vào localStorage
       localStorage.setItem('adminToken', data.token);
       console.log('Đăng nhập thành công, token đã lưu:', data.token);
-
-      // Chuyển hướng về trang admin
       navigate('/admin');
     } catch (err) {
       setError(err.message);
       console.error('Lỗi đăng nhập:', err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -51,8 +52,9 @@ const LoginForm = () => {
             name="username"
             placeholder="Nhập tên đăng nhập"
             value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={(e) => setUsername(e.target.value.trim())}
             required
+            disabled={isLoading}
           />
         </div>
         <div className={styles.formGroup}>
@@ -65,13 +67,20 @@ const LoginForm = () => {
             name="password"
             placeholder="Nhập mật khẩu"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value.trim())}
             required
+            disabled={isLoading}
           />
         </div>
         <div className={styles.formGroup}>
-          <button type="submit">
-            <i className="fa-solid fa-right-to-bracket"></i> Đăng Nhập
+          <button type="submit" disabled={isLoading}>
+            {isLoading ? (
+              <i className="fa-solid fa-spinner fa-spin"></i>
+            ) : (
+              <>
+                <i className="fa-solid fa-right-to-bracket"></i> Đăng Nhập
+              </>
+            )}
           </button>
         </div>
         {error && <div className={styles.error}>{error}</div>}

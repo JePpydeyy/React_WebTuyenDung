@@ -14,8 +14,10 @@ import AdminNews from './Admin/pages/News';
 import Login from './Admin/pages/Login';
 import ProtectedRoute from './Admin/components/ProtectedRoute/ProtectedRoute';
 import './App.css';
+import { AuthProvider } from './Admin/components/AuthContext/AuthContext';
 
 function App() {
+  
   return (
     <Router>
       <div className="App">
