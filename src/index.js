@@ -5,11 +5,14 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
+import { AuthProvider } from './Admin/components/AuthContext/AuthContext'; // Import AuthProvider
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <AuthProvider>
+      <App />
+    </AuthProvider>
   </React.StrictMode>
 );
 
