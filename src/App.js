@@ -24,7 +24,7 @@ function App() {
           <Route path="/News/:id" element={<NewsDetail />} />
           <Route path="/About" element={<About />} />
           <Route path="/Contact" element={<Contact/>} />
-          <Route path 0="/Job" element={<Jobcontent />} />
+          <Route path="/Job" element={<Jobcontent />} />
           <Route path="/DetailJob/:jobId" element={<JobDetail/>}/>
           <Route path="/admin/login" element={<Login />} />
           <Route path="/admin" element={<Dashboard />} />

@@ -10,6 +10,9 @@ const JobManagement = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [modalMode, setModalMode] = useState('add'); // 'add' or 'edit'
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const itemsPerPage = 8;
   const [formData, setFormData] = useState({
     Name: '',
     Brands: '',
@@ -23,9 +26,14 @@ const JobManagement = () => {
     'Job Requirements': '',
     Welfare: '',
     status: 'show',
+    Image: '',
+    'Job Type': '',
+    Degree: '',
+    'Work Experience': '',
   });
   const [formErrors, setFormErrors] = useState({});
-  const [imagePreview, setImagePreview] = useState(''); // State để hiển thị preview hình ảnh
+  const [imagePreview, setImagePreview] = useState('');
+  const [token] = useState(localStorage.getItem('token') || '');
 
   const statusDisplayMap = {
     show: 'Đang tuyển',
@@ -42,7 +50,6 @@ const JobManagement = () => {
 
   const formatDate = (dateString) => {
     if (!dateString) return '';
-    // Handle DD/MM/YYYY or YYYY-MM-DD
     const parts = dateString.includes('/') ? dateString.split('/') : dateString.split('-');
     const date = dateString.includes('/')
       ? new Date(`${parts[2]}-${parts[1]}-${parts[0]}`)
@@ -53,7 +60,6 @@ const JobManagement = () => {
 
   const toBackendDate = (dateString) => {
     if (!dateString) return '';
-    // Convert YYYY-MM-DD to DD/MM/YYYY for API
     if (dateString.includes('-')) {
       const [year, month, day] = dateString.split('-');
       return `${day}/${month}/${year}`;
@@ -63,7 +69,6 @@ const JobManagement = () => {
 
   const toFormDate = (dateString) => {
     if (!dateString) return '';
-    // Convert DD/MM/YYYY to YYYY-MM-DD for form
     if (dateString.includes('/')) {
       const [day, month, year] = dateString.split('/');
       return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
@@ -78,16 +83,17 @@ const JobManagement = () => {
     return div.innerHTML;
   };
 
-  const fetchJobs = async () => {
+  const fetchJobs = async (showHidden = false) => {
     setIsLoading(true);
     try {
-      const response = await fetch(`${API_JOBS_URL}?status=show`, {
+      const response = await fetch(`${API_JOBS_URL}${showHidden ? '' : '?status=show'}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`, // Thêm token để xác thực
+          Authorization: `Bearer ${token}`,
         },
       });
       if (!response.ok) {
         const errorData = await response.json();
+        if (response.status === 401) throw new Error('Không có quyền truy cập, vui lòng đăng nhập lại');
         throw new Error(errorData.message || `Không thể tải danh sách công việc: ${response.status}`);
       }
       const data = await response.json();
@@ -105,7 +111,10 @@ const JobManagement = () => {
         benefits: sanitizeText(job.Welfare),
         slot: job.Slot,
         postDate: formatDate(job['Post-date']),
-        image: job.Image || '', // Thêm trường image
+        image: job.Image || '',
+        jobType: sanitizeText(job['Job Type'] || ''),
+        degree: sanitizeText(job.Degree || ''),
+        workExperience: sanitizeText(job['Work Experience'] || ''),
       }));
     } catch (error) {
       showNotification(`Lỗi khi tải danh sách công việc: ${error.message}`, 'error');
@@ -116,10 +125,19 @@ const JobManagement = () => {
     }
   };
 
-  const displayJobs = async (jobsToShow = null) => {
+  const displayJobs = async (page = 1, jobsToShow = null) => {
     const data = jobsToShow || (await fetchJobs());
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = Math.min(startIndex + itemsPerPage, data.length);
+    const paginatedData = data.slice(startIndex, endIndex);
     setJobs(data);
-    setFilteredJobs(data);
+    setFilteredJobs(paginatedData);
+    setTotalPages(Math.ceil(data.length / itemsPerPage));
+    setCurrentPage(page);
+  };
+
+  const handlePageChange = (page) => {
+    displayJobs(page, jobs);
   };
 
   const handleViewJob = async (jobId) => {
@@ -127,11 +145,12 @@ const JobManagement = () => {
     try {
       const response = await fetch(`${API_JOBS_URL}/${jobId}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`, // Thêm token để xác thực
+          Authorization: `Bearer ${token}`,
         },
       });
       if (!response.ok) {
         const errorData = await response.json();
+        if (response.status === 401) throw new Error('Không có quyền truy cập, vui lòng đăng nhập lại');
         throw new Error(errorData.message || `Không tìm thấy công việc: ${response.status}`);
       }
       const job = await response.json();
@@ -149,7 +168,9 @@ const JobManagement = () => {
         benefits: sanitizeText(job.Welfare),
         slot: job.Slot,
         postDate: formatDate(job['Post-date']),
-        image: job.Image || '', // Thêm trường image
+        jobType: sanitizeText(job['Job Type'] || ''),
+        degree: sanitizeText(job.Degree || ''),
+        workExperience: sanitizeText(job['Work Experience'] || ''),
       });
     } catch (error) {
       showNotification(`Lỗi khi tải chi tiết công việc: ${error.message}`, 'error');
@@ -174,8 +195,13 @@ const JobManagement = () => {
       'Job Requirements': '',
       Welfare: '',
       status: 'show',
+      Image: '',
+      'Job Type': '',
+      Degree: '',
+      'Work Experience': '',
     });
     setFormErrors({});
+    setImagePreview('');
     setShowModal(true);
   };
 
@@ -201,27 +227,37 @@ const JobManagement = () => {
         'Job Requirements': job.requirements,
         Welfare: job.benefits,
         status: reverseStatusMap[job.status] || job.status,
+        Image: job.image,
+        'Job Type': job.jobType,
+        Degree: job.degree,
+        'Work Experience': job.workExperience,
       });
+      setImagePreview(job.image);
       setFormErrors({});
       setShowModal(true);
     }
   };
 
   const handleDeleteJob = async (jobId) => {
+    if (!token) {
+      showNotification('Vui lòng đăng nhập để thực hiện thao tác này', 'error');
+      return;
+    }
     if (window.confirm('Bạn có chắc chắn muốn xóa công việc này?')) {
       try {
         const response = await fetch(`${API_JOBS_URL}/${jobId}`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('token')}`, // Thêm token để xác thực
+            Authorization: `Bearer ${token}`,
           },
         });
         if (!response.ok) {
           const errorData = await response.json();
+          if (response.status === 401) throw new Error('Không có quyền truy cập, vui lòng đăng nhập lại');
           throw new Error(errorData.message || `Không thể xóa công việc: ${response.status}`);
         }
-        await displayJobs();
+        await displayJobs(currentPage);
         showNotification('Đã xóa công việc thành công!', 'success');
       } catch (error) {
         showNotification(`Lỗi khi xóa công việc: ${error.message}`, 'error');
@@ -231,21 +267,26 @@ const JobManagement = () => {
   };
 
   const handleToggleVisibility = async (jobId) => {
+    if (!token) {
+      showNotification('Vui lòng đăng nhập để thực hiện thao tác này', 'error');
+      return;
+    }
     try {
       const response = await fetch(`${API_JOBS_URL}/${jobId}/toggle-visibility`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`, // Thêm token để xác thực
+          Authorization: `Bearer ${token}`,
         },
       });
       if (!response.ok) {
         const errorData = await response.json();
+        if (response.status === 401) throw new Error('Không có quyền truy cập, vui lòng đăng nhập lại');
         throw new Error(errorData.message || `Không thể thay đổi trạng thái: ${response.status}`);
       }
       const updatedJob = await response.json();
       setSelectedJob(null);
-      await displayJobs();
+      await displayJobs(currentPage);
       showNotification(updatedJob.message, 'success');
     } catch (error) {
       showNotification(`Lỗi khi thay đổi trạng thái: ${error.message}`, 'error');
@@ -264,12 +305,12 @@ const JobManagement = () => {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setNewJob(prev => ({ ...prev, Image: reader.result })); // Lưu base64
-        setImagePreview(reader.result); // Hiển thị preview
+        setFormData(prev => ({ ...prev, Image: reader.result }));
+        setImagePreview(reader.result);
       };
       reader.readAsDataURL(file);
     } else {
-      setNewJob(prev => ({ ...prev, Image: '' }));
+      setFormData(prev => ({ ...prev, Image: '' }));
       setImagePreview('');
     }
   };
@@ -289,6 +330,10 @@ const JobManagement = () => {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+    if (!token) {
+      showNotification('Vui lòng đăng nhập để thực hiện thao tác này', 'error');
+      return;
+    }
     if (!validateForm()) {
       showNotification('Vui lòng điền đầy đủ thông tin bắt buộc', 'error');
       return;
@@ -300,7 +345,10 @@ const JobManagement = () => {
       const method = modalMode === 'add' ? 'POST' : 'PUT';
       const response = await fetch(url, {
         method,
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({
           Name: formData.Name,
           Brands: formData.Brands,
@@ -314,15 +362,20 @@ const JobManagement = () => {
           'Job Requirements': formData['Job Requirements'],
           Welfare: formData.Welfare,
           status: formData.status,
+          Image: formData.Image,
+          'Job Type': formData['Job Type'],
+          Degree: formData.Degree,
+          'Work Experience': formData['Work Experience'],
         }),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
+        if (response.status === 401) throw new Error('Không có quyền truy cập, vui lòng đăng nhập lại');
         throw new Error(errorData.error || `Không thể ${modalMode === 'add' ? 'thêm' : 'cập nhật'} công việc: ${response.status}`);
       }
 
-      await displayJobs();
+      await displayJobs(1); // Quay về trang 1 sau khi thêm/cập nhật
       setShowModal(false);
       setFormData({
         Name: '',
@@ -337,6 +390,10 @@ const JobManagement = () => {
         'Job Requirements': '',
         Welfare: '',
         status: 'show',
+        Image: '',
+        'Job Type': '',
+        Degree: '',
+        'Work Experience': '',
       });
       setImagePreview('');
       setFormErrors({});
@@ -366,7 +423,9 @@ const JobManagement = () => {
     if (status) filtered = filtered.filter(j => j.status === status);
     if (level) filtered = filtered.filter(j => j.level === level);
 
-    setFilteredJobs(filtered);
+    setFilteredJobs(filtered.slice(0, itemsPerPage)); // Hiển thị trang đầu tiên
+    setTotalPages(Math.ceil(filtered.length / itemsPerPage));
+    setCurrentPage(1);
     if (filtered.length === 0) {
       showNotification('Không tìm thấy công việc phù hợp', 'info');
     }
@@ -382,15 +441,97 @@ const JobManagement = () => {
     document.querySelector('.search-bar').value = '';
     document.getElementById('statusFilter').value = '';
     document.getElementById('levelFilter').value = '';
-    setFilteredJobs(jobs);
+    displayJobs(1);
+  };
+
+  const handleShowHiddenToggle = async () => {
+    const showHidden = document.getElementById('statusFilter').value === 'Tạm dừng';
+    await displayJobs(1, await fetchJobs(showHidden));
   };
 
   useEffect(() => {
     displayJobs();
-  }, []);
+  }, [token]);
 
   const uniqueLevels = [...new Set(jobs.map(job => job.level))];
   const uniqueStatuses = [...new Set(jobs.map(job => job.status))];
+
+  // Tạo danh sách các nút phân trang
+  const getPaginationButtons = () => {
+    const maxButtons = 5; // Số nút số trang tối đa
+    const buttons = [];
+    const startPage = Math.max(1, currentPage - Math.floor(maxButtons / 2));
+    const endPage = Math.min(totalPages, startPage + maxButtons - 1);
+
+    // Nút trang đầu
+    buttons.push(
+      <button
+        key="first"
+        onClick={() => handlePageChange(1)}
+        disabled={currentPage === 1}
+      >
+        <i className="fa-solid fa-angles-left"></i>
+      </button>
+    );
+
+    // Nút trang trước
+    buttons.push(
+      <button
+        key="prev"
+        onClick={() => handlePageChange(currentPage - 1)}
+        disabled={currentPage === 1}
+      >
+        <i className="fa-solid fa-angle-left"></i>
+      </button>
+    );
+
+    // Dấu chấm lửng đầu (nếu cần)
+    if (startPage > 1) {
+      buttons.push(<span key="start-ellipsis">...</span>);
+    }
+
+    // Các nút số trang
+    for (let page = startPage; page <= endPage; page++) {
+      buttons.push(
+        <button
+          key={page}
+          className={page === currentPage ? styles.active : ''}
+          onClick={() => handlePageChange(page)}
+        >
+          {page}
+        </button>
+      );
+    }
+
+    // Dấu chấm lửng cuối (nếu cần)
+    if (endPage < totalPages) {
+      buttons.push(<span key="end-ellipsis">...</span>);
+    }
+
+    // Nút trang sau
+    buttons.push(
+      <button
+        key="next"
+        onClick={() => handlePageChange(currentPage + 1)}
+        disabled={currentPage === totalPages}
+      >
+        <i className="fa-solid fa-angle-right"></i>
+      </button>
+    );
+
+    // Nút trang cuối
+    buttons.push(
+      <button
+        key="last"
+        onClick={() => handlePageChange(totalPages)}
+        disabled={currentPage === totalPages}
+      >
+        <i className="fa-solid fa-angles-right"></i>
+      </button>
+    );
+
+    return buttons;
+  };
 
   return (
     <div className={styles.container}>
@@ -401,7 +542,7 @@ const JobManagement = () => {
           placeholder="Tìm kiếm công việc..."
           onChange={handleSearchChange}
         />
-        <select id="statusFilter" onChange={handleApplyFilters}>
+        <select id="statusFilter" onChange={e => { handleApplyFilters(); handleShowHiddenToggle(); }}>
           <option value="">- Tất cả trạng thái -</option>
           {uniqueStatuses.map(status => (
             <option key={status} value={status}>
@@ -494,6 +635,9 @@ const JobManagement = () => {
             )}
           </tbody>
         </table>
+        <div className={styles.pagination}>
+          {getPaginationButtons()}
+        </div>
       </div>
 
       {selectedJob && (
@@ -571,6 +715,20 @@ const JobManagement = () => {
                   <label>Số lượng tuyển:</label>
                   <p>{selectedJob.slot}</p>
                 </div>
+              </div>
+              <div className={styles.detailRow}>
+                <div className={styles.detailGroup}>
+                  <label>Loại công việc:</label>
+                  <p>{selectedJob.jobType}</p>
+                </div>
+                <div className={styles.detailGroup}>
+                  <label>Trình độ:</label>
+                  <p>{selectedJob.degree}</p>
+                </div>
+              </div>
+              <div className={`${styles.detailGroup} ${styles.full}`}>
+                <label>Kinh nghiệm làm việc:</label>
+                <p>{selectedJob.workExperience}</p>
               </div>
               <div className={`${styles.detailGroup} ${styles.full}`}>
                 <label>Mô tả công việc:</label>
@@ -703,24 +861,34 @@ const JobManagement = () => {
                   {formErrors.Slot && <p className={styles.error}>{formErrors.Slot}</p>}
                 </div>
               </div>
+              <div className={styles.detailRow}>
+                <div className={styles.detailGroup}>
+                  <label>Loại công việc:</label>
+                  <input
+                    type="text"
+                    name="Job Type"
+                    value={formData['Job Type']}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div className={styles.detailGroup}>
+                  <label>Trình độ:</label>
+                  <input
+                    type="text"
+                    name="Degree"
+                    value={formData.Degree}
+                    onChange={handleInputChange}
+                  />
+                </div>
+              </div>
               <div className={`${styles.detailGroup} ${styles.full}`}>
-                <label>Hình ảnh:</label>
+                <label>Kinh nghiệm làm việc:</label>
                 <input
-                  type="file"
-                  accept="image/*"
-                  name="Image"
-                  onChange={handleImageChange}
+                  type="text"
+                  name="Work Experience"
+                  value={formData['Work Experience']}
+                  onChange={handleInputChange}
                 />
-                {imagePreview && (
-                  <div style={{ marginTop: '10px' }}>
-                    <p>Preview:</p>
-                    <img
-                      src={imagePreview}
-                      alt="Preview"
-                      style={{ maxWidth: '100%', maxHeight: '200px', objectFit: 'contain' }}
-                    />
-                  </div>
-                )}
               </div>
               <div className={`${styles.detailGroup} ${styles.full}`}>
                 <label>Mô tả công việc:</label>
