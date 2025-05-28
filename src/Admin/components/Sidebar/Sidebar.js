@@ -5,9 +5,18 @@ import { useAuth } from '../AuthContext/AuthContext';
 
 const Sidebar = ({ isAlwaysVisible = false }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate(); // Thêm dòng này
+  const { checkAuth } = useAuth(); // Thêm dòng này
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('adminToken');
+    localStorage.removeItem('user');
+    checkAuth(); // Đã có
+    navigate('/admin/login'); // Đã có
   };
 
   useEffect(() => {
@@ -63,10 +72,10 @@ const Sidebar = ({ isAlwaysVisible = false }) => {
             </a>
           </li>
           <li>
-            <a href="#">
-              <i className="fa-solid fa-right-from-bracket"></i> Đăng Xuất
-            </a>
-          </li>
+          <button onClick={handleLogout} className={styles.logoutBtn}>
+            <i className="fa-solid fa-right-from-bracket"></i> Đăng Xuất
+          </button>
+        </li>
         </ul>
       </div>
 
