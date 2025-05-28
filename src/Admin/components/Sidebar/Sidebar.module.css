@@ -2,10 +2,12 @@
 :root {
   --secondary-color: #100f27;
   --spacing-lg: 20px;
+  --spacing-md: 15px;
+  --spacing-sm: 10px;
   --border-radius: 5px;
 }
 
-/* Thanh bên */
+/* Thanh bên (hoặc menu trên mobile) */
 .sidebar {
   width: 250px;
   background: var(--secondary-color);
@@ -13,13 +15,25 @@
   padding: var(--spacing-lg);
   position: fixed;
   height: 100%;
-  will-change: transform;
+  top: 0;
+  left: 0;
+  transform: translateX(0);
+  transition: transform 0.3s ease;
+  z-index: 1000;
 }
 
+/* Header chứa logo và nút toggle */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+/* Logo */
 .logo {
   display: flex;
   align-items: center;
-  margin-bottom: var(--spacing-lg);
 }
 
 .logo img {
@@ -27,15 +41,122 @@
   height: auto;
 }
 
-ul {
-  list-style: none;
+/* Nút toggle trong sidebar (ẩn trên mobile) */
+.toggleButton {
+  display: none;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: var(--spacing-sm);
+  z-index: 1100;
 }
 
-ul li {
+/* Nút toggle riêng cho mobile (luôn hiển thị) */
+.mobileToggle {
+  display: none;
+}
+
+/* Menu */
+.menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  visibility: visible;
+}
+
+/* Overlay khi menu mở trên di động */
+.overlay {
+  display: none;
+}
+
+/* Responsive */
+@media (374px <= width <= 768px) {
+  .sidebar {
+    width: 200px;
+  }
+
+  .logo img {
+    width: 140px;
+  }
+
+  .menu li a {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .sidebar {
+    width: 100%; /* Chiếm toàn bộ chiều rộng */
+    height: auto; /* Chiều cao tự động, không cố định 100% */
+    top: 0;
+    left: 0;
+    transform: translateY(-100%); /* Ẩn phía trên */
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar.open {
+    transform: translateY(0); /* Trượt xuống khi mở */
+  }
+
+  .header {
+    display: none; /* Ẩn header trên mobile, chỉ hiển thị menu */
+  }
+
+  .menu {
+    padding: var(--spacing-md) 0;
+  }
+
+  .menu li {
+    margin: var(--spacing-sm) 0;
+    text-align: center; /* Căn giữa trên mobile */
+  }
+
+  .menu li a {
+    font-size: 1rem;
+    justify-content: center; /* Căn giữa icon và text */
+  }
+
+  .toggleButton {
+    display: none; /* Ẩn nút toggle trong sidebar */
+  }
+
+  .mobileToggle {
+    display: block;
+    position: fixed;
+    top: var(--spacing-lg);
+    right: var(--spacing-lg);
+    background: var(--secondary-color);
+    border: none;
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: var(--spacing-sm);
+    z-index: 1100;
+    border-radius: var(--border-radius);
+  }
+
+  .overlay {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 900;
+  }
+}
+
+/* Menu items */
+.menu li {
   margin: var(--spacing-lg) 0;
 }
 
-ul li a {
+.menu li a {
   color: #b0b7c3;
   text-decoration: none;
   font-size: 1rem;
@@ -44,31 +165,23 @@ ul li a {
   transition: color 0.2s ease;
 }
 
-ul li a.active {
+.menu li a.active {
   color: #fff;
 }
 
-ul li a i {
+.menu li a i {
   margin-right: 10px;
 }
 
-ul li a:hover,
-ul li a:focus {
+.menu li a:hover,
+.menu li a:focus {
   color: #fff;
   outline: none;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .sidebar {
-    width: 200px;
-  }
-}
-
+/* Ngăn cuộn nội dung chính khi menu mở */
 @media (max-width: 576px) {
-  .sidebar {
-    width: 100%;
-    height: auto;
-    position: relative;
+  body.sidebar-open {
+    overflow: hidden;
   }
 }

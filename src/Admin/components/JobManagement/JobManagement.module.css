@@ -28,7 +28,7 @@
   padding: var(--spacing-lg);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   color: var(--text-color);
-  box-sizing: border-box; /* Đảm bảo padding không làm tăng kích thước container */
+  box-sizing: border-box;
 }
 
 /* Bộ lọc */
@@ -53,7 +53,7 @@
   font-size: 0.875rem;
   min-width: 150px;
   transition: border-color 0.2s ease;
-  box-sizing: border-box; /* Đảm bảo padding nằm trong kích thước */
+  box-sizing: border-box;
 }
 
 .filters select:focus,
@@ -76,6 +76,7 @@
   display: flex;
   align-items: center;
   gap: 5px;
+  white-space: nowrap;
 }
 
 .filters button:hover {
@@ -89,7 +90,7 @@
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
   margin-bottom: var(--spacing-lg);
-  overflow-x: auto; /* Cho phép cuộn ngang trên màn hình nhỏ */
+  overflow-x: auto;
 }
 
 .jobs h3 {
@@ -124,8 +125,8 @@
 .jobs table {
   width: 100%;
   border-collapse: collapse;
-  table-layout: auto; /* Thay đổi từ fixed sang auto để cột tự điều chỉnh theo nội dung */
-  min-width: 800px; /* Đảm bảo bảng có độ rộng tối thiểu để tránh bị co quá mức */
+  table-layout: auto;
+  min-width: 800px;
 }
 
 .jobs th,
@@ -146,28 +147,28 @@
   white-space: nowrap;
 }
 
-/* Thiết lập độ rộng tối thiểu cho các cột để tránh vỡ layout */
-th:nth-child(1), td:nth-child(1) { min-width: 180px; } /* Tên Công Việc */
-th:nth-child(2), td:nth-child(2) { min-width: 150px; } /* Thương Hiệu */
-th:nth-child(3), td:nth-child(3) { min-width: 100px; } /* Loại Công Việc */
-th:nth-child(4), td:nth-child(4) { min-width: 120px; } /* Mức Lương */
-th:nth-child(5), td:nth-child(5) { min-width: 150px; } /* Địa Điểm */
-th:nth-child(6), td:nth-child(6) { min-width: 100px; } /* Hạn Nộp */
-th:nth-child(7), td:nth-child(7) { min-width: 100px; } /* Trạng Thái */
-th:nth-child(8), td:nth-child(8) { min-width: 120px; } /* Thao Tác */
+/* Thiết lập độ rộng tối thiểu cho các cột */
+.jobs th:nth-child(1), .jobs td:nth-child(1) { min-width: 180px; } /* Tên Công Việc */
+.jobs th:nth-child(2), .jobs td:nth-child(2) { min-width: 150px; } /* Thương Hiệu */
+.jobs th:nth-child(3), .jobs td:nth-child(3) { min-width: 100px; } /* Loại Công Việc */
+.jobs th:nth-child(4), .jobs td:nth-child(4) { min-width: 120px; } /* Mức Lương */
+.jobs th:nth-child(5), .jobs td:nth-child(5) { min-width: 150px; } /* Địa Điểm */
+.jobs th:nth-child(6), .jobs td:nth-child(6) { min-width: 100px; } /* Hạn Nộp */
+.jobs th:nth-child(7), .jobs td:nth-child(7) { min-width: 100px; } /* Trạng Thái */
+.jobs th:nth-child(8), .jobs td:nth-child(8) { min-width: 120px; } /* Thao Tác */
 
 /* Ngăn xuống dòng cho các cột ngắn */
-td:nth-child(3),
-td:nth-child(4),
-td:nth-child(6),
-td:nth-child(7),
-td:nth-child(8) {
+.jobs td:nth-child(3),
+.jobs td:nth-child(4),
+.jobs td:nth-child(6),
+.jobs td:nth-child(7),
+.jobs td:nth-child(8) {
   white-space: nowrap;
 }
 
 /* Cho phép xuống dòng cho cột có nội dung dài */
-td:nth-child(1),
-td:nth-child(2) {
+.jobs td:nth-child(1),
+.jobs td:nth-child(2) {
   white-space: normal;
   word-wrap: break-word;
   line-height: 1.4;
@@ -219,7 +220,7 @@ td:nth-child(2) {
 }
 
 .delete {
-  background:odes var(--status-rejected-bg);
+  background: var(--status-rejected-bg);
   color: var(--status-rejected-text);
 }
 
@@ -295,14 +296,14 @@ td:nth-child(2) {
 
 .detailRow {
   display: flex;
-  flex-wrap: wrap; /* Cho phép xuống dòng trên màn hình nhỏ */
+  flex-wrap: wrap;
   gap: var(--spacing-lg);
   margin-bottom: var(--spacing-md);
 }
 
 .detailGroup {
   flex: 1;
-  min-width: 200px; /* Đảm bảo không bị co quá nhỏ */
+  min-width: 200px;
 }
 
 .detailGroup.full {
@@ -442,48 +443,13 @@ td:nth-child(2) {
   font-style: italic;
 }
 
-/* Notification styles (global) */
-:global(.notification) {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  padding: 12px 20px;
-  border-radius: var(--border-radius);
-  color: white;
-  font-weight: 500;
-  z-index: 10000;
-  animation: slideInRight 0.3s ease-out;
-}
-
-:global(.notification.success) {
-  background-color: #28a745;
-}
-
-:global(.notification.error) {
-  background-color: #dc3545;
-}
-
-:global(.notification.info) {
-  background-color: #17a2b8;
-}
-
-@keyframes slideInRight {
-  from {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
 /* Pagination */
 .pagination {
   display: flex;
   justify-content: center;
   margin-top: var(--spacing-lg);
   gap: 5px;
+  flex-wrap: wrap;
 }
 
 .pagination button {
@@ -493,6 +459,7 @@ td:nth-child(2) {
   border-radius: 3px;
   cursor: pointer;
   transition: background-color 0.2s ease, color 0.2s ease;
+  min-width: 40px;
 }
 
 .pagination button.active,
@@ -502,74 +469,15 @@ td:nth-child(2) {
   border-color: var(--primary-color);
 }
 
-/* Responsive Design */
-@media (max-width: 1200px) {
-  .container {
-    margin-left: 200px;
-    width: calc(100% - 200px);
-  }
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
-@media (max-width: 768px) {
-  .container {
-    margin-left: 0;
-    width: 100%;
-    padding: 15px;
-  }
-
-  .modalContent {
-    width: 95%;
-    padding: var(--spacing-md);
-  }
-
-  /* Ẩn một số cột không quan trọng trên mobile */
-  th:nth-child(2), td:nth-child(2), /* Thương Hiệu */
-  th:nth-child(5), td:nth-child(5) { /* Địa Điểm */
-    display: none;
-  }
-
-  /* Điều chỉnh độ rộng tối thiểu cho các cột còn lại */
-  th:nth-child(1), td:nth-child(1) { min-width: 150px; }
-  th:nth-child(3), td:nth-child(3) { min-width: 80px; }
-  th:nth-child(4), td:nth-child(4) { min-width: 100px; }
-  th:nth-child(6), td:nth-child(6) { min-width: 80px; }
-  th:nth-child(7), td:nth-child(7) { min-width: 80px; }
-  th:nth-child(8), td:nth-child(8) { min-width: 100px; }
-}
-
-@media (max-width: 576px) {
-  .container {
-    padding: 10px;
-  }
-
-  .filters {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .filters select,
-  .filters input,
-  .searchBar {
-    min-width: 100%;
-  }
-
-  .jobs table {
-    min-width: 600px; /* Đảm bảo bảng vẫn có thể cuộn ngang trên mobile nhỏ */
-  }
-
-  th, td {
-    padding: 8px 6px;
-    font-size: 0.8rem;
-  }
-
-  .actionButtons {
-    flex-wrap: wrap;
-  }
-
-  .actionButtons button {
-    padding: 4px 6px;
-    font-size: 0.7rem;
-  }
+.pagination span {
+  padding: 8px 4px;
+  display: flex;
+  align-items: center;
 }
 
 /* Thêm style cho hình ảnh trong modal */
@@ -580,4 +488,281 @@ td:nth-child(2) {
   margin-top: 10px;
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
+}
+
+/* Table wrapper for better mobile experience */
+.tableWrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Responsive Design */
+@media (max-width: 1400px) {
+  .container {
+    margin-left: 220px;
+    width: calc(100% - 220px);
+  }
+}
+
+@media (max-width: 1200px) {
+  .container {
+    margin-left: 200px;
+    width: calc(100% - 200px);
+  }
+  
+  .jobs table {
+    min-width: 700px;
+  }
+  
+  .modalContent {
+    width: 95%;
+    max-width: 800px;
+  }
+}
+
+@media (max-width: 992px) {
+  .container {
+    margin-left: 0;
+    width: 100%;
+    padding: var(--spacing-md);
+  }
+  
+  .filters {
+    padding: var(--spacing-md);
+  }
+  
+  .jobs {
+    padding: var(--spacing-md);
+  }
+  
+  .jobs table {
+    min-width: 650px;
+  }
+  
+  /* Ẩn cột ít quan trọng trên tablet */
+  .jobs th:nth-child(2), 
+  .jobs td:nth-child(2) { /* Thương Hiệu */
+    display: none;
+  }
+  
+  /* Điều chỉnh lại độ rộng cột */
+  .jobs th:nth-child(1), .jobs td:nth-child(1) { min-width: 160px; }
+  .jobs th:nth-child(3), .jobs td:nth-child(3) { min-width: 90px; }
+  .jobs th:nth-child(4), .jobs td:nth-child(4) { min-width: 110px; }
+  .jobs th:nth-child(5), .jobs td:nth-child(5) { min-width: 130px; }
+  .jobs th:nth-child(6), .jobs td:nth-child(6) { min-width: 90px; }
+  .jobs th:nth-child(7), .jobs td:nth-child(7) { min-width: 90px; }
+  .jobs th:nth-child(8), .jobs td:nth-child(8) { min-width: 110px; }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 15px;
+  }
+  
+  .filters {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding: 15px;
+  }
+  
+  .filters select,
+  .filters input,
+  .searchBar {
+    min-width: 100%;
+    margin-bottom: 0;
+  }
+  
+  .filters button {
+    justify-content: center;
+    width: 100%;
+  }
+  
+  .jobs h3 {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+  }
+  
+  .jobs h3 button {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .jobs table {
+    min-width: 600px;
+    font-size: 0.8rem;
+  }
+  
+  .jobs th,
+  .jobs td {
+    padding: 8px 6px;
+    font-size: 0.8rem;
+  }
+  
+  /* Ẩn thêm cột trên mobile */
+  .jobs th:nth-child(5), 
+  .jobs td:nth-child(5) { /* Địa Điểm */
+    display: none;
+  }
+  
+  /* Điều chỉnh lại độ rộng cột cho mobile */
+  .jobs th:nth-child(1), .jobs td:nth-child(1) { min-width: 140px; }
+  .jobs th:nth-child(3), .jobs td:nth-child(3) { min-width: 80px; }
+  .jobs th:nth-child(4), .jobs td:nth-child(4) { min-width: 100px; }
+  .jobs th:nth-child(6), .jobs td:nth-child(6) { min-width: 80px; }
+  .jobs th:nth-child(7), .jobs td:nth-child(7) { min-width: 80px; }
+  .jobs th:nth-child(8), .jobs td:nth-child(8) { min-width: 100px; }
+  
+  .actionButtons {
+    flex-direction: column;
+    gap: 3px;
+  }
+  
+  .actionButtons button {
+    padding: 6px 8px;
+    font-size: 0.7rem;
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .modalContent {
+    width: 95%;
+    padding: var(--spacing-md);
+    max-height: 95vh;
+  }
+  
+  .detailRow {
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+  
+  .detailGroup {
+    min-width: 100%;
+  }
+  
+  .formActions {
+    flex-direction: column-reverse;
+    gap: 10px;
+  }
+  
+  .formActions button {
+    width: 100%;
+  }
+  
+  .pagination {
+    gap: 3px;
+  }
+  
+  .pagination button {
+    padding: 6px 8px;
+    font-size: 0.8rem;
+    min-width: 35px;
+  }
+}
+
+@media (max-width: 576px) {
+  .container {
+    padding: 10px;
+  }
+  
+  .filters,
+  .jobs {
+    padding: 12px;
+  }
+  
+  .jobs table {
+    min-width: 500px;
+  }
+  
+  .jobs th,
+  .jobs td {
+    padding: 6px 4px;
+    font-size: 0.75rem;
+  }
+  
+  /* Chỉ hiển thị các cột quan trọng nhất */
+  .jobs th:nth-child(3), 
+  .jobs td:nth-child(3) { /* Loại Công Việc */
+    display: none;
+  }
+  
+  /* Điều chỉnh độ rộng cho màn hình rất nhỏ */
+  .jobs th:nth-child(1), .jobs td:nth-child(1) { min-width: 120px; }
+  .jobs th:nth-child(4), .jobs td:nth-child(4) { min-width: 90px; }
+  .jobs th:nth-child(6), .jobs td:nth-child(6) { min-width: 70px; }
+  .jobs th:nth-child(7), .jobs td:nth-child(7) { min-width: 70px; }
+  .jobs th:nth-child(8), .jobs td:nth-child(8) { min-width: 90px; }
+  
+  .close {
+    right: 15px;
+    top: 10px;
+    font-size: 1.5rem;
+  }
+  
+  .modalContent h3 {
+    font-size: 1rem;
+    padding-right: 30px;
+  }
+  
+  .pagination button {
+    padding: 4px 6px;
+    font-size: 0.75rem;
+    min-width: 30px;
+  }
+}
+
+@media (max-width: 480px) {
+  .jobs table {
+    min-width: 450px;
+  }
+  
+  .jobs th:nth-child(6), 
+  .jobs td:nth-child(6) { /* Hạn Nộp */
+    display: none;
+  }
+  
+  .jobs th:nth-child(1), .jobs td:nth-child(1) { min-width: 140px; }
+  .jobs th:nth-child(4), .jobs td:nth-child(4) { min-width: 100px; }
+  .jobs th:nth-child(7), .jobs td:nth-child(7) { min-width: 80px; }
+  .jobs th:nth-child(8), .jobs td:nth-child(8) { min-width: 100px; }
+}
+
+/* Animation cho responsive transitions */
+@media (prefers-reduced-motion: no-preference) {
+  .container,
+  .modalContent,
+  .actionButtons button {
+    transition: all 0.3s ease;
+  }
+}
+
+/* Đảm bảo accessibility */
+@media (prefers-contrast: high) {
+  .status.active {
+    border: 2px solid var(--status-hired-text);
+  }
+  
+  .status.inactive {
+    border: 2px solid var(--status-rejected-text);
+  }
+  
+  .actionButtons button {
+    border: 1px solid currentColor;
+  }
+}
+
+/* Dark mode support (nếu cần) */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background-light: #1a1a1a;
+    --text-color: #e0e0e0;
+    --text-muted: #a0a0a0;
+    --border-color: #333;
+  }
+  
+  .jobs th {
+    background: #2a2a2a;
+  }
 }
