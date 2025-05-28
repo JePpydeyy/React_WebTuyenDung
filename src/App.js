@@ -3,6 +3,9 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import News from './pages/News';
 import About from './pages/About';
+import Contact from './pages/Contact';
+import Jobcontent from './pages/Job';
+import JobDetail  from './pages/JobDetail'
 import NewsDetail from './pages/NewsDetail';
 import Dashboard from './Admin/pages/Dashboard';
 import SubmitProfile from './Admin/pages/SubmitProfile';
