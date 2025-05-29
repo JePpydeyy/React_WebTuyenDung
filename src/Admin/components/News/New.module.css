@@ -107,18 +107,21 @@ th {
   color: var(--text-color);
 }
 
-.status {
+/* Sửa trạng thái với specificity tăng */
+.newsList .status {
+  display: inline-block; /* Đảm bảo hiển thị đúng */
   padding: 5px 10px;
   border-radius: var(--border-radius);
-  font-size: 14px;
+  font-size: 0.875rem; /* Điều chỉnh kích thước chữ cho đồng nhất */
+  line-height: 1.2; /* Cải thiện căn giữa văn bản */
 }
 
-.hienThi {
+.newsList .hienThi {
   background: var(--status-show-bg);
   color: var(--status-show-text);
 }
 
-.daAn {
+.newsList .daAn {
   background: var(--status-hidden-bg);
   color: var(--status-hidden-text);
 }
@@ -265,8 +268,8 @@ th {
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
   font-size: 0.9rem;
-  box-sizing: 0 1px;
-  margin-bottom: border-box;
+  box-sizing: border-box;
+  margin-bottom: 8px;
 }
 
 .detailGroup textarea {
@@ -385,14 +388,17 @@ th {
   margin-top: var(--spacing-sm);
   border-radius: 4px;
 }
+
 .thumbnailPreview {
   margin-top: 10px;
 }
+
 .thumbnailPreview p {
   font-size: 14px;
   font-weight: bold;
   margin-bottom: 5px;
 }
+
 .imagePreview {
   max-width: 100%;
   height: auto;

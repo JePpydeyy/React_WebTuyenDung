@@ -7,7 +7,7 @@ import styles from './dashboard.module.css';
 // Hàm ánh xạ trạng thái từ tiếng Anh sang tiếng Việt và gán class CSS
 const getStatusInfo = (status) => {
   switch (status) {
-    case 'new':
+    case 'pending':
       return { text: 'Đang chờ xét duyệt', class: styles.statusDangChoXetDuyet };
     case 'interview':
       return { text: 'Đã phỏng vấn', class: styles.statusDaPhongVan };
@@ -76,7 +76,7 @@ const ColumnChart = ({ allProfiles }) => {
         const totalProfiles = allProfiles.length;
         const chartData = Object.entries(statusCounts).map(([key, value]) => [
           key,
-          (value / totalProfiles) * 100,
+          (value / totalProfiles) * 1000 / 10
         ]);
         data.addRows(chartData);
 
@@ -88,7 +88,7 @@ const ColumnChart = ({ allProfiles }) => {
           vAxis: { 
             title: 'Tỷ lệ (%)',
             minValue: 0,
-            maxValue: 100,
+            maxValue: 10,
             format: '#.##%'
           },
           hAxis: { title: 'Trạng Thái' },
@@ -241,7 +241,7 @@ const MainContent = () => {
         const profileData = await profileResponse.json();
         console.log('Profile Data:', profileData);
         setAllProfiles(profileData);
-        const sortedProfiles = profileData.sort((a, b) => parseDate(b.date) - parseDate(a.date)).slice(0, 4);
+        const sortedProfiles = profileData.sort((a, b) => parseDate(b.date) - parseDate(a.date)).slice(0, 5);
         setDisplayProfiles(sortedProfiles);
 
         const jobResponse = await fetch('https://api-tuyendung-cty.onrender.com/api/job', { headers });
