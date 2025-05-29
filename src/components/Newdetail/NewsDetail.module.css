@@ -1,0 +1,486 @@
+.container {
+  width: 1800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+.spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #1678f2;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin-right: 15px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.mainLayout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 40px;
+  margin-top: 20px;
+}
+
+.articleDetail {
+  /* Không có background để tắt nền trắng */
+}
+
+.articleHeader {
+
+  margin-bottom: 30px;
+}
+
+.thumbnail {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+  display: block;
+  border-radius: 12px;
+}
+
+.articleTitle h1 {
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: #333;
+}
+
+.publishDate {
+  font-size: 1.1rem;
+  font-weight: 500;
+  opacity: 0.9;
+  color: #666;
+}
+
+
+.contentBlock {
+  margin-bottom: 40px;
+}
+
+.contentText {
+  font-size: 1.15rem;
+  line-height: 1.8;
+  text-align: justify;
+  margin-bottom: 30px;
+  color: #2c3e50;
+}
+
+.articleImage {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  transition: all 0.4s ease;
+  cursor: pointer;
+}
+
+.articleImage:hover {
+  transform: scale(1.02);
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
+}
+
+.imageCaption {
+  font-style: italic;
+  text-align: center;
+  font-size: 1rem;
+  padding: 10px;
+  border-radius: 8px;
+  color: #666;
+}
+
+.backButton {
+  display: inline-block;
+  padding: 15px 30px;
+  text-decoration: none;
+  font-weight: bold;
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+  color: #333;
+  background: #eee;
+  border-radius: 8px;
+}
+
+.backButton:hover {
+  background: #1678f2;
+  color: #fff;
+}
+
+.backButton:focus {
+  outline: 2px solid #1678f2;
+  outline-offset: 2px;
+}
+
+.shareBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  color: #fff;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-size: 1.8rem;
+  position: relative;
+  overflow: hidden;
+  margin-top: 20px;
+}
+
+.shareBtn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  transform: translate(-50%, -50%);
+}
+
+.shareBtn:hover::before {
+  width: 100%;
+  height: 100%;
+}
+
+.shareBtn:hover {
+  transform: translateY(-5px) scale(1.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.shareBtn:focus {
+  outline: 2px solid #1678f2;
+  outline-offset: 2px;
+}
+
+.facebook {
+  background: linear-gradient(135deg, #3b5998, #2d4373);
+}
+
+.sidebar {
+  width: 500px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  height: fit-content;
+  position: sticky;
+  top: 20px;
+}
+
+.sidebarTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #1678f2;
+}
+
+.newsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-x: auto;
+  padding-bottom: 15px;
+  scrollbar-width: thin;
+  scrollbar-color: #1678f2 #f3f3f3;
+}
+
+.newsGrid::-webkit-scrollbar {
+  height: 8px;
+}
+
+.newsGrid::-webkit-scrollbar-track {
+  background: #f3f3f3;
+}
+
+.newsGrid::-webkit-scrollbar-thumb {
+  background: #1678f2;
+  border-radius: 4px;
+}
+
+.gridItem {
+  
+  flex: 0 0 300px;
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+}
+
+.gridImage {
+  height: 12rem;
+  overflow: hidden;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.gridImage img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.gridImage img:hover {
+  transform: scale(1.05);
+}
+
+.gridTitle {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: #1678f2;
+  text-decoration: none;
+}
+
+.gridTitle:hover {
+  color: #a00;
+  text-decoration: none;
+}
+
+.gridTitle:focus {
+  outline: 2px solid #1678f2;
+  outline-offset: 2px;
+}
+
+.gridDate {
+  font-size: 0.875rem;
+  color: #777;
+  margin-bottom: 0.5rem;
+}
+
+.gridExcerpt {
+  font-size: 1rem;
+  font-weight: 200;
+  color: #333;
+}
+
+.jobsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-x: auto;
+  padding-bottom: 15px;
+  scrollbar-width: thin;
+  scrollbar-color: #1678f2 #f3f3f3;
+}
+
+.jobsGrid::-webkit-scrollbar {
+  height: 8px;
+}
+
+.jobsGrid::-webkit-scrollbar-track {
+  background: #f3f3f3;
+}
+
+.jobsGrid::-webkit-scrollbar-thumb {
+  background: #1678f2;
+  border-radius: 4px;
+}
+
+.jobCard {
+  border: 1px solid black;
+  background-color: #fcfcfc;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  
+  flex-shrink: 0;
+}
+
+.jobCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+.jobCardTitle {
+  padding: 15px;
+  background-color: #8b1c2c;
+  color: white;
+  font-weight: bold;
+  font-size: 1.15rem;
+  border-radius: 10px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+}
+
+.jobCardContent {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex-grow: 1;
+}
+
+.jobCardInfo {
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.jobCardInfo strong {
+  color: #333;
+}
+
+.jobCardButton {
+  margin-top: auto;
+  align-self: flex-start;
+  margin-bottom: 20px;
+  padding: 12px 25px;
+  border: 1px solid #8b1c2c;
+  background-color: transparent;
+  color: #8b1c2c;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s, transform 0.2s;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.jobCardButton:hover {
+  background-color: #8b1c2c;
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.viewMoreBtn {
+  display: inline-block;
+  padding: 12px 25px;
+  margin-top: 20px;
+  background: #1678f2;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.viewMoreBtn:hover {
+  background: #a00;
+  transform: translateY(-2px);
+}
+
+.viewMoreBtn:focus {
+  outline: 2px solid #1678f2;
+  outline-offset: 2px;
+}
+
+.fadeIn {
+  animation: fadeIn 0.8s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  cursor: pointer;
+  padding: 20px;
+}
+
+.modalImage {
+  max-width: 90%;
+  max-height: 80%;
+  border-radius: 8px;
+}
+
+.modalCaption {
+  color: #fff;
+  font-size: 1.2rem;
+  text-align: center;
+  margin-top: 20px;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 15px 20px;
+  border-radius: 8px;
+}
+
+.errorMessage {
+  padding: 40px;
+  text-align: center;
+  color: red;
+  font-size: 1.2rem;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .mainLayout {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .sidebar {
+    position: static;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
+  }
+
+  .articleTitle h1 {
+    font-size: 1.8rem;
+  }
+
+  .contentText {
+    font-size: 1rem;
+  }
+
+  .shareBtn {
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+  }
+
+  .gridItem {
+    flex: 0 0 250px;
+  }
+
+  .jobCard {
+    width: 300px;
+  }
+}

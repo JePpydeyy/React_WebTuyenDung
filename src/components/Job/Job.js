@@ -1,44 +1,50 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './Job.module.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const bannerImages = [
-  '/image/BANNER5.jpg',
-  '/image/BANNER6.jpg',
-  '/image/BANNER7.jpg',
+  '/assets/images/BANNER5.jpg',
+  '/assets/images/BANNER6.jpg',
+  '/assets/images/BANNER7.jpg',
 ];
 
 const Jobcontent = () => {
   const [bannerIdx, setBannerIdx] = useState(0);
   const bannerTimer = useRef(null);
 
-  const startBannerAuto = () => {
+  // Banner slider functions
+  const stopBannerAuto = useCallback(() => {
+    if (bannerTimer.current) clearInterval(bannerTimer.current);
+  }, []);
+
+  const nextBannerSlide = useCallback(() => {
+    setBannerIdx((prev) => (prev + 1) % bannerImages.length);
+  }, []);
+
+  const startBannerAuto = useCallback(() => {
     stopBannerAuto();
     bannerTimer.current = setInterval(nextBannerSlide, 5000);
-  };
+  }, [stopBannerAuto, nextBannerSlide]);
 
-  const stopBannerAuto = () => {
-    if (bannerTimer.current) clearInterval(bannerTimer.current);
-  };
+  const showBannerSlide = useCallback(
+    (idx) => {
+      setBannerIdx(idx);
+      stopBannerAuto();
+    },
+    [stopBannerAuto]
+  );
 
-  const showBannerSlide = (idx) => {
-    setBannerIdx(idx);
-  };
-
-  const nextBannerSlide = () => {
-    setBannerIdx((prev) => (prev + 1) % bannerImages.length);
-  };
-
-  const prevBannerSlide = () => {
+  const prevBannerSlide = useCallback(() => {
     setBannerIdx((prev) => (prev - 1 + bannerImages.length) % bannerImages.length);
-  };
+  }, []);
 
   useEffect(() => {
     startBannerAuto();
     return stopBannerAuto;
-  }, [bannerIdx, startBannerAuto, stopBannerAuto]); // Thêm startBannerAuto và stopBannerAuto vào dependency array
+  }, [startBannerAuto, stopBannerAuto]);
 
+  // Search form state
   const [searchForm, setSearchForm] = useState({
     brand: '',
     workplace: '',
@@ -54,26 +60,52 @@ const Jobcontent = () => {
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
+    if (!searchForm.keyword && !searchForm.brand && !searchForm.workplace && !searchForm.name) {
+      alert('Vui lòng nhập ít nhất một tiêu chí tìm kiếm!');
+      return;
+    }
     setSearching(true);
     setStoreVisible(4);
     setOfficeVisible(4);
   };
 
+  // Jobs state
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [storeVisible, setStoreVisible] = useState(4);
   const [officeVisible, setOfficeVisible] = useState(4);
   const [brandOptions, setBrandOptions] = useState([]);
   const [workplaceOptions, setWorkplaceOptions] = useState([]);
   const [nameOptions, setNameOptions] = useState([]);
 
+  // Fetch jobs from API with enhanced debugging
   useEffect(() => {
     const fetchJobs = async () => {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 giây timeout
       try {
-        const res = await fetch('https://api-tuyendung-cty.onrender.com/api/job');
+        const res = await fetch('https://api-tuyendung-cty.onrender.com/api/job', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          signal: controller.signal,
+        });
+        clearTimeout(timeoutId);
+        if (!res.ok) {
+          const errorText = await res.text();
+          throw new Error(`HTTP error! Status: ${res.status}, Response: ${errorText}`);
+        }
         const data = await res.json();
-        setJobs(Array.isArray(data) ? data : []);
+        console.log('API Response:', data); // Log dữ liệu để debug
+        if (!Array.isArray(data)) throw new Error('Dữ liệu trả về không phải là mảng');
+        setJobs(data);
+        setError(null);
       } catch (err) {
+        console.error('Lỗi khi lấy dữ liệu từ API:', err);
+        setError(err.message);
         setJobs([]);
       } finally {
         setLoading(false);
@@ -82,40 +114,44 @@ const Jobcontent = () => {
     fetchJobs();
   }, []);
 
+  // Generate dropdown options
   useEffect(() => {
     const brands = Array.from(
       new Set(
         jobs
-          .flatMap(job => (job.Brands ? job.Brands.split(',') : []))
-          .map(brand => brand.trim())
+          .flatMap((job) => (job.Brands ? job.Brands.split(',').map((b) => b.trim()) : []))
           .filter(Boolean)
       )
     );
     const workplaces = Array.from(
       new Set(
         jobs
-          .flatMap(job => (job.Workplace ? job.Workplace.split(',') : []))
-          .map(place => place.trim())
+          .flatMap((job) => (job.Workplace ? job.Workplace.split(',').map((p) => p.trim()) : []))
           .filter(Boolean)
       )
     );
-    const names = Array.from(new Set(jobs.map(job => job.Name).filter(Boolean)));
+    const names = Array.from(new Set(jobs.map((job) => job.Name).filter(Boolean)));
     setBrandOptions(brands);
     setWorkplaceOptions(workplaces);
     setNameOptions(names);
   }, [jobs]);
 
+  // Filter jobs
   const filteredJobs = React.useMemo(() => {
     if (!searching) return jobs;
-    return jobs.filter(job => {
+    return jobs.filter((job) => {
       const brandMatch =
         !searchForm.brand ||
         (job.Brands &&
-          job.Brands.split(',').map(b => b.trim()).includes(searchForm.brand));
+          job.Brands.split(',')
+            .map((b) => b.trim())
+            .includes(searchForm.brand));
       const workplaceMatch =
         !searchForm.workplace ||
         (job.Workplace &&
-          job.Workplace.split(',').map(place => place.trim()).includes(searchForm.workplace));
+          job.Workplace.split(',')
+            .map((place) => place.trim())
+            .includes(searchForm.workplace));
       const nameMatch = !searchForm.name || job.Name === searchForm.name;
       const keyword = searchForm.keyword?.trim().toLowerCase();
       const keywordMatch =
@@ -127,22 +163,30 @@ const Jobcontent = () => {
     });
   }, [jobs, searchForm, searching]);
 
+  // Sort and filter jobs by type
   const jobListingsNewStore = [...filteredJobs]
-    .filter((job) => job['Job Type'] === 'Store block jobs')
+    .filter((job) => job.JobType === 'Store block jobs') // Sửa từ job['Job Type'] thành job.JobType
     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   const jobListingsNewOffice = [...filteredJobs]
-    .filter((job) => job['Job Type'] === 'Office work')
+    .filter((job) => job.JobType === 'Office work') // Sửa từ job['Job Type'] thành job.JobType
     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+  // Debug log to check filtered jobs
+  useEffect(() => {
+    console.log('Filtered Store Jobs:', jobListingsNewStore);
+    console.log('Filtered Office Jobs:', jobListingsNewOffice);
+  }, [jobListingsNewStore, jobListingsNewOffice]);
 
   return (
     <main>
+      {/* Banner Section */}
       <section className={styles.banner}>
-        <div className={styles['banner-wrapper']}>
+        <div className={styles.bannerWrapper}>
           {bannerImages.map((src, idx) => (
             <img
               key={src}
-              className={`${styles['banner-image']} ${idx === bannerIdx ? styles.active : ''} ${
+              className={`${styles.bannerImage} ${idx === bannerIdx ? styles.active : ''} ${
                 idx === (bannerIdx - 1 + bannerImages.length) % bannerImages.length ? styles.prev : ''
               }`}
               src={src}
@@ -151,7 +195,7 @@ const Jobcontent = () => {
             />
           ))}
           <button
-            className={`${styles['banner-btn']} ${styles['banner-btn-left']}`}
+            className={`${styles.bannerBtn} ${styles.bannerBtnLeft}`}
             onClick={() => {
               prevBannerSlide();
               stopBannerAuto();
@@ -161,7 +205,7 @@ const Jobcontent = () => {
             <i className="fa-solid fa-angle-left"></i>
           </button>
           <button
-            className={`${styles['banner-btn']} ${styles['banner-btn-right']}`}
+            className={`${styles.bannerBtn} ${styles.bannerBtnRight}`}
             onClick={() => {
               nextBannerSlide();
               stopBannerAuto();
@@ -170,15 +214,12 @@ const Jobcontent = () => {
           >
             <i className="fa-solid fa-angle-right"></i>
           </button>
-          <div className={styles['banner-indicators']}>
+          <div className={styles.bannerIndicators}>
             {bannerImages.map((_, idx) => (
               <span
                 key={idx}
                 className={`${styles.indicator} ${idx === bannerIdx ? styles.active : ''}`}
-                onClick={() => {
-                  showBannerSlide(idx);
-                  stopBannerAuto();
-                }}
+                onClick={() => showBannerSlide(idx)}
                 aria-label={`Go to banner ${idx + 1}`}
               ></span>
             ))}
@@ -186,26 +227,26 @@ const Jobcontent = () => {
         </div>
       </section>
 
-      <div className={styles['job-search']}>
-        <div className={styles['job-search_container']}>
-          <p className={styles['job-search_title']}>Tìm kiếm công việc phù hợp</p>
-          <form className={styles['job-search_form']} onSubmit={handleSearchSubmit}>
-            <div className={styles['job-search_field']}>
-             
+      {/* Job Search Section */}
+      <div className={styles.jobSearch}>
+        <div className={styles.jobSearchContainer}>
+          <p className={styles.jobSearchTitle}>Tìm kiếm công việc phù hợp</p>
+          <form className={styles.jobSearchForm} onSubmit={handleSearchSubmit}>
+            <div className={styles.jobSearchField}>
               <input
                 type="text"
                 name="keyword"
                 placeholder="Từ khóa (tên công việc, thương hiệu, nơi làm việc)"
-                className={styles['job-search_input']}
+                className={styles.jobSearchInput}
                 value={searchForm.keyword}
                 onChange={handleSearchChange}
               />
             </div>
-            <div className={styles['job-search_field']}>
-              <i className={`fa fa-briefcase ${styles['job-search_field-icon']}`}></i>
+            <div className={styles.jobSearchField}>
+              <i className={`fa fa-briefcase ${styles.jobSearchFieldIcon}`}></i>
               <select
                 name="brand"
-                className={styles['job-search_select']}
+                className={styles.jobSearchSelect}
                 value={searchForm.brand}
                 onChange={handleSearchChange}
               >
@@ -215,11 +256,11 @@ const Jobcontent = () => {
                 ))}
               </select>
             </div>
-            <div className={styles['job-search_field']}>
-              <i className={`fa fa-map-marker-alt ${styles['job-search_field-icon']}`}></i>
+            <div className={styles.jobSearchField}>
+              <i className={`fa fa-map-marker-alt ${styles.jobSearchFieldIcon}`}></i>
               <select
                 name="workplace"
-                className={styles['job-search_select']}
+                className={styles.jobSearchSelect}
                 value={searchForm.workplace}
                 onChange={handleSearchChange}
               >
@@ -229,11 +270,11 @@ const Jobcontent = () => {
                 ))}
               </select>
             </div>
-            <div className={styles['job-search_field']}>
-              <i className={`fa fa-user-tie ${styles['job-search_field-icon']}`}></i>
+            <div className={styles.jobSearchField}>
+              <i className={`fa fa-user-tie ${styles.jobSearchFieldIcon}`}></i>
               <select
                 name="name"
-                className={styles['job-search_select']}
+                className={styles.jobSearchSelect}
                 value={searchForm.name}
                 onChange={handleSearchChange}
               >
@@ -243,72 +284,84 @@ const Jobcontent = () => {
                 ))}
               </select>
             </div>
-            <button type="submit" className={styles['job-search_button']}>
+            <button type="submit" className={styles.jobSearchButton} disabled={loading}>
               <i className="fa fa-search"></i>
-              <span>Tìm kiếm</span>
+              <span>{loading ? 'Đang tải...' : 'Tìm kiếm'}</span>
             </button>
           </form>
         </div>
       </div>
 
-      <section className={styles['job-listings']}>
-        <h1 className={styles['job-listings_title']}>Việc làm tại Cửa hàng</h1>
-        <div className={styles['job-listings_grid']}>
+      {/* Job Listings - Store */}
+      <section className={styles.jobListings}>
+        <h1 className={styles.jobListingsTitle}>Việc làm tại Cửa hàng</h1>
+        <div className={styles.jobListingsGrid}>
           {loading ? (
             <div>Đang tải...</div>
+          ) : error ? (
+            <div>Lỗi: {error}</div>
           ) : jobListingsNewStore.length === 0 ? (
-            <div>Không có việc làm mới nhất.</div>
+            <div>Không có việc làm mới nhất tại cửa hàng.</div>
           ) : (
             jobListingsNewStore.slice(0, storeVisible).map((job, idx) => (
-              <div key={job._id || idx} className={styles['job-card']}>
-                <div className={styles['job-card_content']}>
-                  <div className={styles['job-card_title']}>{job.Name}</div>
-                  <p className={styles['job-card_info']}><strong>Thương hiệu:</strong> {job.Brands}</p>
-                  <p className={styles['job-card_info']}><strong>Nơi làm việc:</strong> {job.Workplace}</p>
-                  <p className={styles['job-card_info']}><strong>Mức lương:</strong> {job.Salary}</p>
-                  <p className={styles['job-card_info']}><strong>Số lượng:</strong> {job.Slot}</p>
-                  <p className={styles['job-card_info']}><strong>Ngày hết hạn:</strong> {job['Due date']}</p>
-                 <Link to={`/DetailJob/${job._id}`} className={styles['job-card_button']}>Xem chi tiết</Link>
+              <div key={job._id || idx} className={styles.jobCard}>
+                <div className={styles.jobCardContent}>
+                  <div className={styles.jobCardTitle}>{job.Name}</div>
+                  <p className={styles.jobCardInfo}><strong>Thương hiệu:</strong> {job.Brands}</p>
+                  <p className={styles.jobCardInfo}><strong>Nơi làm việc:</strong> {job.Workplace}</p>
+                  <p className={styles.jobCardInfo}><strong>Mức lương:</strong> {job.Salary}</p>
+                  <p className={styles.jobCardInfo}><strong>Số lượng:</strong> {job.Slot}</p>
+                  <p className={styles.jobCardInfo}><strong>Ngày hết hạn:</strong> {job['Due date']}</p>
+                  <Link to={`/DetailJob/${job._id}`} className={styles.jobCardButton}>Xem chi tiết</Link>
                 </div>
               </div>
             ))
           )}
         </div>
         {storeVisible < jobListingsNewStore.length && (
-          <div className={styles['job-listings_more']}>
-            <button className={styles['load-more-btn']} onClick={() => setStoreVisible(storeVisible + 4)}>
+          <div className={styles.jobListingsMore}>
+            <button
+              className={styles.loadMoreBtn}
+              onClick={() => setStoreVisible(storeVisible + 4)}
+            >
               Xem thêm
             </button>
           </div>
         )}
       </section>
 
-      <section className={styles['job-listings']}>
-        <h1 className={styles['job-listings_title']}>Việc làm tại văn phòng </h1>
-        <div className={styles['job-listings_grid']}>
+      {/* Job Listings - Office */}
+      <section className={styles.jobListings}>
+        <h1 className={styles.jobListingsTitle}>Việc làm tại văn phòng</h1>
+        <div className={styles.jobListingsGrid}>
           {loading ? (
             <div>Đang tải...</div>
+          ) : error ? (
+            <div>Lỗi: {error}</div>
           ) : jobListingsNewOffice.length === 0 ? (
-            <div>Không có việc làm mới nhất.</div>
+            <div>Không có việc làm mới nhất tại văn phòng.</div>
           ) : (
             jobListingsNewOffice.slice(0, officeVisible).map((job, idx) => (
-              <div key={job._id || idx} className={styles['job-card']}>
-                <div className={styles['job-card_content']}>
-                  <div className={styles['job-card_title']}>{job.Name}</div>
-                  <p className={styles['job-card_info']}><strong>Thương hiệu:</strong> {job.Brands}</p>
-                  <p className={styles['job-card_info']}><strong>Nơi làm việc:</strong> {job.Workplace}</p>
-                  <p className={styles['job-card_info']}><strong>Mức lương:</strong> {job.Salary}</p>
-                  <p className={styles['job-card_info']}><strong>Số lượng:</strong> {job.Slot}</p>
-                  <p className={styles['job-card_info']}><strong>Ngày hết hạn:</strong> {job['Due date']}</p>
-                 <Link to={`/DetailJob/${job._id}`} className={styles['job-card_button']}>Xem chi tiết</Link>
+              <div key={job._id || idx} className={styles.jobCard}>
+                <div className={styles.jobCardContent}>
+                  <div className={styles.jobCardTitle}>{job.Name}</div>
+                  <p className={styles.jobCardInfo}><strong>Thương hiệu:</strong> {job.Brands}</p>
+                  <p className={styles.jobCardInfo}><strong>Nơi làm việc:</strong> {job.Workplace}</p>
+                  <p className={styles.jobCardInfo}><strong>Mức lương:</strong> {job.Salary}</p>
+                  <p className={styles.jobCardInfo}><strong>Số lượng:</strong> {job.Slot}</p>
+                  <p className={styles.jobCardInfo}><strong>Ngày hết hạn:</strong> {job['Due date']}</p>
+                  <Link to={`/DetailJob/${job._id}`} className={styles.jobCardButton}>Xem chi tiết</Link>
                 </div>
               </div>
             ))
           )}
         </div>
         {officeVisible < jobListingsNewOffice.length && (
-          <div className={styles['job-listings_more']}>
-            <button className={styles['load-more-btn']} onClick={() => setOfficeVisible(officeVisible + 4)}>
+          <div className={styles.jobListingsMore}>
+            <button
+              className={styles.loadMoreBtn}
+              onClick={() => setOfficeVisible(officeVisible + 4)}
+            >
               Xem thêm
             </button>
           </div>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import './NewsDetail.css';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import styles from './NewsDetail.module.css';
 
 function formatDate(dateString) {
   const date = new Date(dateString);
@@ -11,6 +11,12 @@ function formatDate(dateString) {
   });
 }
 
+function getImageUrl(url) {
+  if (!url) return '';
+  if (url.startsWith('http')) return url;
+  return `https://api-tuyendung-cty.onrender.com/${url.replace(/^\/+/, '')}`;
+}
+
 const NewsDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -18,92 +24,128 @@ const NewsDetail = () => {
   const [modal, setModal] = useState({ open: false, src: '', caption: '' });
   const [article, setArticle] = useState(null);
   const [otherNews, setOtherNews] = useState([]);
+  const [jobs, setJobs] = useState([]);
 
   useEffect(() => {
     setLoading(true);
+    // Fetch news
     fetch('https://api-tuyendung-cty.onrender.com/api/new')
-      .then(res => res.json())
-      .then(data => {
-        const found = data.find(item => item.id === id);
+      .then((res) => res.json())
+      .then((data) => {
+        const found = data.find((item) => item.id === id);
         setArticle(found);
-        setOtherNews(data.filter(item => item.id !== id));
+        setOtherNews(data.filter((item) => item.id !== id));
+      })
+      .catch((err) => {
+        console.error('Lỗi khi fetch tin tức:', err);
+      });
+
+    // Fetch jobs
+    fetch('https://api-tuyendung-cty.onrender.com/api/job')
+      .then((res) => res.json())
+      .then((data) => {
+        const currentDate = new Date();
+        const sortedJobs = Array.isArray(data)
+          ? data
+              .filter((job) => job.status !== 'hidden') // Lọc công việc không ẩn
+              .filter((job) => new Date(job['Due date']) >= currentDate) // Lọc công việc chưa hết hạn
+              .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Sắp xếp theo createdAt
+          : [];
+        setJobs(sortedJobs);
         setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch((err) => {
+        console.error('Lỗi khi fetch việc làm:', err);
+        setJobs([]);
+        setLoading(false);
+      });
   }, [id]);
 
-  const shareOnFacebook = (e) => {
-    e.preventDefault();
-    if (!article) return;
-    const url = encodeURIComponent(window.location.href);
-    const title = encodeURIComponent(article.title);
-    window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}&e=${title}`, '_blank', 'width=600,height=400');
-  };
 
   const goBack = (e) => {
     e.preventDefault();
     navigate(-1);
   };
 
+  const goToJobs = (e) => {
+    e.preventDefault();
+    navigate('/job');
+  };
+
   return (
-    <div className="container">
+    <div className={styles.container}>
       {loading ? (
-        <div className="loading">
-          <div className="spinner"></div>
+        <div className={styles.loading}>
+          <div className={styles.spinner}></div>
           Đang tải bài viết...
         </div>
       ) : article ? (
-        <div className="main-layout">
-          <div className="article-detail">
-            <div className="article-header fade-in">
-              <img className="thumbnail" src={article.thumbnailUrl} alt={article.thumbnailCaption || article.title} />
-              <div className="article-title">
+        <div className={styles.mainLayout}>
+          <div className={styles.articleDetail}>
+            <div className={styles.articleHeader}>
+              <img
+                className={styles.thumbnail}
+                src={getImageUrl(article.thumbnailUrl)}
+                alt={article.thumbnailCaption || article.title}
+                loading="lazy"
+              />
+              <div className={styles.articleTitle}>
                 <h1>{article.title}</h1>
-                <div className="publish-date">Ngày đăng: {formatDate(article.publishedAt)}</div>
+                <div className={styles.publishDate}>
+                  Ngày đăng: {formatDate(article.publishedAt)}
+                </div>
               </div>
             </div>
-            <div className="article-content fade-in">
+            <div className={styles.articleContent}>
               {article.contentBlocks.map((block, idx) =>
                 block.type === 'text' ? (
-                  <div className="content-block" key={idx}>
-                    <div className="content-text">{block.content}</div>
+                  <div className={styles.contentBlock} key={idx}>
+                    <div className={styles.contentText}>{block.content}</div>
                   </div>
                 ) : (
-                  <div className="content-block" key={idx}>
+                  <div className={styles.contentBlock} key={idx}>
                     <img
-                      src={block.url}
+                      src={getImageUrl(block.url)}
                       alt={block.caption}
-                      className="article-image"
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => setModal({ open: true, src: block.url, caption: block.caption })}
+                      className={styles.articleImage}
+                      onClick={() =>
+                        setModal({ open: true, src: getImageUrl(block.url), caption: block.caption })
+                      }
+                      loading="lazy"
                     />
-                    {block.caption && <div className="image-caption">{block.caption}</div>}
+                    {block.caption && (
+                      <div className={styles.imageCaption}>{block.caption}</div>
+                    )}
                   </div>
                 )
               )}
             </div>
+           
             <button
               type="button"
-              className="share-btn facebook"
-              onClick={shareOnFacebook}
-              title="Facebook"
-              style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
+              className={styles.backButton}
+              onClick={goBack}
+              title="Quay lại"
             >
-              📘
+              Quay lại
             </button>
           </div>
-          <div className="sidebar">
-            <h2 className="sidebar-title">Tin tức khác</h2>
-            <div className="news-grid">
-              {otherNews.map((news, idx) => (
-                <div className="grid-item" key={news._id || idx}>
-                  <div className="grid-image">
-                    <img src={news.thumbnailUrl} alt={news.title} />
+          <div className={styles.sidebar}>
+            <h2 className={styles.sidebarTitle}>Tin tức khác</h2>
+            <div className={styles.newsGrid}>
+              {otherNews.slice(0, 3).map((news, idx) => (
+                <div className={styles.gridItem} key={news._id || idx}>
+                  <div className={styles.gridImage}>
+                    <img
+                      src={getImageUrl(news.thumbnailUrl)}
+                      alt={news.title}
+                      loading="lazy"
+                    />
                   </div>
                   <a
                     href="#"
-                    className="grid-title"
-                    onClick={e => {
+                    className={styles.gridTitle}
+                    onClick={(e) => {
                       e.preventDefault();
                       navigate(`/news/${news.id}`);
                       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -111,35 +153,61 @@ const NewsDetail = () => {
                   >
                     {news.title}
                   </a>
-                  <div className="grid-date">Ngày đăng {formatDate(news.publishedAt)}</div>
-                  <div className="grid-excerpt">
-                    {news.contentBlocks && news.contentBlocks[0] && news.contentBlocks[0].content
+                  <div className={styles.gridDate}>
+                    Ngày đăng {formatDate(news.publishedAt)}
+                  </div>
+                  <div className={styles.gridExcerpt}>
+                    {news.contentBlocks &&
+                    news.contentBlocks[0] &&
+                    news.contentBlocks[0].content
                       ? news.contentBlocks[0].content.slice(0, 80) + '...'
                       : ''}
                   </div>
                 </div>
               ))}
             </div>
+            <h2 className={styles.sidebarTitle}>Việc làm nổi bật</h2>
+            <div className={styles.jobsGrid}>
+              {jobs.slice(0, 3).map((job, idx) => (
+                <div key={job._id || idx} className={styles.jobCard}>
+                  <div className={styles.jobCardContent}>
+                    <div className={styles.jobCardTitle}>{job.Name}</div>
+                    <p className={styles.jobCardInfo}><strong>Thương hiệu:</strong> {job.Brands}</p>
+                    <p className={styles.jobCardInfo}><strong>Nơi làm việc:</strong> {job.Workplace}</p>
+                    <p className={styles.jobCardInfo}><strong>Mức lương:</strong> {job.Salary}</p>
+                    <p className={styles.jobCardInfo}><strong>Số lượng:</strong> {job.Slot}</p>
+                    <p className={styles.jobCardInfo}><strong>Ngày hết hạn:</strong> {formatDate(job['Due date'])}</p>
+                    <Link to={`/DetailJob/${job._id}`} className={styles.jobCardButton}>Xem chi tiết</Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+            {jobs.length > 3 && (
+              <button
+                className={styles.viewMoreBtn}
+                onClick={goToJobs}
+                aria-label="Xem thêm việc làm"
+              >
+                Xem thêm
+              </button>
+            )}
           </div>
           {modal.open && (
             <div
-              style={{
-                position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
-                background: 'rgba(0,0,0,0.9)', display: 'flex', flexDirection: 'column',
-                justifyContent: 'center', alignItems: 'center', zIndex: 1000, cursor: 'pointer', padding: 20
-              }}
+              className={styles.modal}
               onClick={() => setModal({ open: false, src: '', caption: '' })}
             >
-              <img src={modal.src} alt={modal.caption} style={{ maxWidth: '90%', maxHeight: '80%', borderRadius: 8 }} />
-              <div style={{
-                color: 'white', fontSize: '1.2rem', textAlign: 'center', marginTop: 20,
-                background: 'rgba(0,0,0,0.7)', padding: '15px 20px', borderRadius: 8
-              }}>{modal.caption}</div>
+              <img
+                src={getImageUrl(modal.src)}
+                alt={modal.caption}
+                className={styles.modalImage}
+              />
+              <div className={styles.modalCaption}>{modal.caption}</div>
             </div>
           )}
         </div>
       ) : (
-        <div style={{ padding: 40, textAlign: 'center', color: 'red' }}>Không tìm thấy bài viết!</div>
+        <div className={styles.errorMessage}>Không tìm thấy bài viết!</div>
       )}
     </div>
   );

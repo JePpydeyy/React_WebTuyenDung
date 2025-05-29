@@ -1,3 +1,6 @@
+/* JobDetail.module.css */
+
+/* Banner styles */
 .jobBanner {
   position: relative;
   width: 100%;
@@ -6,7 +9,13 @@
   height: 40vw;
   min-height: 20rem;
   max-height: 50rem;
-  background-color: #a00;
+  background-color: #8B1538;
+}
+
+.jobBannerWrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
 }
 
 .jobBannerImage {
@@ -23,14 +32,14 @@
   object-fit: cover;
 }
 
-.jobBannerImage.active {
+.jobBannerImageActive {
   opacity: 1;
   transform: translateX(0);
   pointer-events: auto;
   z-index: 2;
 }
 
-.jobBannerImage.prev {
+.jobBannerImagePrev {
   opacity: 0;
   transform: translateX(-100%);
 }
@@ -48,6 +57,11 @@
   border-radius: 50%;
   z-index: 3;
   transition: background 0.2s ease;
+}
+
+.jobBannerBtn:focus {
+  outline: 2px solid #1678f2;
+  outline-offset: 2px;
 }
 
 .jobBannerBtnLeft {
@@ -83,11 +97,12 @@
   transition: opacity 0.2s ease;
 }
 
-.jobIndicator.active {
+.jobIndicatorActive {
   opacity: 1;
   background: #1678f2;
 }
 
+/* Job detail styles */
 .jobDetail {
   padding: 20px;
   max-width: 1400px;
@@ -132,7 +147,7 @@
   letter-spacing: 0.5px;
 }
 
-.jobDetailColumn h2 i {
+.jobDetailColumn h2 svg {
   font-size: 0.85rem;
   width: 14px;
 }
@@ -150,6 +165,7 @@
   color: #fff;
 }
 
+/* Job container styles */
 .jobContainer {
   display: flex;
   max-width: 1400px;
@@ -185,11 +201,16 @@
 
 .jobBackToProducts:hover {
   background: #8B1538;
-  color: white;
+  color: #fff;
+}
+
+.jobBackToProducts:focus {
+  outline: 2px solid #1678f2;
+  outline-offset: 2px;
 }
 
 .jobCard {
-  background: white;
+  background: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   overflow: hidden;
@@ -197,7 +218,7 @@
 
 .jobCardHeader {
   background: #8B1538;
-  color: white;
+  color: #fff;
   text-align: center;
   padding: 15px;
   font-weight: bold;
@@ -227,7 +248,7 @@
 
 .jobViewDetails {
   background: #8B1538;
-  color: white;
+  color: #fff;
   padding: 8px 20px;
   border: none;
   border-radius: 4px;
@@ -241,6 +262,11 @@
 
 .jobViewDetails:hover {
   background: #6B0F2A;
+}
+
+.jobViewDetails:focus {
+  outline: 2px solid #1678f2;
+  outline-offset: 2px;
 }
 
 .jobMainContent h2 {
@@ -272,7 +298,7 @@
 
 .jobApplyBtn {
   background: #8B1538;
-  color: white;
+  color: #fff;
   padding: 12px 30px;
   border: none;
   border-radius: 4px;
@@ -287,6 +313,12 @@
   background: #6B0F2A;
 }
 
+.jobApplyBtn:focus {
+  outline: 2px solid #1678f2;
+  outline-offset: 2px;
+}
+
+/* Modal styles */
 .jobModal {
   display: block;
   position: fixed;
@@ -299,19 +331,19 @@
 }
 
 .jobModalContent {
-  background-color: white;
+  background-color: #fff;
   margin: 5% auto;
   padding: 0;
   border-radius: 8px;
   width: 90%;
   max-width: 500px;
   position: relative;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .jobModalHeader {
   padding: 20px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #ddd;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -333,7 +365,12 @@
 }
 
 .jobClose:hover {
-  color: #000;
+  color: #333;
+}
+
+.jobClose:focus {
+  outline: 2px solid #1678f2;
+  outline-offset: 2px;
 }
 
 .jobModalBody {
@@ -366,6 +403,7 @@
   margin-bottom: 5px;
   color: #333;
   font-size: 14px;
+  font-weight: 500;
 }
 
 .jobRequired {
@@ -383,8 +421,19 @@
   box-sizing: border-box;
 }
 
+.jobInput:focus,
+.jobSelect:focus,
+.jobTextarea:focus {
+  outline: 2px solid #1678f2;
+  border-color: #1678f2;
+}
+
+.jobInputError {
+  border-color: red !important;
+}
+
 .jobSelect {
-  background-color: white;
+  background-color: #fff;
   cursor: pointer;
 }
 
@@ -398,6 +447,10 @@
   align-items: center;
   gap: 10px;
   margin-top: 10px;
+}
+
+.jobFileInput {
+  display: none;
 }
 
 .jobFileBtn {
@@ -416,9 +469,21 @@
   background: #e9e9e9;
 }
 
+.jobFileBtn:focus {
+  outline: 2px solid #1678f2;
+  outline-offset: 2px;
+}
+
+.jobError {
+  color: red;
+  font-size: 12px;
+  margin-top: 5px;
+  display: block;
+}
+
 .jobModalFooter {
   padding: 20px;
-  border-top: 1px solid #eee;
+  border-top: 1px solid #ddd;
   display: flex;
   justify-content: flex-end;
   gap: 10px;
@@ -426,7 +491,7 @@
 
 .jobBtnCancel {
   background: #6c757d;
-  color: white;
+  color: #fff;
   padding: 10px 20px;
   border: none;
   border-radius: 4px;
@@ -438,9 +503,14 @@
   background: #5a6268;
 }
 
+.jobBtnCancel:focus {
+  outline: 2px solid #1678f2;
+  outline-offset: 2px;
+}
+
 .jobBtnSubmit {
-  background: #007bff;
-  color: white;
+  background: #1678f2;
+  color: #fff;
   padding: 10px 20px;
   border: none;
   border-radius: 4px;
@@ -452,6 +522,12 @@
   background: #0056b3;
 }
 
+.jobBtnSubmit:focus {
+  outline: 2px solid #1678f2;
+  outline-offset: 2px;
+}
+
+/* Media Queries */
 @media screen and (max-width: 1200px) {
   .jobBanner {
     height: 45vw;

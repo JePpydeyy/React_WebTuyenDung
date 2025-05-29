@@ -1,12 +1,24 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faAngleLeft,
+  faAngleRight,
+  faBuilding,
+  faBriefcase,
+  faUsers,
+  faStar,
+  faGraduationCap,
+  faDollarSign,
+  faCalendar,
+  faLocationDot,
+  faFile,
+} from '@fortawesome/free-solid-svg-icons';
 import styles from './JobDetail.module.css';
-import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const bannerImages = [
-  '/image/BANNER5.jpg',
-  '/image/BANNER6.jpg',
-  '/image/BANNER7.jpg',
+  '/assets/images/BANNER6.jpg',
+  '/assets/images/BANNER7.jpg',
 ];
 
 const JobDetail = () => {
@@ -33,14 +45,17 @@ const JobDetail = () => {
   useEffect(() => {
     const fetchJob = async () => {
       try {
-        console.log('Fetching job with ID:', jobId);
+        console.log('Đang tải công việc với ID:', jobId);
         const res = await fetch(`https://api-tuyendung-cty.onrender.com/api/job/${jobId}`);
         if (!res.ok) throw new Error('Không tìm thấy công việc');
         const data = await res.json();
-        console.log('Job data received:', data);
+        console.log('Dữ liệu công việc:', data);
+        if (!data._id || !data.Name || !data.Workplace) {
+          throw new Error('Dữ liệu công việc không đầy đủ');
+        }
         setJob(data);
       } catch (err) {
-        console.error('Error fetching job:', err);
+        console.error('Lỗi khi tải công việc:', err);
         setError(err.message);
       } finally {
         setLoading(false);
@@ -56,7 +71,7 @@ const JobDetail = () => {
           : [];
         setLatestJobs(sortedJobs);
       } catch (err) {
-        console.error('Error fetching latest jobs:', err);
+        console.error('Lỗi khi tải công việc mới:', err);
         setLatestJobs([]);
       }
     };
@@ -67,14 +82,24 @@ const JobDetail = () => {
     }
   }, [jobId]);
 
-  const startBannerAuto = () => {
-    stopBannerAuto();
-    bannerTimer.current = setInterval(nextBannerSlide, 5000);
-  };
+  useEffect(() => {
+    bannerImages.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
 
-  const stopBannerAuto = () => {
-    if (bannerTimer.current) clearInterval(bannerTimer.current);
-  };
+    const startBannerAuto = () => {
+      stopBannerAuto();
+      bannerTimer.current = setInterval(nextBannerSlide, 5000);
+    };
+
+    const stopBannerAuto = () => {
+      if (bannerTimer.current) clearInterval(bannerTimer.current);
+    };
+
+    startBannerAuto();
+    return stopBannerAuto;
+  }, [bannerIdx]);
 
   const showBannerSlide = (idx) => {
     setBannerIdx(idx);
@@ -88,19 +113,17 @@ const JobDetail = () => {
     setBannerIdx((prev) => (prev - 1 + bannerImages.length) % bannerImages.length);
   };
 
-  useEffect(() => {
-    startBannerAuto();
-    return stopBannerAuto;
-  }, [bannerIdx]);
-
   const openModal = () => {
     setIsModalOpen(true);
+    const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
+    document.body.dataset.originalOverflow = originalOverflow;
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
-    document.body.style.overflow = 'auto';
+    document.body.style.overflow = document.body.dataset.originalOverflow || 'auto';
+    delete document.body.dataset.originalOverflow;
     setFormData({
       workplace: '',
       fullName: '',
@@ -117,7 +140,13 @@ const JobDetail = () => {
   const handleFormChange = (e) => {
     const { name, value, files } = e.target;
     if (name === 'resume') {
-      setFormData((prev) => ({ ...prev, resume: files[0] }));
+      const file = files[0];
+      if (file && file.size > 5 * 1024 * 1024) { // Giới hạn 5MB
+        setFormErrors((prev) => ({ ...prev, resume: 'File CV không được vượt quá 5MB' }));
+        return;
+      }
+      setFormData((prev) => ({ ...prev, resume: file }));
+      setFormErrors((prev) => ({ ...prev, resume: null }));
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
@@ -127,13 +156,21 @@ const JobDetail = () => {
     const errors = {};
     if (!formData.fullName.trim()) errors.fullName = 'Vui lòng nhập họ tên';
     if (!formData.phone.trim()) errors.phone = 'Vui lòng nhập số điện thoại';
+    else if (!/^\d{10,11}$/.test(formData.phone.trim())) errors.phone = 'Số điện thoại không hợp lệ';
+    if (!formData.gender) errors.gender = 'Vui lòng chọn giới tính';
     if (!formData.dob) errors.dob = 'Vui lòng chọn ngày sinh';
+    else {
+      const today = new Date();
+      const dobDate = new Date(formData.dob);
+      if (dobDate > today) errors.dob = 'Ngày sinh không thể là ngày trong tương lai';
+    }
     if (!formData.email.trim()) errors.email = 'Vui lòng nhập email';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) errors.email = 'Email không hợp lệ';
     if (!formData.resume) errors.resume = 'Vui lòng tải lên CV';
     return errors;
   };
 
-  const submitApplication = (e) => {
+  const submitApplication = async (e) => {
     e.preventDefault();
     const errors = validateForm();
     if (Object.keys(errors).length > 0) {
@@ -141,13 +178,57 @@ const JobDetail = () => {
       alert('Vui lòng điền đầy đủ thông tin bắt buộc.');
       return;
     }
-    alert('Ứng tuyển thành công! Chúng tôi sẽ liên hệ với bạn sớm nhất.');
-    closeModal();
+
+    const dobISO = formData.dob ? new Date(formData.dob).toISOString() : '';
+
+    const form = {
+      desiredWorkplace: formData.workplace,
+      fullName: formData.fullName.trim(),
+      phone: formData.phone.trim(),
+      gender: formData.gender,
+      dob: dobISO,
+      email: formData.email.trim(),
+      note: formData.note.trim(),
+    };
+
+    const applicationData = new FormData();
+    applicationData.append('jobId', jobId || '');
+    applicationData.append('jobName', job?.Name || '');
+    applicationData.append('jobWorkplace', job?.Workplace || '');
+    applicationData.append('form', JSON.stringify(form));
+    applicationData.append('status', 'pending');
+    if (formData.resume) {
+      applicationData.append('resume', formData.resume);
+    }
+
+    try {
+      console.log('Form object:', form);
+      console.log('FormData entries:', Object.fromEntries(applicationData));
+
+      const res = await fetch('https://api-tuyendung-cty.onrender.com/api/profile', {
+        method: 'POST',
+        body: applicationData,
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        console.error('API error response:', errorData);
+        throw new Error(`Không thể gửi: ${res.status} - ${errorData.message || 'Lỗi không xác định'}`);
+      }
+
+      const data = await res.json();
+      console.log('Ứng tuyển thành công:', data);
+      alert('Ứng tuyển thành công! Chúng tôi sẽ liên hệ sớm.');
+      closeModal();
+    } catch (err) {
+      console.error('Lỗi khi gửi ứng tuyển:', err);
+      alert(`Lỗi: ${err.message}`);
+    }
   };
 
-  if (loading) return <div className={styles.jobDetail}>Đang tải...</div>;
-  if (error) return <div className={styles.jobDetail}>Lỗi: {error}</div>;
-  if (!job) return <div className={styles.jobDetail}>Không tìm thấy công việc</div>;
+  if (loading) return <div className={styles.jobDetailDiv}>Đang tải...</div>;
+  if (error) return <div className={styles.jobDetailDiv}>Lỗi: {error}</div>;
+  if (!job) return <div className={styles.jobDetailDiv}>Không tìm thấy công việc</div>;
 
   return (
     <main>
@@ -155,7 +236,7 @@ const JobDetail = () => {
         <div className={styles.jobBannerWrapper}>
           {bannerImages.map((src, idx) => (
             <img
-              key={src}
+              key={`banner-${idx}`}
               className={`${styles.jobBannerImage} ${idx === bannerIdx ? styles.jobBannerImageActive : ''} ${
                 idx === (bannerIdx - 1 + bannerImages.length) % bannerImages.length ? styles.jobBannerImagePrev : ''
               }`}
@@ -166,87 +247,102 @@ const JobDetail = () => {
           ))}
           <button
             className={`${styles.jobBannerBtn} ${styles.jobBannerBtnLeft}`}
-            onClick={() => {
-              prevBannerSlide();
-              stopBannerAuto();
-            }}
-            aria-label="Previous Banner"
+            onClick={prevBannerSlide}
+            aria-label="Banner trước"
           >
-            <i className="fa-solid fa-angle-left"></i>
+            <FontAwesomeIcon icon={faAngleLeft} />
           </button>
           <button
             className={`${styles.jobBannerBtn} ${styles.jobBannerBtnRight}`}
-            onClick={() => {
-              nextBannerSlide();
-              stopBannerAuto();
-            }}
-            aria-label="Next Banner"
+            onClick={nextBannerSlide}
+            aria-label="Banner tiếp theo"
           >
-            <i className="fa-solid fa-angle-right"></i>
+            <FontAwesomeIcon icon={faAngleRight} />
           </button>
           <div className={styles.jobBannerIndicators}>
             {bannerImages.map((_, idx) => (
               <span
-                key={idx}
+                key={`indicator-${idx}`}
                 className={`${styles.jobIndicator} ${idx === bannerIdx ? styles.jobIndicatorActive : ''}`}
-                onClick={() => {
-                  showBannerSlide(idx);
-                  stopBannerAuto();
-                }}
-                aria-label={`Go to banner ${idx + 1}`}
+                onClick={() => showBannerSlide(idx)}
+                aria-label={`Chuyển đến banner ${idx + 1}`}
               ></span>
             ))}
           </div>
         </div>
       </section>
 
-      <div className={styles.jobDetail}>
+      <div className={styles.jobDetailDiv}>
         <h1>{job.Name}</h1>
         <div className={styles.jobDetailsGrid}>
           <div className={styles.jobDetailColumn}>
-            <h2><i className="fa-solid fa-building"></i>Thương hiệu</h2>
+            <h2>
+              <FontAwesomeIcon icon={faBuilding} />
+              Thương hiệu
+            </h2>
             <ul>
               <li>{job.Brands}</li>
             </ul>
           </div>
           <div className={styles.jobDetailColumn}>
-            <h2><i className="fa-solid fa-briefcase"></i>Cấp bậc</h2>
+            <h2>
+              <FontAwesomeIcon icon={faBriefcase} />
+              Cấp bậc
+            </h2>
             <ul>
               <li>{job.Position || 'Nhân viên'}</li>
             </ul>
           </div>
           <div className={styles.jobDetailColumn}>
-            <h2><i className="fa-solid fa-users"></i>Số lượng</h2>
+            <h2>
+              <FontAwesomeIcon icon={faUsers} />
+              Số lượng
+            </h2>
             <ul>
               <li>{job.Slot}</li>
             </ul>
           </div>
           <div className={styles.jobDetailColumn}>
-            <h2><i className="fa-solid fa-star"></i>Kinh nghiệm</h2>
+            <h2>
+              <FontAwesomeIcon icon={faStar} />
+              Kinh nghiệm
+            </h2>
             <ul>
               <li>{job['Work Experience'] || 'Không yêu cầu'}</li>
             </ul>
           </div>
           <div className={styles.jobDetailColumn}>
-            <h2><i className="fa-solid fa-graduation-cap"></i>Bằng cấp</h2>
+            <h2>
+              <FontAwesomeIcon icon={faGraduationCap} />
+              Bằng cấp
+            </h2>
             <ul>
               <li>{job.Degree || 'Trung học phổ thông'}</li>
             </ul>
           </div>
           <div className={styles.jobDetailColumn}>
-            <h2><i className="fa-solid fa-dollar-sign"></i>Mức lương</h2>
+            <h2>
+              <FontAwesomeIcon icon={faDollarSign} />
+              Mức lương
+            </h2>
             <ul>
               <li>{job.Salary}</li>
             </ul>
           </div>
           <div className={styles.jobDetailColumn}>
-            <h2><i className="fa-solid fa-calendar"></i>Hết hạn nộp</h2>
+            <h2>
+              <FontAwesomeIcon icon={faCalendar} />
+              Hết hạn nộp
+            </h2>
             <ul>
               <li>{job['Due date']}</li>
             </ul>
           </div>
           <div className={styles.jobDetailColumn}>
-            <h2><i className="fa-solid fa-location-dot"></i>Nơi làm việc</h2>
+            <h2>
+              <FontAwesomeIcon icon={faLocationDot} />
+              Nơi làm việc
+            </h2>
             <ul>
               <li>{job.Workplace}</li>
             </ul>
@@ -259,28 +355,27 @@ const JobDetail = () => {
           <h2>Mô tả công việc</h2>
           <div className={styles.jobSection}>
             <ul>
-              {(job['Job Description'] && job['Job Description'] !== '0' 
-                ? job['Job Description'] 
-                : 'Đang cập nhật thông tin mô tả công việc...'
-              ).split('\n').map((item, idx) => (
-                <li key={idx}>{item}</li>
-              ))}
+              {Array.isArray(job['Job Description']) && job['Job Description'].length > 0
+                ? job['Job Description'].map((item, idx) => (
+                    <li key={idx}>{item.trim()}</li>
+                  ))
+                : <li>Đang cập nhật thông tin mô tả công việc...</li>}
             </ul>
           </div>
           <div className={styles.jobSection}>
             <h3>Yêu cầu công việc</h3>
             <ul>
-              {(job['Job Requirements'] || 'Đang cập nhật...').split('\n').map((item, idx) => (
-                <li key={idx}>{item}</li>
-              ))}
+              {Array.isArray(job['Job Requirements']) && job['Job Requirements'].length > 0
+                ? job['Job Requirements'].map((item, idx) => <li key={idx}>{item.trim()}</li>)
+                : <li>Đang cập nhật...</li>}
             </ul>
           </div>
           <div className={styles.jobSection}>
             <h3>Quyền lợi</h3>
             <ul>
-              {(job['Welfare'] || 'Đang cập nhật...').split('\n').map((item, idx) => (
-                <li key={idx}>{item}</li>
-              ))}
+              {Array.isArray(job['Welfare']) && job['Welfare'].length > 0
+                ? job['Welfare'].map((item, idx) => <li key={idx}>{item.trim()}</li>)
+                : <li>Đang cập nhật...</li>}
             </ul>
           </div>
           <button className={styles.jobApplyBtn} onClick={openModal}>
@@ -294,18 +389,27 @@ const JobDetail = () => {
           </div>
           {latestJobs.length > 0 ? (
             latestJobs
-              .filter(latestJob => latestJob._id !== jobId)
+              .filter((latestJob) => latestJob._id !== jobId)
               .map((latestJob, idx) => (
                 <div key={latestJob._id || idx} className={styles.jobCard}>
                   <div className={styles.jobCardHeader}>{latestJob.Name}</div>
                   <div className={styles.jobCardContent}>
                     <div className={styles.jobCardTitle}>Thương hiệu: {latestJob.Brands}</div>
-                    <div className={styles.jobCardInfo}><strong>Nơi làm việc:</strong> {latestJob.Workplace}</div>
-                    <div className={styles.jobCardInfo}><strong>Mức lương:</strong> {latestJob.Salary}</div>
-                    <div className={styles.jobCardInfo}><strong>Số lượng tuyển:</strong> {latestJob.Slot}</div>
-                    <div className={styles.jobCardInfo}><strong>Ngày đăng:</strong> {new Date(latestJob.createdAt).toLocaleDateString('vi-VN')}</div>
-                    <Link 
-                      to={`/DetailJob/${latestJob._id}`} 
+                    <div className={styles.jobCardInfo}>
+                      <strong>Nơi làm việc:</strong> {latestJob.Workplace}
+                    </div>
+                    <div className={styles.jobCardInfo}>
+                      <strong>Mức lương:</strong> {latestJob.Salary}
+                    </div>
+                    <div className={styles.jobCardInfo}>
+                      <strong>Số lượng tuyển:</strong> {latestJob.Slot}
+                    </div>
+                    <div className={styles.jobCardInfo}>
+                      <strong>Ngày đăng:</strong>{' '}
+                      {new Date(latestJob.createdAt).toLocaleDateString('vi-VN')}
+                    </div>
+                    <Link
+                      to={`/DetailJob/${latestJob._id}`}
                       className={styles.jobViewDetails}
                       onClick={() => window.scrollTo(0, 0)}
                     >
@@ -329,18 +433,26 @@ const JobDetail = () => {
         <div className={styles.jobModal}>
           <div className={styles.jobModalContent}>
             <div className={styles.jobModalHeader}>
-              <div className={styles.jobModalTitle}>Apply Now</div>
-              <button className={styles.jobClose} onClick={closeModal}>×</button>
+              <div className={styles.jobModalTitle}>Ứng tuyển ngay</div>
+              <button className={styles.jobClose} onClick={closeModal}>
+                ×
+              </button>
             </div>
             <div className={styles.jobModalBody}>
               <div className={styles.jobPosition}>
-                <strong>Vị trí ứng tuyển:</strong> {job.Name}<br />
+                <strong>Vị trí ứng tuyển:</strong> {job.Name}
+                <br />
                 <strong>Việc làm tại:</strong> {job.Workplace}
               </div>
               <form onSubmit={submitApplication}>
                 <div className={styles.jobFormGroup}>
-                  <label>Địa điểm làm việc mong muốn</label>
-                  <select name="workplace" value={formData.workplace} onChange={handleFormChange}>
+                  <label className={styles.jobLabel}>Địa điểm làm việc mong muốn</label>
+                  <select
+                    name="workplace"
+                    value={formData.workplace}
+                    onChange={handleFormChange}
+                    className={styles.jobSelect}
+                  >
                     <option value="">- Theo sự sắp xếp -</option>
                     <option value="Hồ Chí Minh">Hồ Chí Minh</option>
                     <option value="Hà Nội">Hà Nội</option>
@@ -349,67 +461,99 @@ const JobDetail = () => {
                 </div>
                 <div className={styles.jobFormRow}>
                   <div className={styles.jobFormGroup}>
-                    <label>Họ và tên<span className={styles.jobRequired}>*</span></label>
+                    <label className={styles.jobLabel}>
+                      Họ và tên<span className={styles.jobRequired}>*</span>
+                    </label>
                     <input
                       type="text"
                       name="fullName"
                       placeholder="Nhập họ tên"
                       value={formData.fullName}
                       onChange={handleFormChange}
-                      style={{ borderColor: formErrors.fullName ? 'red' : '#ddd' }}
+                      className={`${styles.jobInput} ${formErrors.fullName ? styles.jobInputError : ''}`}
                     />
+                    {formErrors.fullName && (
+                      <span className={styles.jobError}>{formErrors.fullName}</span>
+                    )}
                   </div>
                   <div className={styles.jobFormGroup}>
-                    <label>Điện thoại<span className={styles.jobRequired}>*</span></label>
+                    <label className={styles.jobLabel}>
+                      Điện thoại<span className={styles.jobRequired}>*</span>
+                    </label>
                     <input
                       type="tel"
                       name="phone"
                       placeholder="Nhập số điện thoại"
                       value={formData.phone}
                       onChange={handleFormChange}
-                      style={{ borderColor: formErrors.phone ? 'red' : '#ddd' }}
+                      className={`${styles.jobInput} ${formErrors.phone ? styles.jobInputError : ''}`}
                     />
+                    {formErrors.phone && (
+                      <span className={styles.jobError}>{formErrors.phone}</span>
+                    )}
                   </div>
                 </div>
                 <div className={styles.jobFormRow}>
                   <div className={styles.jobFormGroup}>
-                    <label>Giới tính</label>
-                    <select name="gender" value={formData.gender} onChange={handleFormChange}>
+                    <label className={styles.jobLabel}>
+                      Giới tính<span className={styles.jobRequired}>*</span>
+                    </label>
+                    <select
+                      name="gender"
+                      value={formData.gender}
+                      onChange={handleFormChange}
+                      className={`${styles.jobSelect} ${formErrors.gender ? styles.jobInputError : ''}`}
+                    >
                       <option value="">- Chọn giới tính -</option>
                       <option value="Nam">Nam</option>
                       <option value="Nữ">Nữ</option>
                       <option value="Khác">Khác</option>
                     </select>
+                    {formErrors.gender && (
+                      <span className={styles.jobError}>{formErrors.gender}</span>
+                    )}
                   </div>
                   <div className={styles.jobFormGroup}>
-                    <label>Ngày sinh<span className={styles.jobRequired}>*</span></label>
+                    <label className={styles.jobLabel}>
+                      Ngày sinh<span className={styles.jobRequired}>*</span>
+                    </label>
                     <input
                       type="date"
                       name="dob"
                       value={formData.dob}
                       onChange={handleFormChange}
-                      style={{ borderColor: formErrors.dob ? 'red' : '#ddd' }}
+                      max={new Date().toISOString().split('T')[0]}
+                      className={`${styles.jobInput} ${formErrors.dob ? styles.jobInputError : ''}`}
                     />
+                    {formErrors.dob && (
+                      <span className={styles.jobError}>{formErrors.dob}</span>
+                    )}
                   </div>
                 </div>
                 <div className={styles.jobFormGroup}>
-                  <label>Email<span className={styles.jobRequired}>*</span></label>
+                  <label className={styles.jobLabel}>
+                    Email<span className={styles.jobRequired}>*</span>
+                  </label>
                   <input
                     type="email"
                     name="email"
                     placeholder="Nhập địa chỉ email"
                     value={formData.email}
                     onChange={handleFormChange}
-                    style={{ borderColor: formErrors.email ? 'red' : '#ddd' }}
+                    className={`${styles.jobInput} ${formErrors.email ? styles.jobInputError : ''}`}
                   />
+                  {formErrors.email && (
+                    <span className={styles.jobError}>{formErrors.email}</span>
+                  )}
                 </div>
                 <div className={styles.jobFormGroup}>
-                  <label>Ghi chú</label>
+                  <label className={styles.jobLabel}>Ghi chú</label>
                   <textarea
                     name="note"
                     placeholder="Nhập lưu ý đến nhà tuyển dụng"
                     value={formData.note}
                     onChange={handleFormChange}
+                    className={styles.jobTextarea}
                   ></textarea>
                 </div>
                 <div className={styles.jobFormGroup}>
@@ -420,14 +564,17 @@ const JobDetail = () => {
                       name="resume"
                       accept=".pdf,.doc,.docx"
                       onChange={handleFormChange}
-                      style={{ display: 'none' }}
+                      className={styles.jobFileInput}
                     />
                     <label htmlFor="resume" className={styles.jobFileBtn}>
-                      <i className="fa-solid fa-file"></i> Tải lên CV
+                      <FontAwesomeIcon icon={faFile} />
+                      Tải lên CV
                     </label>
                     <span>{formData.resume ? formData.resume.name : 'Chưa có tệp nào được chọn'}</span>
                   </div>
-                  {formErrors.resume && <span className={styles.jobRequired}>{formErrors.resume}</span>}
+                  {formErrors.resume && (
+                    <span className={styles.jobError}>{formErrors.resume}</span>
+                  )}
                 </div>
                 <div className={styles.jobModalFooter}>
                   <button type="button" className={styles.jobBtnCancel} onClick={closeModal}>

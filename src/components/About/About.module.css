@@ -1,24 +1,5 @@
 /* About.module.css */
 
-/* CSS Variables for reusability */
-:root {
-    --banner-btn-size: 36px;
-    --indicator-size: 10px;
-    --indicator-size-small: 8px;
-    --indicator-size-tiny: 6px;
-    --font-size-large: clamp(2rem, 5vw, 3rem);
-    --font-size-medium: clamp(1.5rem, 4vw, 2rem);
-    --font-size-small: clamp(0.9rem, 2.5vw, 1rem);
-    --font-size-tiny: clamp(0.8rem, 2vw, 0.9rem);
-    --primary-color: #1678f2;
-    --text-dark: #222;
-    --text-medium: #444;
-    --text-light: #fff;
-    --accent-color: #ffdd00;
-    --bg-about: #80142e;
-    --bg-stats: #8a0f2d;
-}
-
 /* Banner styles */
 .banner {
     width: 100%;
@@ -63,7 +44,7 @@
     top: 50%;
     transform: translateY(-50%);
     background: rgba(0, 0, 0, 0.4);
-    color: var(--text-light);
+    color: #fff;
     border: none;
     font-size: 1rem;
     padding: 0.5rem;
@@ -71,8 +52,8 @@
     border-radius: 50%;
     z-index: 3;
     transition: background 0.2s;
-    width: var(--banner-btn-size);
-    height: var(--banner-btn-size);
+    width: 36px;
+    height: 36px;
 }
 
 .bannerBtnLeft {
@@ -84,7 +65,7 @@
 }
 
 .bannerBtn:hover {
-    background: var(--primary-color);
+    background: #1678f2;
 }
 
 .bannerIndicators {
@@ -98,8 +79,8 @@
 }
 
 .indicator {
-    width: var(--indicator-size);
-    height: var(--indicator-size);
+    width: 10px;
+    height: 10px;
     background: rgba(255, 255, 255, 0.4);
     border-radius: 50%;
     cursor: pointer;
@@ -107,7 +88,7 @@
 }
 
 .indicator.active {
-    background: var(--text-light);
+    background: #fff;
 }
 
 /* Features styles */
@@ -143,18 +124,18 @@
     font-size: 1.8rem;
     margin: 0.5rem 0 0.25rem 0;
     font-weight: 700;
-    color: var(--text-dark);
+    color: #222;
 }
 
 .feature p {
-    font-size: var(--font-size-tiny);
-    color: var(--text-medium);
+    font-size: clamp(0.8rem, 2vw, 0.9rem);
+    color: #444;
     margin: 0;
 }
 
 /* About styles */
 .about {
-    background-color: var(--bg-about);
+    background-color: #80142e;
     text-align: left;
     padding: 2rem 1rem;
     display: flex;
@@ -163,16 +144,16 @@
 }
 
 .about h1 {
-    color: var(--text-light);
+    color: #fff;
     font-family: 'Playfair Display', serif;
-    font-size: var(--font-size-large);
+    font-size: clamp(2rem, 5vw, 3rem);
     margin: 0.5rem 0 1.5rem 0;
     font-weight: 700;
 }
 
 .about p {
-    color: var(--text-light);
-    font-size: var(--font-size-small);
+    color: #fff;
+    font-size: clamp(0.9rem, 2.5vw, 1rem);
     margin: 0 0 1.5rem 0;
     max-width: 90%;
     line-height: 1.6;
@@ -187,16 +168,16 @@
 
 /* Stats styles */
 .statsSection {
-    background-color: var(--bg-stats);
+    background-color: #8a0f2d;
     background-size: cover;
     background-position: center;
-    color: var(--text-light);
+    color: #fff;
     padding: 3rem 1rem;
     text-align: center;
 }
 
 .statsTitle {
-    font-size: var(--font-size-medium);
+    font-size: clamp(1.5rem, 4vw, 2rem);
     font-weight: bold;
     margin-bottom: 2rem;
     text-transform: uppercase;
@@ -221,12 +202,12 @@
 .statNumber {
     font-size: clamp(1.8rem, 5vw, 2.2rem);
     font-weight: bold;
-    color: var(--accent-color);
+    color: #ffdd00;
     margin-bottom: 0.5rem;
 }
 
 .statDescription {
-    font-size: var(--font-size-small);
+    font-size: clamp(0.9rem, 2.5vw, 1rem);
     line-height: 1.4;
     text-transform: uppercase;
     font-weight: 500;
@@ -234,6 +215,7 @@
 
 /* Route styles */
 .route {
+    background-color: #fff;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -255,7 +237,7 @@
 
 .brand h2 {
     font-family: 'Montserrat', serif;
-    font-size: var(--font-size-large);
+    font-size: clamp(2rem, 5vw, 3rem);
     margin: 0.5rem 0 1.5rem 0;
     font-weight: 700;
 }
@@ -277,7 +259,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: var(--text-light);
     overflow: hidden;
 }
 
@@ -289,7 +270,7 @@
 
 /* Testimonial styles */
 .testimonialSection {
-    background-color: var(--bg-stats);
+    background-color: #8a0f2d;
     position: relative;
     overflow: hidden;
     width: 100%;
@@ -305,7 +286,7 @@
     display: flex;
     align-items: center;
     padding: 2rem 5%;
-    color: var(--text-light);
+    color: #fff;
     opacity: 0;
     position: absolute;
     width: 100%;
@@ -335,7 +316,7 @@
 .testimonialImage img {
     width: 100%;
     display: block;
-    border: 3px solid var(--text-light);
+    border: 3px solid #fff;
     object-fit: cover;
 }
 
@@ -346,53 +327,14 @@
 
 .testimonialQuote {
     width: 100%;
-    font-size: var(--font-size-small);
+    font-size: clamp(0.9rem, 2.5vw, 1rem);
     margin-bottom: 1rem;
     text-align: left;
 }
 
 .testimonialAuthor {
     font-style: italic;
-    font-size: var(--font-size-tiny);
-}
-
-.testimonialBtn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(0, 0, 0, 0.4);
-    color: var(--text-light);
-    border: none;
-    font-size: 1rem;
-    padding: 0.5rem;
-    cursor: pointer;
-    border-radius: 50%;
-    z-index: 3;
-    transition: background 0.2s;
-    width: var(--banner-btn-size);
-    height: var(--banner-btn-size);
-}
-
-.testimonialBtnLeft {
-    left: 1rem;
-}
-
-.testimonialBtnRight {
-    right: 1rem;
-}
-
-.testimonialBtn:hover {
-    background: var(--primary-color);
-}
-
-.testimonialIndicators {
-    position: absolute;
-    bottom: 1rem;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 0.5rem;
-    z-index: 3;
+    font-size: clamp(0.8rem, 2vw, 0.9rem);
 }
 
 /* Media Queries for Responsiveness */
@@ -402,28 +344,28 @@
         min-height: 250px;
     }
 
-    .bannerBtn, .testimonialBtn {
+    .bannerBtn {
         font-size: 0.9rem;
-        width: calc(var(--banner-btn-size) - 4px);
-        height: calc(var(--banner-btn-size) - 4px);
+        width: 32px;
+        height: 32px;
     }
 
-    .bannerBtnLeft, .testimonialBtnLeft {
+    .bannerBtnLeft {
         left: 0.5rem;
     }
 
-    .bannerBtnRight, .testimonialBtnRight {
+    .bannerBtnRight {
         right: 0.5rem;
     }
 
-    .bannerIndicators, .testimonialIndicators {
+    .bannerIndicators {
         bottom: 0.8rem;
         gap: 0.4rem;
     }
 
     .indicator {
-        width: var(--indicator-size-small);
-        height: var(--indicator-size-small);
+        width: 8px;
+        height: 8px;
     }
 
     .features {
@@ -533,19 +475,19 @@
         min-height: 200px;
     }
 
-    .bannerBtn, .testimonialBtn {
+    .bannerBtn {
         font-size: 0.8rem;
-        width: calc(var(--banner-btn-size) - 8px);
-        height: calc(var(--banner-btn-size) - 8px);
+        width: 28px;
+        height: 28px;
     }
 
-    .bannerIndicators, .testimonialIndicators {
+    .bannerIndicators {
         bottom: 0.5rem;
     }
 
     .indicator {
-        width: var(--indicator-size-tiny);
-        height: var(--indicator-size-tiny);
+        width: 6px;
+        height: 6px;
     }
 
     .feature img {

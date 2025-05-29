@@ -1,23 +1,12 @@
-/* Reset và General */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f0f2f5;
-  color: #333;
-  line-height: 1.5;
-}
+/* Job.module.css */
 
 /* Banner Section */
 .banner {
   position: relative;
+  width: 100%;
 }
 
-.banner-wrapper {
+.bannerWrapper {
   position: relative;
   width: 100%;
   max-width: 100vw;
@@ -28,7 +17,7 @@ body {
   background-color: #a00;
 }
 
-.banner-image {
+.bannerImage {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -42,19 +31,19 @@ body {
   object-fit: cover;
 }
 
-.banner-image.active {
+.bannerImage.active {
   opacity: 1;
   transform: translateX(0);
   pointer-events: auto;
   z-index: 2;
 }
 
-.banner-image.prev {
+.bannerImage.prev {
   opacity: 0;
   transform: translateX(-100%);
 }
 
-.banner-btn {
+.bannerBtn {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -69,19 +58,19 @@ body {
   transition: background 0.2s ease;
 }
 
-.banner-btn-left {
+.bannerBtnLeft {
   left: 1.5rem;
 }
 
-.banner-btn-right {
+.bannerBtnRight {
   right: 1.5rem;
 }
 
-.banner-btn:hover {
+.bannerBtn:hover {
   background: #1678f2;
 }
 
-.banner-indicators {
+.bannerIndicators {
   position: absolute;
   bottom: 1.5rem;
   left: 50%;
@@ -108,7 +97,7 @@ body {
 }
 
 /* Job Search Section */
-.job-search {
+.jobSearch {
   margin-top: 60px;
   padding: 0 20px;
   width: 100%;
@@ -116,7 +105,7 @@ body {
   justify-content: center;
 }
 
-.job-search_container {
+.jobSearchContainer {
   background: #fff;
   padding: 25px;
   border-radius: 12px;
@@ -129,13 +118,13 @@ body {
   width: 100%;
 }
 
-.job-search_title {
+.jobSearchTitle {
   font-size: 2rem;
   font-weight: 700;
   color: #1a1a1a;
 }
 
-.job-search_form {
+.jobSearchForm {
   display: flex;
   gap: 15px;
   flex-wrap: wrap;
@@ -144,14 +133,14 @@ body {
   justify-content: center;
 }
 
-.job-search_field {
+.jobSearchField {
   position: relative;
   flex: 1;
   min-width: 200px;
 }
 
-.job-search_input,
-.job-search_select {
+.jobSearchInput,
+.jobSearchSelect {
   padding: 14px 14px 14px 45px;
   width: 100%;
   border: 1px solid #c7c7c7;
@@ -162,14 +151,14 @@ body {
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.job-search_input:focus,
-.job-search_select:focus {
+.jobSearchInput:focus,
+.jobSearchSelect:focus {
   border-color: #8b1c2c;
   box-shadow: 0 0 0 3px rgba(139, 28, 44, 0.2);
   outline: none;
 }
 
-.job-search_field-icon {
+.jobSearchFieldIcon {
   position: absolute;
   left: 15px;
   top: 50%;
@@ -178,7 +167,7 @@ body {
   font-size: 18px;
 }
 
-.job-search_button {
+.jobSearchButton {
   background-color: #8b1c2c;
   color: white;
   border: none;
@@ -193,18 +182,18 @@ body {
   flex-shrink: 0;
 }
 
-.job-search_button:hover {
+.jobSearchButton:hover {
   background-color: #a32034;
   transform: translateY(-2px);
 }
 
 /* Job Listings Section */
-.job-listings {
+.jobListings {
   margin-top: 60px;
   padding: 20px;
 }
 
-.job-listings_title {
+.jobListingsTitle {
   font-size: 2rem;
   background-color: #8b1c2c;
   color: white;
@@ -215,7 +204,7 @@ body {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.job-listings_grid {
+.jobListingsGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, 350px);
   gap: 40px;
@@ -225,7 +214,7 @@ body {
   padding: 0 15px;
 }
 
-.job-card {
+.jobCard {
   background-color: #fcfcfc;
   border-radius: 10px;
   overflow: hidden;
@@ -237,12 +226,12 @@ body {
   flex-shrink: 0;
 }
 
-.job-card:hover {
+.jobCard:hover {
   transform: translateY(-5px);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
 }
 
-.job-card_title {
+.jobCardTitle {
   padding: 15px;
   background-color: #8b1c2c;
   color: white;
@@ -254,7 +243,7 @@ body {
   align-items: center;
 }
 
-.job-card_content {
+.jobCardContent {
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -262,16 +251,16 @@ body {
   flex-grow: 1;
 }
 
-.job-card_info {
+.jobCardInfo {
   font-size: 0.95rem;
   color: #555;
 }
 
-.job-card_info strong {
+.jobCardInfo strong {
   color: #333;
 }
 
-.job-card_button {
+.jobCardButton {
   margin-top: auto;
   align-self: flex-start;
   margin-bottom: 20px;
@@ -286,20 +275,20 @@ body {
   text-decoration: none;
 }
 
-.job-card_button:hover {
+.jobCardButton:hover {
   background-color: #8b1c2c;
   color: #fff;
   transform: translateY(-2px);
 }
 
 /* Load More Button */
-.job-listings_more {
+.jobListingsMore {
   text-align: center;
   margin-top: 40px;
   margin-bottom: 40px;
 }
 
-.load-more-btn {
+.loadMoreBtn {
   background-color: #8b1c2c;
   color: white;
   padding: 14px 35px;
@@ -312,132 +301,132 @@ body {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.load-more-btn:hover {
+.loadMoreBtn:hover {
   background-color: #a32034;
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
 }
 
 /* Responsive Styles */
 @media (max-width: 1200px) {
-  .job-search_form {
+  .jobSearchForm {
     flex-direction: column;
     align-items: stretch;
   }
-  .job-search_field {
+  .jobSearchField {
     width: 100%;
     min-width: unset;
   }
-  .job-search_button {
+  .jobSearchButton {
     width: 100%;
     justify-content: center;
   }
-  .job-listings_grid {
+  .jobListingsGrid {
     grid-template-columns: repeat(auto-fit, 350px);
   }
-  .banner-wrapper {
+  .bannerWrapper {
     height: 45vw;
     min-height: 18rem;
   }
 }
 
 @media (max-width: 991px) {
-  .banner-wrapper {
+  .bannerWrapper {
     height: 50vw;
     min-height: 16rem;
   }
-  .banner-btn {
+  .bannerBtn {
     font-size: 1.25rem;
     padding: 0.4rem 0.8rem;
   }
 }
 
 @media (max-width: 768px) {
-  .banner-wrapper {
+  .bannerWrapper {
     height: 60vw;
     min-height: 15rem;
   }
-  .banner-btn {
+  .bannerBtn {
     font-size: 1rem;
     padding: 0.3rem 0.6rem;
   }
-  .banner-indicators {
+  .bannerIndicators {
     gap: 0.5rem;
   }
   .indicator {
     width: 0.75rem;
     height: 0.75rem;
   }
-  .job-search {
+  .jobSearch {
     padding: 0 15px;
   }
-  .job-search_container {
+  .jobSearchContainer {
     padding: 15px;
     gap: 10px;
   }
-  .job-search_title {
+  .jobSearchTitle {
     font-size: 1rem;
   }
-  .job-search_input,
-  .job-search_select,
-  .job-search_button {
+  .jobSearchInput,
+  .jobSearchSelect,
+  .jobSearchButton {
     padding: 10px 15px 10px 35px;
     font-size: 14px;
   }
-  .job-search_field-icon {
+  .jobSearchFieldIcon {
     left: 10px;
     font-size: 16px;
   }
-  .job-listings_title {
+  .jobListingsTitle {
     font-size: 1.5rem;
     padding: 10px 15px;
   }
-  .job-listings_grid {
+  .jobListingsGrid {
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 20px;
   }
-  .job-card {
+  .jobCard {
     width: 100%;
     max-width: 350px;
     margin-left: auto;
     margin-right: auto;
     height: 400px;
   }
-  .job-card_title {
+  .jobCardTitle {
     font-size: 1rem;
     padding: 12px;
   }
-  .job-card_content {
+  .jobCardContent {
     padding: 15px;
     gap: 6px;
   }
-  .job-card_info {
+  .jobCardInfo {
     font-size: 0.85rem;
   }
-  .job-card_button {
+  .jobCardButton {
     padding: 8px 15px;
     font-size: 0.9rem;
     margin-left: 15px;
     margin-bottom: 15px;
   }
-  .load-more-btn {
+  .loadMoreBtn {
     padding: 10px 25px;
     font-size: 0.95rem;
   }
 }
 
 @media (max-width: 500px) {
-  .banner-wrapper {
+  .bannerWrapper {
     height: 70vw;
     min-height: 12rem;
   }
-  .banner-btn {
+  .bannerBtn {
     font-size: 0.9rem;
     padding: 0.25rem 0.5rem;
   }
-  .banner-btn-left {
+  .bannerBtnLeft {
     left: 1rem;
   }
-  .banner-btn-right {
+  .bannerBtnRight {
     right: 1rem;
   }
   .indicator {
@@ -447,21 +436,21 @@ body {
 }
 
 @media (max-width: 480px) {
-  .banner-wrapper {
+  .bannerWrapper {
     height: 75vw;
     min-height: 10rem;
   }
-  .banner-btn {
+  .bannerBtn {
     font-size: 0.8rem;
     padding: 0.2rem 0.4rem;
   }
-  .banner-btn-left {
+  .bannerBtnLeft {
     left: 0.75rem;
   }
-  .banner-btn-right {
+  .bannerBtnRight {
     right: 0.75rem;
   }
-  .banner-indicators {
+  .bannerIndicators {
     bottom: 1rem;
     gap: 0.4rem;
   }
@@ -470,19 +459,18 @@ body {
     height: 0.5rem;
     border-width: 1px;
   }
-  .job-search {
+  .jobSearch {
     padding: 0 10px;
   }
-  
-  .job-search_title {
+  .jobSearchTitle {
     font-size: 0.9rem;
   }
-  .job-listings_grid {
+  .jobListingsGrid {
     grid-template-columns: 1fr;
     padding: 0 10px;
     gap: 20px;
   }
-  .job-card {
+  .jobCard {
     height: auto;
     width: 100%;
   }

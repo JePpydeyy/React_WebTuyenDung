@@ -1,1160 +1,1137 @@
-/* Index.module.css */
-
-/* Note: Global body styles should be in a global stylesheet (e.g., index.css) */
-/* 
-body {
-    font-family: "Roboto", sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-    line-height: 1.6;
+.text-only-box {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  max-width: 560px;
+  flex-shrink: 0;
 }
-*/
 
 .banner-wrapper {
-    position: relative;
-    width: 100%;
-    max-width: 100vw;
-    overflow: hidden;
-    height: 40vw;
-    min-height: 20rem;
-    max-height: 50rem;
-    background-color: #a00;
+  position: relative;
+  width: 100%;
+  max-width: 100vw;
+  overflow: hidden;
+  height: 40vw;
+  min-height: 20rem;
+  max-height: 45rem;
+  background-color: #a00;
 }
 
 .banner-image {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    left: 0;
-    top: 0;
-    opacity: 0;
-    transform: translateX(100%);
-    transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 1;
-    pointer-events: none;
-    object-fit: cover;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  transform: translateX(100%);
+  transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+  pointer-events: none;
+  object-fit: cover;
 }
 
 .banner-image.active {
-    opacity: 1;
-    transform: translateX(0);
-    pointer-events: auto;
-    z-index: 2;
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+  z-index: 2;
 }
 
 .banner-image.prev {
-    opacity: 0;
-    transform: translateX(-100%);
+  opacity: 0;
+  transform: translateX(-100%);
 }
 
 .banner-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(0, 0, 0, 0.4);
-    color: #fff;
-    border: none;
-    font-size: 1.5rem;
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-    border-radius: 50%;
-    z-index: 3;
-    transition: background 0.2s ease;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  border: none;
+  font-size: 1.5rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border-radius: 50%;
+  z-index: 3;
+  transition: background 0.2s ease;
 }
 
 .banner-btn-left {
-    left: 1.5rem;
+  left: 1.5rem;
 }
 
 .banner-btn-right {
-    right: 1.5rem;
+  right: 1.5rem;
 }
 
 .banner-btn:hover {
-    background: #1678f2;
+  background: #1678f2;
 }
 
 .banner-indicators {
-    position: absolute;
-    bottom: 1.5rem;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 0.75rem;
-    z-index: 3;
+  position: absolute;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.75rem;
+  z-index: 3;
 }
 
 .indicator {
-    width: 0.875rem;
-    height: 0.875rem;
-    border-radius: 50%;
-    background: #fff;
-    opacity: 0.5;
-    cursor: pointer;
-    border: 2px solid #1678f2;
-    transition: opacity 0.2s ease;
+  width: 0.875rem;
+  height: 0.875rem;
+  border-radius: 50%;
+  background: #fff;
+  opacity: 0.5;
+  cursor: pointer;
+  border: 2px solid #1678f2;
+  transition: opacity 0.2s ease;
 }
 
 .indicator.active {
-    opacity: 1;
-    background: #1678f2;
+  opacity: 1;
+  background: #1678f2;
 }
 
 .container-lastest {
-    width: 100%;
-    max-width: 90rem;
-    margin: 0 auto;
-    padding: 1.5rem;
-    box-sizing: border-box;
+  width: 100%;
+  max-width: 90rem;
+  margin: 0 auto;
+  padding: 1.5rem;
+  box-sizing: border-box;
 }
 
-/* Search bar styles (updated to match Jobcontent) */
 .job-search {
-    width: 100%;
-    background-color: #fff;
-    border-radius: 10px;
-    border: 1px solid #ddd;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 1rem;
-    margin-bottom: 2rem;
-    box-sizing: border-box;
+  width: 100%;
+  background-color: #fff;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-sizing: border-box;
 }
 
 .job-search_container {
-    max-width: 1200px;
-    margin: 0 auto;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .job-search_title {
-    font-size: 1.5rem;
-    color: #333;
-    margin: 0 0 1.5rem 0;
-    font-weight: 600;
-    text-align: center;
+  font-size: 1.5rem;
+  color: #333;
+  margin: 0 0 1.5rem 0;
+  font-weight: 600;
+  text-align: center;
 }
 
 .job-search_form {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    flex-wrap: wrap;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .job-search_field {
-    position: relative;
-    flex: 1;
-    min-width: 150px;
+  position: relative;
+  flex: 1;
+  min-width: 150px;
 }
 
 .job-search_field-icon {
-    position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #666;
-    font-size: 1rem;
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #666;
+  font-size: 1.1rem;
 }
 
 .job-search_input,
 .job-search_select {
-    width: 100%;
-    padding: 0.75rem 0.75rem 0.75rem 2.5rem; /* Padding for icon */
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 1rem;
-    color: #333;
-    background-color: #f9f9f9;
-    transition: border-color 0.3s ease;
+  width: 100%;
+  padding: 0.85rem 0.85rem 0.85rem 2.5rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  color: #333;
+  background-color: #f9f9f9;
+  transition: border-color 0.3s ease;
 }
 
 .job-search_input:focus,
 .job-search_select:focus {
-    border-color: #a00;
-    outline: none;
+  border-color: #a00;
+  outline: none;
 }
 
 .job-search_input::placeholder {
-    color: #999;
+  color: #999;
 }
 
 .job-search_select {
-    appearance: none;
-    cursor: pointer;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 0.75rem center;
-    background-size: 1rem;
+  appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1rem;
 }
 
 .job-search_button {
-    padding: 0.75rem 1rem;
-    background-color: #a00;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    font-size: 1rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background-color: #a00;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .job-search_button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
+  background-color: #ccc;
+  cursor: not-allowed;
 }
 
 .job-search_button:hover:not(:disabled) {
-    background-color: #800;
+  background-color: #800;
 }
 
 .hot-jobs {
-    margin-top: 2rem;
+  margin-top: 2rem;
 }
 
 .hot-jobs h1 {
-    font-size: 1.75rem;
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 1.5rem;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 2rem;
 }
 
 .job-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
 }
 
 .job-card {
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 5px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    transition: transform 0.2s ease;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.2s ease;
+  display: flex;
+  flex-direction: column;
 }
 
 .job-title-block {
-    height: auto;
-    min-height: 50px;
-    border-radius: 5px;
-    padding: 10px 15px;
-    background-color: #a00;
-    color: #fff;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    margin-bottom: 15px;
-    box-sizing: border-box;
-    font-size: 1.1rem;
+  min-height: 60px;
+  border-radius: 5px;
+  padding: 10px 15px;
+  background-color: #a00;
+  color: #fff;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin-bottom: 15px;
+  box-sizing: border-box;
+  font-size: 1.1rem;
 }
 
 .job-card:hover {
-    transform: translateY(-5px);
+  transform: translateY(-5px);
 }
 
 .job-details-wrapper p {
-    font-size: 1rem;
-    color: #444;
-    margin-bottom: 0.5rem;
-    line-height: 1.4;
+  font-size: 1rem;
+  color: #444;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
 }
 
 .job-details-wrapper p strong {
-    color: #222;
+  color: #222;
 }
 
 .job-apply-btn {
-    margin-top: 20px;
-    padding: 0.5rem 1rem;
-    border: 1px solid #a00;
-    color: #a00;
-    background-color: transparent;
-    border-radius: 5px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    text-decoration: none;
-    transition: all 0.2s ease;
-    align-self: flex-start;
-    display: inline-block;
+  margin-top: 20px;
+  padding: 0.5rem 1rem;
+  border: 1px solid #a00;
+  color: #a00;
+  background-color: transparent;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  align-self: flex-start;
+  display: inline-block;
 }
 
 .job-apply-btn:hover {
-    background-color: #a00;
-    color: #fff;
+  background-color: #a00;
+  color: #fff;
 }
 
 .watch-more {
-    margin-top: 40px;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 40px;
+  margin-top: 40px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 40px;
 }
 
 .watch-more-btn {
-    width: 200px;
-    padding: 1rem;
-    background-color: #a00;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    font-size: 1.2rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
+  width: 200px;
+  padding: 1rem;
+  background-color: #a00;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
 .watch-more-btn:hover {
-    background-color: #800;
+  background-color: #800;
 }
 
 .acfc-values-section {
-    width: 100%;
-    padding: 1.5rem 0;
-    display: flex;
-    flex-direction: column;
+  width: 100%;
+  padding: 1.5rem 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .acfc-values-section h2 {
-    text-align: center;
-    font-size: 2rem;
-    font-weight: 700;
-    color: #333;
-    margin: 1.5rem 0;
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #333;
+  margin: 1.5rem 0;
 }
 
 .values-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8rem;
-    padding: 1rem;
-    max-width: 90rem;
-    margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4rem;
+  padding: 1rem;
+  max-width: 90rem;
+  margin: 0 auto;
 }
 
 .value-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
 .value-item img {
-    width: 100px;
-    height: 100px;
-    object-fit: contain;
-    margin-bottom: 10px;
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  margin-bottom: 10px;
 }
 
 .value-item a {
-    text-decoration: none;
-    color: inherit;
-    transition: color 0.2s ease;
+  text-decoration: none;
+  color: inherit;
+  transition: color 0.2s ease;
 }
 
 .value-item a p {
-    font-size: 1rem;
-    color: #333;
-    margin: 0;
-    font-weight: 700;
+  font-size: 1rem;
+  color: #333;
+  margin: 0;
+  font-weight: 700;
 }
 
 .value-item a:hover p {
-    color: #a00;
+  color: #a00;
 }
 
 .acfc-love {
-    width: 100%;
-    max-width: 90rem;
-    margin: 3rem auto;
-    padding: 1.5rem;
+  width: 100%;
+  max-width: 90rem;
+  margin: 3rem auto;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .acfc-love h2 {
-    font-size: 2.2rem;
-    font-weight: 700;
-    color: #333;
-    text-align: center;
-    margin-bottom: 2rem;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #333;
+  text-align: center;
+  margin-bottom: 2rem;
 }
 
-.acfc-love-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 240px);
-    gap: 0;
-    justify-content: center;
-    margin: 0 auto;
+.acfc-love-container {
+  justify-content: center;
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+ 
+  padding: 0 1rem;
 }
 
-.acfc-l-box {
-    display: flex;
-    flex-direction: column;
-    width: 240px;
+.acfc-love-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 280px;
+  flex-shrink: 0;
+}
+
+.title-info-box,
+.image-info-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.image-info-box.reverse {
+  flex-direction: column-reverse;
+}
+
+.a-l-title,
+.a-l-info,
+.a-l-img,
+.carousel-item {
+  width: 280px;
+  height: 280px;
+  flex-shrink: 0;
 }
 
 .a-l-title {
-    margin: 0;
-    width: 240px;
-    height: 240px;
-    font-size: 1.8rem;
-    font-weight: 700;
-    background-color: #e0f0f5;
-    color: #000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  background-color: #e0f0f5;
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
 .a-l-info {
-    width: 240px;
-    height: 240px;
-    background-color: #800000;
-    color: #fff;
-    font-size: 1.1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 10px;
-    box-sizing: border-box;
+  background-color: #800000;
+  color: #fff;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 10px;
+  box-sizing: border-box;
 }
 
 .a-l-img {
-    width: 240px;
-    height: 240px;
-    overflow: hidden;
+  overflow: hidden;
 }
 
-.carousel-inner img,
 .carousel-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .carousel-item {
-    width: 240px;
-    height: 240px;
-    opacity: 0;
-    position: absolute;
-    top: 0;
-    left: 0;
-    transition: opacity 0.7s ease;
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: opacity 0.7s ease;
 }
 
 .carousel-item.active {
-    opacity: 1;
-    position: relative;
+  opacity: 1;
+  position: relative;
 }
 
 .video-section {
-    width: 100%;
-    max-width: 90rem;
-    margin: 3rem auto;
-    padding: 1.5rem;
-    text-align: center;
+  width: 100%;
+  max-width: 90rem;
+  margin: 3rem auto;
+  padding: 1.5rem;
+  text-align: center;
 }
 
 .video-section h2 {
-    font-size: 2.2rem;
-    font-weight: 700;
-    color: #333;
-    margin-bottom: 1.5rem;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 1.5rem;
 }
 
 .video-container {
-    position: relative;
-    width: 100%;
-    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
-    height: 0;
-    overflow: hidden;
-    max-width: 90rem;
-    margin: 0 auto;
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+  max-width: 90rem;
+  margin: 0 auto;
 }
 
 .video-container iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
 }
 
 .benefits-container {
-    display: flex;
-    gap: 20px;
-    justify-content: space-around;
-    margin: 40px auto;
-    max-width: 1320px;
-    padding: 20px;
+  display: flex;
+  gap: 20px;
+  justify-content: space-around;
+  margin: 40px auto;
+  max-width: 1320px;
+  padding: 20px;
 }
 
 .benefits-title {
-    text-align: center;
-    font-size: 2rem;
-    font-weight: 700;
-    color: #333;
-    margin-bottom: 1.5rem;
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 1.5rem;
 }
 
 .benefit-card {
-    width: 440px;
-    background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-    transition: transform 0.3s ease;
+  width: 440px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease;
 }
 
 .icon-title {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
 .icon-title .icon-image {
-    width: 60px;
-    height: 60px;
-    object-fit: contain;
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
 }
 
 .icon-title h3 {
-    font-size: 1.25rem;
-    color: #b00020;
-    margin: 0;
-    font-weight: 600;
+  font-size: 1.25rem;
+  color: #b00020;
+  margin: 0;
+  font-weight: 600;
 }
 
 .benefit-card ul {
-    padding-left: 20px;
-    list-style-type: disc;
+  padding-left: 20px;
+  list-style-type: disc;
 }
 
 .benefit-card li {
-    margin-bottom: 10px;
-    font-size: 1rem;
-    line-height: 1.5;
-    color: #444;
+  margin-bottom: 10px;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #444;
+}
+
+.tttable-mobile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
 }
 
 /* Responsive CSS */
 @media screen and (max-width: 1200px) {
-    .banner-wrapper {
-        height: 45vw;
-        min-height: 18rem;
-    }
-
-    .container-lastest {
-        max-width: 95%;
-        padding: 1.25rem;
-    }
-
-    .job-search_title {
-        font-size: 1.4rem;
-    }
-
-    .job-list {
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 1.25rem;
-    }
-
-    .acfc-love-grid {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 0;
-        max-width: 80%;
-    }
-
-    .acfc-l-box {
-        display: flex;
-        flex-direction: row;
-        width: 100%;
-        max-width: 480px;
-        flex-shrink: 0;
-    }
-
-    .a-l-title,
-    .a-l-info,
-    .a-l-img,
-    .carousel-item {
-        width: 240px;
-        height: 240px;
-        flex-shrink: 0;
-    }
-
-    .values-grid {
-        gap: 6rem;
-    }
-
-    .benefits-container {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-
-    .benefit-card {
-        width: 48%;
-        margin-bottom: 20px;
-    }
+  .banner-wrapper {
+    height: 45vw;
+    min-height: 18rem;
+  }
+  .container-lastest {
+    max-width: 95%;
+    padding: 1.25rem;
+  }
+  .job-search_title {
+    font-size: 1.4rem;
+  }
+  .job-list {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+  }
+  .acfc-love {
+    padding: 1rem;
+    margin: 2.5rem auto;
+  }
+  
+  .acfc-love-item {
+    width: 240px;
+  }
+  .a-l-title,
+  .a-l-info,
+  .a-l-img,
+  .carousel-item {
+    width: 240px;
+    height: 240px;
+  }
+  .a-l-title {
+    font-size: 1.6rem;
+  }
+  .a-l-info {
+    font-size: 1rem;
+    padding: 8px;
+  }
+  .values-grid {
+    gap: 3rem;
+  }
+  .benefits-container {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .benefit-card {
+    width: 48%;
+    margin-bottom: 20px;
+  }
 }
 
 @media screen and (max-width: 991px) {
-    .banner-wrapper {
-        height: 50vw;
-        min-height: 16rem;
-    }
-
-    .banner-btn {
-        font-size: 1.25rem;
-        padding: 0.4rem 0.8rem;
-    }
-
-    .job-search_form {
-        flex-direction: column;
-        gap: 0.75rem;
-    }
-
-    .job-search_field {
-        min-width: unset;
-        width: 100%;
-    }
-
-    .job-search_input,
-    .job-search_select,
-    .job-search_button {
-        width: 100%;
-        padding: 0.75rem 0.75rem 0.75rem 2.5rem;
-    }
-
-    .job-search_select {
-        padding-right: 2rem;
-        background-position: right 0.75rem center;
-    }
-
-    .job-list {
-        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-        gap: 1rem;
-    }
-
-    .acfc-love-grid {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 0;
-        max-width: 100%;
-    }
-
-    .acfc-l-box {
-        display: flex;
-        flex-direction: row;
-        width: 100%;
-        max-width: 480px;
-        flex-shrink: 0;
-    }
-
-    .a-l-title,
-    .a-l-info,
-    .a-l-img,
-    .carousel-item {
-        width: 240px;
-        height: 240px;
-        flex-shrink: 0;
-    }
-
-    .values-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 4rem;
-    }
-
-    .benefit-card {
-        width: 100%;
-    }
+  .banner-wrapper {
+    height: 50vw;
+    min-height: 16rem;
+  }
+  .banner-btn {
+    font-size: 1.25rem;
+    padding: 0.4rem 0.8rem;
+  }
+  .job-search_form {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .job-search_field {
+    min-width: unset;
+    width: 100%;
+  }
+  .job-search_input,
+  .job-search_select,
+  .job-search_button {
+    width: 100%;
+    padding: 0.75rem 0.75rem 0.75rem 1.5rem;
+  }
+  .job-search_select {
+    padding-right: 2rem;
+    background-position: right 0.75rem center;
+  }
+  .job-list {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+  }
+  .acfc-love {
+    padding: 1rem;
+    margin: 2rem auto;
+  }
+  .acfc-love h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+  }
+  .acfc-love-container {
+    flex-direction: column;
+    justify-content: center;
+    gap: 0; /* Loại bỏ gap */
+  }
+  .acfc-love-item {
+    width: 100%;
+    max-width: 400px;
+    margin: 0; /* Loại bỏ margin */
+  }
+  .title-info-box,
+  .image-info-box {
+    flex-direction: row; /* Layout ngang */
+  }
+  .image-info-box.reverse {
+    flex-direction: row-reverse; /* Xen kẽ: ảnh - info */
+  }
+  .a-l-title,
+  .a-l-info,
+  .a-l-img,
+  .carousel-item {
+    width: 200px;
+    height: 200px;
+  }
+  .a-l-title {
+    font-size: 1.4rem;
+    padding: 8px;
+  }
+  .a-l-info {
+    font-size: 0.95rem;
+    padding: 8px;
+  }
+  .values-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3rem;
+  }
+  .benefit-card {
+    width: 100%;
+  }
+  .tttable-mobile .acfc-love-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 0; /* Loại bỏ gap */
+  }
+  .tttable-mobile .acfc-love-item {
+    margin: 0; /* Loại bỏ margin */
+    max-width: 400px;
+  }
+  .tttable-mobile .a-l-title,
+  .tttable-mobile .a-l-info,
+  .tttable-mobile .a-l-img,
+  .tttable-mobile .carousel-item {
+    width: 200px;
+    height: 200px;
+  }
 }
 
 @media screen and (max-width: 767px) {
-    .banner-wrapper {
-        height: 60vw;
-        min-height: 15rem;
-    }
-
-    .banner-btn {
-        font-size: 1rem;
-        padding: 0.3rem 0.6rem;
-    }
-
-    .banner-indicators {
-        gap: 0.5rem;
-    }
-
-    .indicator {
-        width: 0.75rem;
-        height: 0.75rem;
-    }
-
-    .container-lastest {
-        padding: 1rem;
-    }
-
-    .job-search {
-        padding: 0.75rem;
-    }
-
-    .job-search_title {
-        font-size: 1.3rem;
-    }
-
-    .hot-jobs h1 {
-        font-size: 1.5rem;
-    }
-
-    .job-list {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-    }
-
-    .job-title-block {
-        font-size: 1rem;
-        padding: 8px 12px;
-    }
-
-    .job-details-wrapper p {
-        font-size: 0.9rem;
-    }
-
-    .job-apply-btn {
-        font-size: 0.85rem;
-        padding: 0.4rem 0.8rem;
-    }
-
-    .watch-more-btn {
-        width: 180px;
-        font-size: 1.1rem;
-        padding: 0.8rem;
-    }
-
-    .acfc-love h2 {
-        font-size: 1.8rem;
-    }
-
-    .a-l-title {
-        font-size: 1.5rem;
-    }
-
-    .a-l-info {
-        font-size: 1rem;
-    }
-
-    .acfc-love-grid {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 0;
-    }
-
-    .acfc-l-box {
-        display: flex;
-        flex-direction: row;
-        width: 100%;
-        max-width: 480px;
-    }
-
-    .a-l-title,
-    .a-l-info,
-    .a-l-img,
-    .carousel-item {
-        width: 240px;
-        height: 240px;
-        flex-shrink: 0;
-    }
-
-    .acfc-values-section h2 {
-        font-size: 1.8rem;
-    }
-
-    .values-grid {
-        gap: 3rem;
-    }
-
-    .video-section h2 {
-        font-size: 1.8rem;
-    }
-
-    .benefits-title {
-        font-size: 1.8rem;
-    }
-
-    .benefit-card {
-        width: 100%;
-        margin-bottom: 20px;
-    }
-
-    .icon-title h3 {
-        font-size: 1.1rem;
-    }
-
-    .benefit-card li {
-        font-size: 0.9rem;
-    }
+  .banner-wrapper {
+    height: 60vw;
+    min-height: 16rem;
+    max-height: 30rem;
+  }
+  .banner-btn {
+    font-size: 1rem;
+    padding: 0.3rem 0.6rem;
+  }
+  .banner-indicators {
+    gap: 0.5rem;
+  }
+  .indicator {
+    width: 0.75rem;
+    height: 0.75rem;
+  }
+  .container-lastest {
+    padding: 1rem;
+  }
+  .job-search {
+    padding: 0.75rem;
+  }
+  .job-search_title {
+    font-size: 1.3rem;
+  }
+  .hot-jobs h1 {
+    font-size: 1.5rem;
+  }
+  .job-list {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+  .job-title-block {
+    font-size: 1rem;
+    min-height: 50px;
+  }
+  .job-details-wrapper p {
+    font-size: 0.95rem;
+  }
+  .job-apply-btn {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.8rem;
+  }
+  .watch-more-btn {
+    width: 180px;
+    font-size: 1.1rem;
+    padding: 0.8rem;
+  }
+  .acfc-love {
+    padding: 0.75rem;
+    margin: 1.5rem auto;
+  }
+  .acfc-love h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .acfc-love-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 0; /* Loại bỏ gap */
+    padding: 0;
+  }
+  .acfc-love-item {
+    width: 100%;
+    max-width: 320px;
+    margin: 0; /* Loại bỏ margin */
+  }
+  .title-info-box,
+  .image-info-box {
+    flex-direction: row; /* Layout ngang */
+  }
+  .image-info-box.reverse {
+    flex-direction: row-reverse; /* Xen kẽ: ảnh - info */
+  }
+  .a-l-title,
+  .a-l-info,
+  .a-l-img,
+  .carousel-item {
+    width: 160px;
+    height: 160px;
+  }
+  .a-l-title {
+    font-size: 1.2rem;
+    padding: 6px;
+  }
+  .a-l-info {
+    font-size: 0.85rem;
+    padding: 6px;
+  }
+  .acfc-values-section h2 {
+    font-size: 1.8rem;
+  }
+  .values-grid {
+    gap: 2rem;
+  }
+  .video-section h2 {
+    font-size: 1.8rem;
+  }
+  .benefits-title {
+    font-size: 1.8rem;
+  }
+  .benefits-container {
+    gap: 15px;
+    padding: 15px;
+  }
+  .benefit-card li {
+    font-size: 0.95rem;
+  }
 }
 
 @media screen and (max-width: 500px) {
-    .banner-wrapper {
-        height: 70vw;
-        min-height: 12rem;
-    }
-
-    .banner-btn {
-        font-size: 0.9rem;
-        padding: 0.25rem 0.5rem;
-    }
-
-    .banner-btn-left {
-        left: 1rem;
-    }
-
-    .banner-btn-right {
-        right: 1rem;
-    }
-
-    .indicator {
-        width: 0.625rem;
-        height: 0.625rem;
-    }
-
-    .container-lastest {
-        padding: 0.75rem;
-    }
-
-    .job-search {
-        padding: 0.5rem;
-    }
-
-    .job-search_title {
-        font-size: 1.2rem;
-        margin-bottom: 1rem;
-    }
-
-    .job-search_form {
-        gap: 0.5rem;
-    }
-
-    .job-search_input,
-    .job-search_select,
-    .job-search_button {
-        font-size: 0.9rem;
-        padding: 0.5rem 0.5rem 0.5rem 2rem;
-    }
-
-    .job-search_select {
-        background-size: 0.8rem;
-    }
-
-    .hot-jobs h1 {
-        font-size: 1.3rem;
-    }
-
-    .job-title-block {
-        font-size: 0.9rem;
-        padding: 6px 10px;
-    }
-
-    .job-details-wrapper p {
-        font-size: 0.85rem;
-    }
-
-    .job-apply-btn {
-        font-size: 0.8rem;
-        padding: 0.3rem 0.6rem;
-    }
-
-    .watch-more-btn {
-        width: 160px;
-        font-size: 1rem;
-        padding: 0.6rem;
-    }
-
-    .acfc-love h2 {
-        font-size: 1.5rem;
-    }
-
-    .a-l-title {
-        font-size: 1.3rem;
-    }
-
-    .a-l-info {
-        font-size: 0.9rem;
-    }
-
-    .acfc-values-section h2 {
-        font-size: 1.5rem;
-    }
-
-    .values-grid {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-    }
-
-    .value-item img {
-        width: 80px;
-        height: 80px;
-    }
-
-    .value-item a p {
-        font-size: 0.9rem;
-    }
-
-    .video-section h2 {
-        font-size: 1.5rem;
-    }
-
-    .video-container {
-        padding-bottom: 75%;
-    }
-
-    .benefits-title {
-        font-size: 1.5rem;
-    }
-
-    .icon-title .icon-image {
-        width: 50px;
-        height: 50px;
-    }
-
-    .icon-title h3 {
-        font-size: 1rem;
-    }
-
-    .benefit-card li {
-        font-size: 0.85rem;
-    }
+  .banner-wrapper {
+    height: 65vw;
+    min-height: 14rem;
+  }
+  .banner-btn {
+    font-size: 0.9rem;
+    padding: 0.25rem 0.5rem;
+  }
+  .banner-btn-left {
+    left: 1rem;
+  }
+  .banner-btn-right {
+    right: 1rem;
+  }
+  .indicator {
+    width: 0.625rem;
+    height: 0.625rem;
+  }
+  .container-lastest {
+    padding: 0.75rem;
+  }
+  .job-search {
+    padding: 0.75rem;
+  }
+  .job-search_title {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+  .job-search_form {
+    gap: 0.5rem;
+  }
+  .job-search_input,
+  .job-search_select,
+  .job-search_button {
+    font-size: 0.95rem;
+    padding: 0.6rem 0.6rem 0.6rem 2rem;
+  }
+  .job-search_select {
+    background-size: 0.8rem;
+  }
+  .hot-jobs h1 {
+    font-size: 1.3rem;
+  }
+  .job-title-block {
+    font-size: 0.9rem;
+    min-height: 45px;
+  }
+  .job-details-wrapper p {
+    font-size: 0.9rem;
+  }
+  .job-apply-btn {
+    font-size: 0.8rem;
+    padding: 0.3rem 0.6rem;
+  }
+  .watch-more-btn {
+    width: 160px;
+    font-size: 1rem;
+    padding: 0.6rem;
+  }
+  .acfc-love {
+    padding: 0.5rem;
+    margin: 1rem auto;
+  }
+  .acfc-love h2 {
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+  }
+  .acfc-love-item {
+    max-width: 280px;
+    margin: 0; /* Loại bỏ margin */
+  }
+  .a-l-title,
+  .a-l-info,
+  .a-l-img,
+  .carousel-item {
+    width: 140px;
+    height: 140px;
+  }
+  .a-l-title {
+    font-size: 1rem;
+    padding: 4px;
+    line-height: 1.2;
+  }
+  .a-l-info {
+    font-size: 0.8rem;
+    padding: 4px;
+    line-height: 1.3;
+  }
+  .acfc-values-section h2 {
+    font-size: 1.5rem;
+  }
+  .values-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .value-item img {
+    width: 90px;
+    height: 90px;
+  }
+  .value-item a p {
+    font-size: 0.9rem;
+  }
+  .video-section h2 {
+    font-size: 1.5rem;
+  }
+  .video-section {
+    margin: 2.5rem auto;
+  }
+  .benefits-title {
+    font-size: 1.5rem;
+  }
+  .icon-title .icon-image {
+    width: 50px;
+    height: 50px;
+  }
+  .icon-title h3 {
+    font-size: 1rem;
+  }
+  .benefit-card li {
+    font-size: 0.9rem;
+  }
 }
 
 @media screen and (max-width: 480px) {
-    .banner-wrapper {
-        height: 75vw;
-        min-height: 10rem;
-    }
-
-    .banner-btn {
-        font-size: 0.8rem;
-        padding: 0.2rem 0.4rem;
-    }
-
-    .banner-btn-left {
-        left: 0.75rem;
-    }
-
-    .banner-btn-right {
-        right: 0.75rem;
-    }
-
-    .banner-indicators {
-        bottom: 1rem;
-        gap: 0.4rem;
-    }
-
-    .indicator {
-        width: 0.5rem;
-        height: 0.5rem;
-        border-width: 1px;
-    }
-
-    .container-lastest {
-        padding: 0.5rem;
-    }
-
-    .job-search {
-        padding: 0.5rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .job-search_title {
-        font-size: 1.1rem;
-        margin-bottom: 1rem;
-    }
-
-    .job-search_form {
-        gap: 0.5rem;
-    }
-
-    .job-search_input,
-    .job-search_select,
-    .job-search_button {
-        font-size: 0.85rem;
-        padding: 0.4rem 0.4rem 0.4rem 1.5rem;
-    }
-
-    .job-search_field-icon {
-        font-size: 0.85rem;
-        left: 8px;
-    }
-
-    .job-search_select {
-        padding-right: 1.5rem;
-        background-position: right 0.5rem center;
-        background-size: 0.7rem;
-    }
-
-    .hot-jobs {
-        margin-top: 1.5rem;
-    }
-
-    .hot-jobs h1 {
-        font-size: 1.2rem;
-        margin-bottom: 1rem;
-    }
-
-    .job-list {
-        gap: 0.75rem;
-    }
-
-    .job-card {
-        padding: 15px;
-    }
-
-    .job-title-block {
-        font-size: 0.85rem;
-        padding: 5px 8px;
-        min-height: 40px;
-    }
-
-    .job-details-wrapper p {
-        font-size: 0.8rem;
-        margin-bottom: 0.3rem;
-    }
-
-    .job-apply-btn {
-        margin-top: 15px;
-        font-size: 0.75rem;
-        padding: 0.25rem 0.5rem;
-    }
-
-    .watch-memory {
-        margin-top: 30px;
-        margin-bottom: 30px;
-    }
-
-    .watch-more-btn {
-        width: 140px;
-        font-size: 0.9rem;
-        padding: 0.5rem;
-    }
-
-    .acfc-love {
-        margin: 2rem auto;
-        padding: 1rem;
-    }
-
-    .acfc-love h2 {
-        font-size: 1.4rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .a-l-title {
-        font-size: 1.2rem;
-    }
-
-    .a-l-info {
-        font-size: 0.85rem;
-        padding: 8px;
-    }
-
-    .acfc-values-section {
-        padding: 1rem 0;
-    }
-
-    .acfc-values-section h2 {
-        font-size: 1.4rem;
-        margin: 1rem 0;
-    }
-
-    .values-grid {
-        gap: 1.5rem;
-        padding: 0.75rem;
-    }
-
-    .value-item img {
-        width: 70px;
-        height: 70px;
-    }
-
-    .value-item a p {
-        font-size: 0.85rem;
-    }
-
-    .video-section {
-        margin: 2rem auto;
-        padding: 1rem;
-    }
-
-    .video-section h2 {
-        font-size: 1.4rem;
-        margin-bottom: 1rem;
-    }
-
-    .video-container {
-        padding-bottom: 80%;
-    }
-
-    .benefits-container {
-        margin: 30px auto;
-        padding: 15px;
-        gap: 15px;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .benefits-title {
-        font-size: 1.4rem;
-        margin-bottom: 1rem;
-    }
-
-    .benefit-card {
-        padding: 15px;
-        width: 100%;
-        margin-bottom: 15px;
-    }
-
-    .benefit-card:last-child {
-        margin-bottom: 0;
-    }
-
-    .icon-title {
-        gap: 10px;
-        margin-bottom: 12px;
-    }
-
-    .icon-title .icon-image {
-        width: 45px;
-        height: 45px;
-    }
-
-    .icon-title h3 {
-        font-size: 0.95rem;
-    }
-
-    .benefit-card ul {
-        padding-left: 15px;
-    }
-
-    .benefit-card li {
-        font-size: 0.8rem;
-        margin-bottom: 8px;
-    }
+  .banner-wrapper {
+    height: 65vw;
+    min-height: 14rem;
+  }
+  .banner-btn {
+    font-size: 0.8rem;
+    padding: 0.2rem 0.4rem;
+  }
+  .banner-btn-left {
+    left: 0.75rem;
+  }
+  .banner-btn-right {
+    right: 0.75rem;
+  }
+  .banner-indicators {
+    bottom: 1rem;
+    gap: 0.4rem;
+  }
+  .indicator {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-width: 1px;
+  }
+  .container-lastest {
+    padding: 0.5rem;
+  }
+  .job-search {
+    padding: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+  .job-search_title {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+  .job-search_form {
+    gap: 0.5rem;
+  }
+  .job-search_field-icon {
+    font-size: 1rem;
+    left: 10px;
+  }
+  .job-search_input,
+  .job-search_select,
+  .job-search_button {
+    font-size: 0.95rem;
+    padding: 0.6rem 0.6rem 0.6rem 2rem;
+  }
+  .job-search_select {
+    padding-right: 1.5rem;
+    background-position: right 0.5rem center;
+    background-size: 0.7rem;
+  }
+  .hot-jobs {
+    margin-top: 1.5rem;
+  }
+  .hot-jobs h1 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+  .job-list {
+    gap: 0.75rem;
+  }
+  .job-card {
+    padding: 15px;
+  }
+  .job-title-block {
+    font-size: 0.85rem;
+    min-height: 40px;
+  }
+  .job-details-wrapper p {
+    font-size: 0.8rem;
+    margin-bottom: 0.3rem;
+  }
+  .job-apply-btn {
+    margin-top: 10px;
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+  }
+  .watch-more {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  .watch-more-btn {
+    width: 140px;
+    font-size: 0.9rem;
+    padding: 0.5rem;
+  }
+  .acfc-love {
+    padding: 0.5rem;
+    margin: 1rem auto;
+  }
+  .acfc-love h2 {
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+  }
+  .acfc-love-item {
+    max-width: 280px;
+    margin: 0; /* Loại bỏ margin */
+  }
+  .a-l-title,
+  .a-l-info,
+  .a-l-img,
+  .carousel-item {
+    width: 140px;
+    height: 140px;
+  }
+  .a-l-title {
+    font-size: 1rem;
+    padding: 4px;
+    line-height: 1.2;
+  }
+  .a-l-info {
+    font-size: 0.8rem;
+    padding: 4px;
+    line-height: 1.3;
+  }
+  .acfc-values-section {
+    padding: 1rem 0;
+  }
+  .acfc-values-section h2 {
+    font-size: 1.4rem;
+    margin: 1rem 0;
+  }
+  .values-grid {
+    gap: 1.5rem;
+    padding: 0.75rem;
+  }
+  .value-item img {
+    width: 90px;
+    height: 90px;
+  }
+  .value-item a p {
+    font-size: 0.85rem;
+  }
+  .video-section {
+    margin: 2rem auto;
+    padding: 1rem;
+  }
+  .video-section h2 {
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+  }
+  .video-container {
+    padding-bottom: 56.25%;
+  }
+  .benefits-container {
+    margin: 20px auto;
+    padding: 10px;
+    gap: 10px;
+    flex-direction: column;
+    align-items: center;
+  }
+  .benefits-title {
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+  }
+  .benefit-card {
+    padding: 15px;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  .benefit-card:last-child {
+    margin-bottom: 0;
+  }
+  .icon-title {
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .icon-title .icon-image {
+    width: 45px;
+    height: 45px;
+  }
+  .icon-title h3 {
+    font-size: 0.95rem;
+  }
+  .benefit-card ul {
+    padding-left: 15px;
+  }
+  .benefit-card li {
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+  }
 }

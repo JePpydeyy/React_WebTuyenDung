@@ -2,52 +2,54 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './Index.module.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faAngleLeft, faAngleRight, faSearch, faBriefcase, faMapMarkerAlt, faUserTie } from '@fortawesome/free-solid-svg-icons';
 
 const bannerImages = [
-  '/image/BANNER5.jpg',
-  '/image/BANNER6.jpg',
-  '/image/BANNER7.jpg',
+  '/assets/images/BANNER2.jpg',   
+  '/assets/images/BANNER3.jpg',
+  '/assets/images/BANNER4.jpg',
 ];
 
 const acfcValues = [
-  { img: '/image/01.png', text: 'Lịch sử hình thành', link: '#' },
-  { img: '/image/02.png', text: 'Tầm nhìn sứ mệnh - Giá trị cốt lõi', link: '#' },
-  { img: '/image/03.png', text: 'Danh hiệu & Giải thưởng', link: '#' },
-  { img: '/image/04.png', text: 'Tinh thần ACFC', link: '#' },
+  { img: '/assets/images/01.png', text: 'Lịch sử hình thành', link: '#' },
+  { img: '/assets/images/02.png', text: 'Tầm nhìn sứ mệnh - Giá trị cốt lõi', link: '#' },
+  { img: '/assets/images/03.png', text: 'Danh hiệu & Giải thưởng', link: '#' },
+  { img: '/assets/images/04.png', text: 'Tinh thần ACFC', link: '#' },
 ];
 
 const acfcLoveItems = [
   {
     title: '5 LÝ DO<br>BẠN YÊU ACFC',
-    info: 'ACFC - Happy Place To Work',
-    images: null,
-    reverse: false,
-  },
-  {
-    info: 'ACFC - Happy Place To Work',
-    images: ['/image/ms-phi-phuong.jpg', '/image/mr-louis-nguyen.jpg', '/image/tintuc3.jpg'],
-    reverse: false,
-  },
-  {
-    info: 'Lương thưởng - Chế độ phúc lợi hấp dẫn',
-    images: ['/image/ms-phi-phuong.jpg', '/image/mr-louis-nguyen.jpg', '/image/tintuc3.jpg'],
-    reverse: true,
-  },
-  {
     info: 'Trung thực, chính trực',
-    images: ['/image/ms-phi-phuong.jpg', '/image/mr-louis-nguyen.jpg', '/image/tintuc3.jpg'],
+    
+    reverse: false,
+  },
+  {
+    info: 'ACFC - Happy Place To Work',
+    images: ['/assets/images/banner-web-01.png', '/assets/images/banner-web-02.png', '/assets/images/banner-web-03.png'],
     reverse: false,
   },
   {
     info: 'Thỏa sức sáng tạo trong công việc',
-    images: ['/image/ms-phi-phuong.jpg', '/image/mr-louis-nguyen.jpg', '/image/tintuc3.jpg'],
+    images: ['/assets/images/banner-web-04.png', '/assets/images/banner-web-05.png', '/assets/images/banner-web-06.png'],
+    reverse: true,
+  },
+  {
+    info: 'Lương thưởng - Chế độ phúc lợi hấp dẫn',
+    images: ['/assets/images/banner-web-07.png', '/assets/images/banner-web-08.png', '/assets/images/banner-web-09.png'],
+    reverse: false,
+  },
+  {
+    info: 'Bạn được tôn trọng vì bạn là chính bạn mà không phải ai khác',
+    images: ['/assets/images/banner-web-10.png', '/assets/images/banner-web-11.png', '/assets/images/banner-web-12.png'],
     reverse: true,
   },
 ];
 
 const benefits = [
   {
-    icon: '/public/assets/images/pl-01.png',
+    icon: '/assets/images/pl-01.png',
     title: 'Lương thưởng và chế độ đãi ngộ hấp dẫn',
     items: [
       'Mức lương cạnh tranh, chế độ thưởng KPI theo quý, năm.',
@@ -57,7 +59,7 @@ const benefits = [
     ],
   },
   {
-    icon: 'public/image/pl-02.png',
+    icon: '/assets/images/pl-02.png',
     title: 'Môi trường làm việc thân thiện, trẻ trung, năng động',
     items: [
       'ACFC – Happy place to work, nơi hội tụ những cá nhân tài năng, cá tính và đầy năng lượng trong công việc.',
@@ -67,7 +69,7 @@ const benefits = [
     ],
   },
   {
-    icon: 'public/image/pl-03.png',
+    icon: '/assets/images/pl-03.png',
     title: 'Chương trình đào tạo bài bản, cơ hội học tập và phát triển',
     items: [
       'Học hỏi và phát triển cùng đội ngũ những người có kinh nghiệm dẫn đầu trong ngành thời trang bán lẻ.',
@@ -158,10 +160,12 @@ const Index = () => {
   const [brandOptions, setBrandOptions] = useState([]);
   const [workplaceOptions, setWorkplaceOptions] = useState([]);
   const [nameOptions, setNameOptions] = useState([]);
+  const [visibleJobs, setVisibleJobs] = useState(8); // State to track number of visible jobs
 
   const handleSearchChange = (e) => {
     const { name, value } = e.target;
     setSearchForm((prev) => ({ ...prev, [name]: value }));
+    setVisibleJobs(8); // Reset visible jobs when search criteria change
   };
 
   const handleSearchSubmit = (e) => {
@@ -171,6 +175,7 @@ const Index = () => {
       return;
     }
     setSearching(true);
+    setVisibleJobs(8); // Reset visible jobs on new search
   };
 
   // Fetch jobs from API
@@ -203,7 +208,7 @@ const Index = () => {
       )
     );
     const workplaces = Array.from(
-      new Set(
+      new Set(  
         jobs
           .flatMap((job) => (job.Workplace ? job.Workplace.split(',') : []))
           .map((place) => place.trim())
@@ -242,6 +247,11 @@ const Index = () => {
       return brandMatch && workplaceMatch && nameMatch && keywordMatch;
     });
   }, [jobs, searchForm, searching]);
+
+  // Handle View More click
+  const handleViewMore = () => {
+    setVisibleJobs((prev) => prev + 4);
+  };
 
   return (
     <main>
@@ -302,7 +312,10 @@ const Index = () => {
             <p className={styles['job-search_title']}>Tìm kiếm công việc phù hợp</p>
             <form className={styles['job-search_form']} onSubmit={handleSearchSubmit}>
               <div className={styles['job-search_field']}>
+                <i className={`fa-solid fa-magnifying-glass ${styles['job-search_field-icon']}`}></i>
+            
                 <input
+                
                   type="text"
                   name="keyword"
                   placeholder="Từ khóa(tên công việc, thương hiệu, nơi làm việc)"
@@ -374,7 +387,7 @@ const Index = () => {
             ) : filteredJobs.length === 0 ? (
               <div>Không có việc làm phù hợp.</div>
             ) : (
-              filteredJobs.map((job, idx) => (
+              filteredJobs.slice(0, visibleJobs).map((job, idx) => (
                 <div key={job._id || idx} className={styles['job-card']}>
                   <div className={styles['job-title-block']}>{job.Name}</div>
                   <div className={styles['job-details-wrapper']}>
@@ -401,9 +414,13 @@ const Index = () => {
               ))
             )}
           </div>
-          <section className={styles['watch-more']}>
-            <button className={styles['watch-more-btn']}>Xem thêm</button>
-          </section>
+          {filteredJobs.length > visibleJobs && (
+            <section className={styles['watch-more']}>
+              <button className={styles['watch-more-btn']} onClick={handleViewMore}>
+                Xem thêm
+              </button>
+            </section>
+          )}
         </div>
       </section>
 
@@ -422,37 +439,25 @@ const Index = () => {
         </div>
       </section>
 
-      {/* ACFC Love Section */}
-      <section className={styles['acfc-love']}>
+
+      <section className={`${styles['acfc-love']} ${styles['tttable-mobile']}`}>
         <h2>5 Lý Do Bạn Yêu ACFC</h2>
-        <div className={styles['acfc-love-grid']}>
+        <div className={styles['acfc-love-container']}>
           {acfcLoveItems.map((item, idx) => (
-            <div
-              key={idx}
-              className={`${styles['acfc-l-box']} ${item.reverse ? styles['reverse'] : ''}`}
-            >
+            <div key={idx} className={styles['acfc-love-item']}>
               {item.title ? (
-                <div className={styles['text-only-box']}>
-                  <h3
+                <div className={styles['title-info-box']}>
+                  <div 
                     className={styles['a-l-title']}
                     dangerouslySetInnerHTML={{ __html: item.title }}
-                  ></h3>
+                  />
                   <div className={styles['a-l-info']}>{item.info}</div>
                 </div>
               ) : (
-                <>
-                  {item.reverse ? (
-                    <>
-                      <div className={styles['a-l-info']}>{item.info}</div>
-                      <Carousel images={item.images} />
-                    </>
-                  ) : (
-                    <>
-                      <Carousel images={item.images} />
-                      <div className={styles['a-l-info']}>{item.info}</div>
-                    </>
-                  )}
-                </>
+                <div className={`${styles['image-info-box']} ${item.reverse ? styles['reverse'] : ''}`}>
+                  <div className={styles['a-l-info']}>{item.info}</div>
+                  <Carousel images={item.images} />
+                </div>
               )}
             </div>
           ))}
@@ -463,12 +468,7 @@ const Index = () => {
       <section className={styles['video-section']}>
         <h2>Video Giới Thiệu</h2>
         <div className={styles['video-container']}>
-          <iframe
-            src="https://www.youtube.com/embed/rKaqO1Lnmnc"
-            title="YouTube video player"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          ></iframe>
+        <iframe src="https://www.youtube.com/embed/rKaqO1Lnmnc?autoplay=1&amp;loop=1&amp;playlist=rKaqO1Lnmnc" title="Giới thiệu công ty ACFC" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen=""></iframe>
         </div>
       </section>
 

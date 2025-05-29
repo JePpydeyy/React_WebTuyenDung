@@ -222,59 +222,59 @@ const About = () => {
         </div>
       </div>
 
-      {/* Testimonial */}
-      <div className={styles.testimonialSection}>
-        <div className={styles.testimonialSlider} ref={testimonialSliderRef}>
-          {testimonials.map((item, idx) => (
-            <div
-              className={`${styles.testimonialSlide} ${idx === testimonialIdx ? styles.active : ''} ${
-                idx === (testimonialIdx - 1 + testimonials.length) % testimonials.length ? styles.prev : ''
-              }`}
-              key={idx}
-            >
-              <div className={styles.testimonialImage}>
-                <img src={item.img} alt={item.author} loading="lazy" />
-              </div>
-              <div className={styles.testimonialContent}>
-                <div className={styles.testimonialQuote}>{`"${item.quote}"`}</div>
-                <div className={styles.testimonialAuthor}>{item.author}</div>
-              </div>
-            </div>
-          ))}
+     {/* Testimonial */}
+<div className={styles.testimonialSection}>
+  <div className={styles.testimonialSlider} ref={testimonialSliderRef}>
+    {testimonials.map((item, idx) => (
+      <div
+        className={`${styles.testimonialSlide} ${idx === testimonialIdx ? styles.active : ''} ${
+          idx === (testimonialIdx - 1 + testimonials.length) % testimonials.length ? styles.prev : ''
+        }`}
+        key={idx}
+      >
+        <div className={styles.testimonialImage}>
+          <img src={item.img} alt={item.author} loading="lazy" />
         </div>
-        <button
-          className={`${styles.bannerBtn} ${styles.bannerBtnLeft}`}
-          aria-label="Previous Testimonial"
-          onClick={() => {
-            prevTestimonialSlide();
-            stopTestimonialAuto();
-          }}
-        >
-          <i className="fa-solid fa-angle-left"></i>
-        </button>
-        <button
-          className={`${styles.bannerBtn} ${styles.bannerBtnRight}`}
-          aria-label="Next Testimonial"
-          onClick={() => {
-            nextTestimonialSlide();
-            stopTestimonialAuto();
-          }}
-        >
-          <i className="fa-solid fa-angle-right"></i>
-        </button>
-        <div className={styles.bannerIndicators}>
-          {testimonials.map((_, idx) => (
-            <span
-              key={idx}
-              className={`${styles.indicator} ${idx === testimonialIdx ? styles.active : ''}`}
-              onClick={() => {
-                showTestimonialSlide(idx);
-                stopTestimonialAuto();
-              }}
-            ></span>
-          ))}
+        <div className={styles.testimonialContent}>
+          <div className={styles.testimonialQuote}>{`"${item.quote}"`}</div>
+          <div className={styles.testimonialAuthor}>{item.author}</div>
         </div>
       </div>
+    ))}
+  </div>
+  <button
+    className={`${styles.bannerBtn} ${styles.testimonialBtnLeft}`} // Changed from bannerBtnLeft
+    aria-label="Previous Testimonial"
+    onClick={() => {
+      prevTestimonialSlide();
+      stopTestimonialAuto();
+    }}
+  >
+    <i className="fa-solid fa-angle-left"></i>
+  </button>
+  <button
+    className={`${styles.bannerBtn} ${styles.testimonialBtnRight}`} // Changed from bannerBtnRight
+    aria-label="Next Testimonial"
+    onClick={() => {
+      nextTestimonialSlide();
+      stopTestimonialAuto();
+    }}
+  >
+    <i className="fa-solid fa-angle-right"></i>
+  </button>
+  <div className={styles.bannerIndicators}>
+    {testimonials.map((_, idx) => (
+      <span
+        key={idx}
+        className={`${styles.indicator} ${idx === testimonialIdx ? styles.active : ''}`}
+        onClick={() => {
+          showTestimonialSlide(idx);
+          stopTestimonialAuto();
+        }}
+      ></span>
+    ))}
+  </div>
+</div>
     </div>
   );
 };
