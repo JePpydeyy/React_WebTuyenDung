@@ -70,7 +70,7 @@ const Header = () => {
           </li>
           <li>
             <Link
-              to="/job"
+              to="/JobContent"
               className={location.pathname === '/job' ? styles.active : ''}
               onClick={() => handleLinkClick('/job')}
               aria-label="Go to Career Opportunities page"

@@ -5,7 +5,7 @@ import News from './pages/News';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import Jobcontent from './pages/Job';
-import JobDetail  from './pages/JobDetail'
+import JobDetail from './pages/JobDetail';
 import NewsDetail from './pages/NewsDetail';
 import Dashboard from './Admin/pages/Dashboard';
 import SubmitProfile from './Admin/pages/SubmitProfile';
@@ -17,56 +17,60 @@ import './App.css';
 import { AuthProvider } from './Admin/components/AuthContext/AuthContext';
 
 function App() {
-  
   return (
-    <Router>
-      <div className="App">
-        <Routes>
-          {/* Các route công khai */}
-          <Route path="/" element={<Home />} />
-          <Route path="/News" element={<News />} />
-          <Route path="/News/:id" element={<NewsDetail />} />
-          <Route path="/About" element={<About />} />
+    <AuthProvider>
+      <Router>  
+        <div className="App">
+          <Routes>
+            {/* Public routes */}
+            <Route path="/" element={<Home />} />
+            <Route path="/news" element={<News />} />
+            <Route path="/news/:id" element={<NewsDetail />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/JobContent" element={<Jobcontent />} />
+            <Route path="/DetailJob/:jobId" element={<JobDetail/>} />
 
-          {/* Route đăng nhập admin */}
-          <Route path="/admin/login" element={<Login />} />
+            {/* Admin login route */}
+            <Route path="/admin/login" element={<Login />} />
 
-          {/* Các route được bảo vệ cho admin */}
-          <Route
-            path="/admin"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/submit-profile"
-            element={
-              <ProtectedRoute>
-                <SubmitProfile />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/Job"
-            element={
-              <ProtectedRoute>
-                <Job />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/News"
-            element={
-              <ProtectedRoute>
-                <AdminNews />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
-      </div>
-    </Router>
+            {/* Admin protected routes */}
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/submit-profile"
+              element={
+                <ProtectedRoute>
+                  <SubmitProfile />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/jobs"
+              element={
+                <ProtectedRoute>
+                  <Job />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/news"
+              element={
+                <ProtectedRoute>
+                  <AdminNews />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </div>
+      </Router>
+    </AuthProvider>
   );
 }
 
