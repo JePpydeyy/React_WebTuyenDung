@@ -8,7 +8,6 @@ const Login = () => (
     <Sidebar />
     <div className={styles.mainContent}>
       <div className={styles.header}>
-        <h1>Đăng Nhập Quản Trị</h1>
       </div>
       <LoginForm />
     </div>

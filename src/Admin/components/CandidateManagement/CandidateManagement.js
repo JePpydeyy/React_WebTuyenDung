@@ -10,7 +10,7 @@ const CandidateManagement = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [selectedCandidate, setSelectedCandidate] = useState(null);
-  const itemsPerPage = 5;
+  const itemsPerPage = 10; // Tăng từ 1 lên 10 để hiển thị nhiều ứng viên hơn mỗi trang
 
   // Status mapping for display (backend -> UI)
   const statusDisplayMap = {
@@ -43,7 +43,6 @@ const CandidateManagement = () => {
 
   const formatDate = (dateString) => {
     if (!dateString) return '';
-    // Assuming backend returns date in ISO format (e.g., 'YYYY-MM-DD')
     const date = new Date(dateString);
     return date.toLocaleDateString('vi-VN');
   };
@@ -74,7 +73,7 @@ const CandidateManagement = () => {
         experience: sanitizeHTML(candidate.experience),
         skills: sanitizeHTML(candidate.skills),
         notes: sanitizeHTML(candidate.notes),
-        status: statusDisplayMap[candidate.status] || candidate.status, // Map backend status to UI
+        status: statusDisplayMap[candidate.status] || candidate.status,
       }));
     } catch (error) {
       showNotification(`Lỗi khi tải danh sách ứng viên: ${error.message}`, 'error');
@@ -130,7 +129,7 @@ const CandidateManagement = () => {
         experience: sanitizeHTML(candidate.experience),
         skills: sanitizeHTML(candidate.skills),
         notes: sanitizeHTML(candidate.notes),
-        status: statusDisplayMap[candidate.status] || candidate.status, // Map backend status to UI
+        status: statusDisplayMap[candidate.status] || candidate.status,
       });
     } catch (error) {
       showNotification(`Lỗi khi tải thông tin ứng viên: ${error.message}`, 'error');
@@ -154,12 +153,10 @@ const CandidateManagement = () => {
       return;
     }
     try {
-      // Fetch current profile
       const getRes = await fetch(`${API_URL}/${id}`);
       if (!getRes.ok) throw new Error('Không tìm thấy ứng viên');
       const currentProfile = await getRes.json();
 
-      // Update only the status field
       const updatedProfile = { ...currentProfile, status: backendStatus };
 
       const response = await fetch(`${API_URL}/${id}`, {
@@ -251,6 +248,83 @@ const CandidateManagement = () => {
     return statusMap[status] || '';
   };
 
+  // Tạo danh sách các nút phân trang
+  const getPaginationButtons = () => {
+    const maxButtons = 5; // Số nút số trang tối đa
+    const buttons = [];
+    const startPage = Math.max(1, currentPage - Math.floor(maxButtons / 2));
+    const endPage = Math.min(totalPages, startPage + maxButtons - 1);
+
+    // Nút trang đầu
+    buttons.push(
+      <button
+        key="first"
+        onClick={() => handlePageChange(1)}
+        disabled={currentPage === 1}
+      >
+        <i className="fa-solid fa-angles-left"></i>
+      </button>
+    );
+
+    // Nút trang trước
+    buttons.push(
+      <button
+        key="prev"
+        onClick={() => handlePageChange(currentPage - 1)}
+        disabled={currentPage === 1}
+      >
+        <i className="fa-solid fa-angle-left"></i>
+      </button>
+    );
+
+    // Dấu chấm lửng đầu (nếu cần)
+    if (startPage > 1) {
+      buttons.push(<span key="start-ellipsis">...</span>);
+    }
+
+    // Các nút số trang
+    for (let page = startPage; page <= endPage; page++) {
+      buttons.push(
+        <button
+          key={page}
+          className={page === currentPage ? styles.active : ''}
+          onClick={() => handlePageChange(page)}
+        >
+          {page}
+        </button>
+      );
+    }
+
+    // Dấu chấm lửng cuối (nếu cần)
+    if (endPage < totalPages) {
+      buttons.push(<span key="end-ellipsis">...</span>);
+    }
+
+    // Nút trang sau
+    buttons.push(
+      <button
+        key="next"
+        onClick={() => handlePageChange(currentPage + 1)}
+        disabled={currentPage === totalPages}
+      >
+        <i className="fa-solid fa-angle-right"></i>
+      </button>
+    );
+
+    // Nút trang cuối
+    buttons.push(
+      <button
+        key="last"
+        onClick={() => handlePageChange(totalPages)}
+        disabled={currentPage === totalPages}
+      >
+        <i className="fa-solid fa-angles-right"></i>
+      </button>
+    );
+
+    return buttons;
+  };
+
   return (
     <div className={styles.container}>
       {/* Filters */}
@@ -308,19 +382,7 @@ const CandidateManagement = () => {
           </tbody>
         </table>
         <div className={styles.pagination}>
-          <button onClick={() => handlePageChange(1)}><i className="fa-solid fa-angles-left"></i></button>
-          <button onClick={() => handlePageChange(Math.max(1, currentPage - 1))}><i className="fa-solid fa-angle-left"></i></button>
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-            < button
-              key={page}
-              className={page === currentPage ? styles.active : ''}
-              onClick={() => handlePageChange(page)}
-            >
-              {page}
-            </button>
-          ))}
-          <button onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}><i className="fa-solid fa-angle-right"></i></button>
-          <button onClick={() => handlePageChange(totalPages)}><i className="fa-solid fa-angles-right"></i></button>
+          {getPaginationButtons()}
         </div>
       </div>
 
