@@ -8,7 +8,8 @@
     width: 100%;
     height: 700px;
     overflow: hidden;
-    touch-action: pan-y;  
+    touch-action: pan-y;
+    user-select: none; /* Prevent text selection during drag */
 }
 
 .bannerImage {
@@ -52,6 +53,9 @@
     transition: background 0.2s;
     width: 36px;
     height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .bannerBtnLeft {
@@ -126,7 +130,6 @@
 }
 
 .feature p {
-    /* font-size: clampchercher: clamp(0.8rem, 2vw, 0.9rem); */
     color: #444;
     margin: 0;
 }
@@ -272,12 +275,16 @@
     position: relative;
     overflow: hidden;
     width: 100%;
+    height: 500px;
     padding: 2rem 0;
 }
 
 .testimonialSlider {
     width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
     position: relative;
+    height: 100%;
 }
 
 .testimonialSlide {
@@ -292,6 +299,8 @@
     top: 0;
     transform: translateX(100%);
     transition: opacity 0.7s ease, transform 0.7s ease;
+    height: 100%;
+    box-sizing: border-box;
 }
 
 .testimonialSlide.active {
@@ -321,6 +330,7 @@
 .testimonialContent {
     flex: 1;
     line-height: 1.6;
+    overflow-y: auto;
 }
 
 .testimonialQuote {
@@ -333,6 +343,40 @@
 .testimonialAuthor {
     font-style: italic;
     font-size: clamp(0.8rem, 2vw, 0.9rem);
+}
+
+.testimonialBtnLeft,
+.testimonialBtnRight {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.4);
+    color: #fff;
+    border: none;
+    font-size: 1rem;
+    padding: 0.5rem;
+    cursor: pointer;
+    border-radius: 50%;
+    z-index: 3;
+    transition: background 0.2s;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.testimonialBtnLeft {
+    left: 1rem;
+}
+
+.testimonialBtnRight {
+    right: 1rem;
+}
+
+.testimonialBtnLeft:hover,
+.testimonialBtnRight:hover {
+    background: #1678f2;
 }
 
 /* Media Queries for Responsiveness */
@@ -446,6 +490,15 @@
         height: clamp(60px, 20vw, 80px);
     }
 
+    .testimonialSection {
+        height: auto;
+    }
+
+    .testimonialSlider {
+        max-width: 100%;
+        padding: 0 2rem;
+    }
+
     .testimonialSlide {
         flex-direction: column;
         padding: 1.5rem 5%;
@@ -464,6 +517,14 @@
 
     .testimonialAuthor {
         font-size: 0.8rem;
+    }
+
+    .testimonialBtnLeft {
+        left: 0.5rem;
+    }
+
+    .testimonialBtnRight {
+        right: 0.5rem;
     }
 }
 
@@ -530,6 +591,10 @@
         height: clamp(50px, 15vw, 60px);
     }
 
+    .testimonialSlider {
+        padding: 0 1.5rem;
+    }
+
     .testimonialImage {
         width: 100px;
     }
@@ -540,5 +605,20 @@
 
     .testimonialAuthor {
         font-size: 0.75rem;
+    }
+
+    .testimonialBtnLeft,
+    .testimonialBtnRight {
+        font-size: 0.8rem;
+        width: 28px;
+        height: 28px;
+    }
+
+    .testimonialBtnLeft {
+        left: 0.5rem;
+    }
+
+    .testimonialBtnRight {
+        right: 0.5rem;
     }
 }

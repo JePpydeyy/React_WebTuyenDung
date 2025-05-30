@@ -19,7 +19,7 @@ const Contact = () => {
               </p>
             </div>
             <div className={styles.region}>
-              <h3>Miền Bắc</h3>
+              <h3>Miền Bắc</h3>ca
               <p>
                 Hotline: <strong>090 485 5042</strong>
               </p>

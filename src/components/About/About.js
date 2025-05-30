@@ -37,8 +37,7 @@ const About = () => {
   // Banner slider state
   const [bannerIdx, setBannerIdx] = useState(0);
   const bannerTimer = useRef(null);
-  const touchStartX = useRef(null);
-  const touchEndX = useRef(null);
+  const dragStartX = useRef(null);
   const isDragging = useRef(false);
 
   // Testimonial slider state
@@ -68,69 +67,65 @@ const About = () => {
     if (bannerTimer.current) clearInterval(bannerTimer.current);
   }
 
-  // Swipe handling
-  const handleTouchStart = (e) => {
-    touchStartX.current = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+  // Drag handling
+  const handleDragStart = (e) => {
+    const clientX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+    dragStartX.current = clientX;
     isDragging.current = true;
     stopBannerAuto();
+    e.preventDefault(); // Prevent text selection or scrolling
   };
 
-  const handleTouchMove = (e) => {
+  const handleDragMove = (e) => {
     if (!isDragging.current) return;
-    touchEndX.current = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
-  };
-
-  const handleTouchEnd = () => {
-    if (!isDragging.current || touchStartX.current === null || touchEndX.current === null) {
-      isDragging.current = false;
-      return;
-    }
-
-    const deltaX = touchEndX.current - touchStartX.current;
+    const clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+    const deltaX = clientX - dragStartX.current;
     const swipeThreshold = 50; // Minimum distance for a swipe
 
-    if (deltaX > swipeThreshold) {
-      prevBannerSlide();
-    } else if (deltaX < -swipeThreshold) {
-      nextBannerSlide();
+    if (Math.abs(deltaX) > swipeThreshold) {
+      if (deltaX > 0) {
+        prevBannerSlide();
+      } else {
+        nextBannerSlide();
+      }
+      isDragging.current = false; // Reset after swipe
     }
-
-    isDragging.current = false;
-    touchStartX.current = null;
-    touchEndX.current = null;
-    startBannerAuto();
   };
 
-  // Banner hover and swipe events
+  const handleDragEnd = () => {
+    if (isDragging.current) {
+      isDragging.current = false;
+      dragStartX.current = null;
+      startBannerAuto();
+    }
+  };
+
+  // Banner event listeners
   const bannerWrapperRef = useRef(null);
   useEffect(() => {
     const wrapper = bannerWrapperRef.current;
     if (!wrapper) return;
 
+    wrapper.addEventListener('touchstart', handleDragStart, { passive: false });
+    wrapper.addEventListener('touchmove', handleDragMove, { passive: false });
+    wrapper.addEventListener('touchend', handleDragEnd);
+    wrapper.addEventListener('mousedown', handleDragStart);
+    wrapper.addEventListener('mousemove', handleDragMove);
+    wrapper.addEventListener('mouseup', handleDragEnd);
+    wrapper.addEventListener('mouseleave', handleDragEnd);
     wrapper.addEventListener('mouseenter', stopBannerAuto);
     wrapper.addEventListener('mouseleave', startBannerAuto);
-    wrapper.addEventListener('touchstart', handleTouchStart, { passive: true });
-    wrapper.addEventListener('touchmove', handleTouchMove, { passive: true });
-    wrapper.addEventListener('touchend', handleTouchEnd);
-    wrapper.addEventListener('mousedown', handleTouchStart);
-    wrapper.addEventListener('mousemove', handleTouchMove);
-    wrapper.addEventListener('mouseup', handleTouchEnd);
-    wrapper.addEventListener('mouseleave', () => {
-      if (isDragging.current) handleTouchEnd();
-    });
 
     return () => {
+      wrapper.removeEventListener('touchstart', handleDragStart);
+      wrapper.removeEventListener('touchmove', handleDragMove);
+      wrapper.removeEventListener('touchend', handleDragEnd);
+      wrapper.removeEventListener('mousedown', handleDragStart);
+      wrapper.removeEventListener('mousemove', handleDragMove);
+      wrapper.removeEventListener('mouseup', handleDragEnd);
+      wrapper.removeEventListener('mouseleave', handleDragEnd);
       wrapper.removeEventListener('mouseenter', stopBannerAuto);
       wrapper.removeEventListener('mouseleave', startBannerAuto);
-      wrapper.removeEventListener('touchstart', handleTouchStart);
-      wrapper.removeEventListener('touchmove', handleTouchMove);
-      wrapper.removeEventListener('touchend', handleTouchEnd);
-      wrapper.removeEventListener('mousedown', handleTouchStart);
-      wrapper.removeEventListener('mousemove', handleTouchMove);
-      wrapper.removeEventListener('mouseup', handleTouchEnd);
-      wrapper.removeEventListener('mouseleave', () => {
-        if (isDragging.current) handleTouchEnd();
-      });
     };
   }, []);
 
@@ -318,7 +313,7 @@ const About = () => {
             stopTestimonialAuto();
           }}
         >
-          <i className="fa-solid fa-angle-right"></i>
+          <i className="fa-solid fa-angle-left"></i>
         </button>
         <div className={styles.bannerIndicators}>
           {testimonials.map((_, idx) => (

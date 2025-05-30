@@ -1,9 +1,12 @@
+/* Container chung */
 .container {
-  width: 1800px;
+  max-width: 100%;
   margin: 0 auto;
   padding: 20px;
+  box-sizing: border-box;
 }
 
+/* Loading spinner */
 .loading {
   display: flex;
   justify-content: center;
@@ -32,27 +35,28 @@
   }
 }
 
+/* Layout chính */
 .mainLayout {
   display: grid;
   grid-template-columns: 2fr 1fr;
-  gap: 40px;
+  gap: 30px;
   margin-top: 20px;
 }
 
+/* Article detail */
 .articleDetail {
-  /* Không có background để tắt nền trắng */
+  /* Không cần background */
 }
 
 .articleHeader {
-
-  margin-bottom: 30px;
+  margin-bottom: 25px;
 }
 
 .thumbnail {
   width: 100%;
-  height: 400px;
+  height: auto;
+  max-height: 400px;
   object-fit: cover;
-  display: block;
   border-radius: 12px;
 }
 
@@ -71,16 +75,14 @@
   color: #666;
 }
 
-
 .contentBlock {
-  margin-bottom: 40px;
+  margin-bottom: 30px;
 }
 
 .contentText {
   font-size: 1.15rem;
   line-height: 1.8;
   text-align: justify;
-  margin-bottom: 30px;
   color: #2c3e50;
 }
 
@@ -88,14 +90,9 @@
   width: 100%;
   height: auto;
   border-radius: 12px;
-  transition: all 0.4s ease;
   cursor: pointer;
+  transition: all 0.4s ease;
 }
-
-/* .articleImage:hover {
-  transform: scale(1.02);
-  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
-} */
 
 .imageCaption {
   font-style: italic;
@@ -108,16 +105,15 @@
 
 .backButton {
   display: inline-block;
-  padding: 15px 30px;
+  padding: 12px 25px;
   text-decoration: none;
   font-weight: bold;
   margin-bottom: 20px;
   transition: all 0.3s ease;
   color: #fff;
-  background: #eee;
+  background: #8b1c2c;
   border-radius: 8px;
   border: none;
-  background: #8b1c2c;
 }
 
 .backButton:hover {
@@ -130,61 +126,14 @@
   outline-offset: 2px;
 }
 
-.shareBtn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  color: #fff;
-  text-decoration: none;
-  transition: all 0.3s ease;
-  font-size: 1.8rem;
-  position: relative;
-  overflow: hidden;
-  margin-top: 20px;
-}
-
-.shareBtn::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-  transition: all 0.3s ease;
-  transform: translate(-50%, -50%);
-}
-
-.shareBtn:hover::before {
-  width: 100%;
-  height: 100%;
-}
-
-.shareBtn:hover {
-  transform: translateY(-5px) scale(1.1);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-}
-
-.shareBtn:focus {
-  outline: 2px solid #1678f2;
-  outline-offset: 2px;
-}
-
-.facebook {
-  background: linear-gradient(135deg, #3b5998, #2d4373);
-}
-
+/* Sidebar */
 .sidebar {
-  width: 500px;
+  width: 100%;
+  max-width: 400px;
   background: #fff;
   border-radius: 12px;
-  padding: 25px;
+  padding: 20px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  height: fit-content;
   position: sticky;
   top: 20px;
 }
@@ -193,37 +142,19 @@
   font-size: 1.5rem;
   font-weight: 600;
   color: #1a1a1a;
-  margin-bottom: 25px;
-  padding-bottom: 15px;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
   border-bottom: 2px solid #a00;
 }
 
+/* News grid */
 .newsGrid {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  overflow-x: auto;
-  padding-bottom: 15px;
-  scrollbar-width: thin;
-  scrollbar-color: #1678f2 #f3f3f3;
-}
-
-.newsGrid::-webkit-scrollbar {
-  height: 8px;
-}
-
-.newsGrid::-webkit-scrollbar-track {
-  background: #f3f3f3;
-}
-
-.newsGrid::-webkit-scrollbar-thumb {
-  background: #1678f2;
-  border-radius: 4px;
+  gap: 15px;
 }
 
 .gridItem {
-  
-  flex: 0 0 300px;
   display: flex;
   flex-direction: column;
   padding: 15px;
@@ -239,11 +170,12 @@
 }
 
 .gridImage img {
-  height: 100%;
   width: 100%;
+  height: 100%;
   object-fit: cover;
   transition: transform 0.3s ease;
 }
+
 .gridTitle {
   font-size: 1.1rem;
   font-weight: 500;
@@ -254,12 +186,6 @@
 
 .gridTitle:hover {
   color: #a00;
-  text-decoration: none;
-}
-
-.gridTitle:focus {
-  outline: 2px solid #1678f2;
-  outline-offset: 2px;
 }
 
 .gridDate {
@@ -274,41 +200,22 @@
   color: #333;
 }
 
+/* Jobs grid */
 .jobsGrid {
-  margin-top: 40px;
+  margin-top: 30px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  overflow-x: auto;
-  padding-bottom: 15px;
-  scrollbar-width: thin;
-  scrollbar-color: #8b1c2c #f3f3f3;
-}
-
-.jobsGrid::-webkit-scrollbar {
-  height: 8px;
-}
-
-.jobsGrid::-webkit-scrollbar-track {
-  background: #f3f3f3;
-}
-
-.jobsGrid::-webkit-scrollbar-thumb {
-  background: #8b1c2c;
-  border-radius: 4px;
+  gap: 15px;
 }
 
 .jobCard {
-  border: 1px solid black;
+  border: 1px solid #ddd;
   background-color: #fcfcfc;
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  
-  flex-shrink: 0;
 }
 
 .jobCardTitle {
@@ -317,17 +224,16 @@
   color: white;
   font-weight: bold;
   font-size: 1.15rem;
-  border-radius: 10px;
-  height: 100px;
+  border-radius: 10px 10px 0 0;
   display: flex;
   align-items: center;
 }
 
 .jobCardContent {
-  padding: 20px;
+  padding: 15px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   flex-grow: 1;
 }
 
@@ -343,8 +249,7 @@
 .jobCardButton {
   margin-top: auto;
   align-self: flex-start;
-  margin-bottom: 20px;
-  padding: 12px 25px;
+  padding: 10px 20px;
   border: 1px solid #8b1c2c;
   background-color: transparent;
   color: #8b1c2c;
@@ -363,8 +268,8 @@
 
 .viewMoreBtn {
   display: inline-block;
-  padding: 12px 25px;
-  margin-top: 20px;
+  padding: 10px 20px;
+  margin-top: 15px;
   background: #1678f2;
   color: #fff;
   border: none;
@@ -379,26 +284,7 @@
   transform: translateY(-2px);
 }
 
-.viewMoreBtn:focus {
-  outline: 2px solid #1678f2;
-  outline-offset: 2px;
-}
-
-.fadeIn {
-  animation: fadeIn 0.8s ease-in;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
+/* Modal */
 .modal {
   position: fixed;
   top: 0;
@@ -412,41 +298,76 @@
   align-items: center;
   z-index: 1000;
   cursor: pointer;
-  padding: 20px;
+  padding: 15px;
 }
 
 .modalImage {
   max-width: 90%;
-  max-height: 80%;
+  max-height: 70%;
   border-radius: 8px;
 }
 
 .modalCaption {
   color: #fff;
-  font-size: 1.2rem;
+  font-size: 1rem;
   text-align: center;
-  margin-top: 20px;
+  margin-top: 15px;
   background: rgba(0, 0, 0, 0.7);
-  padding: 15px 20px;
+  padding: 10px 15px;
   border-radius: 8px;
 }
 
 .errorMessage {
-  padding: 40px;
+  padding: 30px;
   text-align: center;
   color: red;
   font-size: 1.2rem;
 }
 
 /* Responsive Design */
-@media (max-width: 1024px) {
+@media (max-width: 1200px) {
+  .container {
+    padding: 15px;
+  }
+
   .mainLayout {
     grid-template-columns: 1fr;
-    gap: 30px;
+    gap: 20px;
   }
 
   .sidebar {
+    max-width: 100%;
     position: static;
+  }
+
+  .thumbnail {
+    max-height: 350px;
+  }
+
+  .articleTitle h1 {
+    font-size: 2.2rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .articleTitle h1 {
+    font-size: 2rem;
+  }
+
+  .contentText {
+    font-size: 1.1rem;
+  }
+
+  .gridItem {
+    padding: 10px;
+  }
+
+  .gridImage {
+    height: 10rem;
+  }
+
+  .jobCard {
+    max-width: 100%;
   }
 }
 
@@ -455,25 +376,112 @@
     padding: 10px;
   }
 
+  .thumbnail {
+    max-height: 300px;
+  }
+
   .articleTitle h1 {
     font-size: 1.8rem;
   }
 
   .contentText {
     font-size: 1rem;
+    line-height: 1.6;
   }
 
-  .shareBtn {
-    width: 50px;
-    height: 50px;
-    font-size: 1.5rem;
+  .sidebarTitle {
+    font-size: 1.3rem;
   }
 
-  .gridItem {
-    flex: 0 0 250px;
+  .gridTitle {
+    font-size: 1rem;
   }
 
-  .jobCard {
-    width: 300px;
+  .gridExcerpt {
+    font-size: 0.9rem;
+  }
+
+  .jobCardTitle {
+    font-size: 1rem;
+    height: 80px;
+  }
+
+  .jobCardInfo {
+    font-size: 0.9rem;
+  }
+
+  .jobCardButton {
+    padding: 8px 15px;
+    font-size: 0.9rem;
+  }
+
+  .viewMoreBtn {
+    padding: 8px 15px;
+    font-size: 0.9rem;
+  }
+
+  .modalImage {
+    max-height: 60%;
+  }
+
+  .modalCaption {
+    font-size: 0.9rem;
+    padding: 8px 12px;
+  }
+}
+
+@media (max-width: 576px) {
+  .thumbnail {
+    max-height: 250px;
+  }
+
+  .articleTitle h1 {
+    font-size: 1.6rem;
+  }
+
+  .contentText {
+    font-size: 0.95rem;
+  }
+
+  .backButton {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+
+  .sidebar {
+    padding: 15px;
+  }
+
+  .gridImage {
+    height: 8rem;
+  }
+
+  .gridTitle {
+    font-size: 0.95rem;
+  }
+
+  .gridDate {
+    font-size: 0.8rem;
+  }
+
+  .gridExcerpt {
+    font-size: 0.85rem;
+  }
+
+  .jobCardTitle {
+    font-size: 0.95rem;
+    height: 70px;
+  }
+
+  .jobCardInfo {
+    font-size: 0.85rem;
+  }
+
+  .modalImage {
+    max-height: 50%;
+  }
+
+  .modalCaption {
+    font-size: 0.85rem;
   }
 }
