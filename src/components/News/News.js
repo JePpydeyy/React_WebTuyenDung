@@ -36,6 +36,11 @@ const News = () => {
   const [showCount, setShowCount] = useState(getInitialShowCount());
   const timerRef = useRef(null);
   const bannerWrapperRef = useRef(null);
+  
+  // Touch/Swipe states
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
 
   // Preload banner images
   useEffect(() => {
@@ -90,8 +95,9 @@ const News = () => {
       .then((data) => {
         const sortedData = Array.isArray(data)
           ? data
-              .sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt)) // Sắp xếp theo ngày đăng giảm dần
-              .slice(0, 10) // Giới hạn 10 bài mới nhất
+              .filter((item) => item.status === 'show')
+              .sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt))
+              .slice(0, 10)
           : [];
         setNewsData(sortedData);
         setLoading(false);
@@ -116,10 +122,104 @@ const News = () => {
   const prevSlide = () => setCurrent((prev) => (prev - 1 + bannerImages.length) % bannerImages.length);
   const handleViewMore = () => setShowCount(newsData.length);
 
+  // Touch/Swipe handlers
+  const handleTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+    setIsDragging(true);
+    // Stop auto slide when user starts touching
+    if (timerRef.current) clearInterval(timerRef.current);
+  };
+
+  const handleTouchMove = (e) => {
+    if (!isDragging) return;
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) {
+      setIsDragging(false);
+      // Restart auto slide
+      timerRef.current = setInterval(nextSlide, 3000);
+      return;
+    }
+    
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe) {
+      nextSlide();
+    } else if (isRightSwipe) {
+      prevSlide();
+    }
+    
+    setIsDragging(false);
+    // Restart auto slide
+    timerRef.current = setInterval(nextSlide, 3000);
+  };
+
+  // Mouse drag handlers for desktop
+  const handleMouseDown = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.clientX);
+    setIsDragging(true);
+    // Stop auto slide when user starts dragging
+    if (timerRef.current) clearInterval(timerRef.current);
+    e.preventDefault();
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+    setTouchEnd(e.clientX);
+  };
+
+  const handleMouseUp = () => {
+    if (!touchStart || !touchEnd) {
+      setIsDragging(false);
+      // Restart auto slide
+      timerRef.current = setInterval(nextSlide, 3000);
+      return;
+    }
+    
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe) {
+      nextSlide();
+    } else if (isRightSwipe) {
+      prevSlide();
+    }
+    
+    setIsDragging(false);
+    // Restart auto slide
+    timerRef.current = setInterval(nextSlide, 3000);
+  };
+
+  const handleMouseLeave = () => {
+    if (isDragging) {
+      setIsDragging(false);
+      // Restart auto slide
+      timerRef.current = setInterval(nextSlide, 3000);
+    }
+  };
+
   return (
     <>
       <section className={styles.banner}>
-        <div className={styles.bannerWrapper} ref={bannerWrapperRef}>
+        <div 
+          className={styles.bannerWrapper} 
+          ref={bannerWrapperRef}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseLeave}
+          style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+        >
           {bannerImages.map((src, idx) => (
             <img
               key={src}
@@ -129,6 +229,7 @@ const News = () => {
               src={src}
               alt={`Banner ${idx + 1}`}
               loading="lazy"
+              draggable={false}
             />
           ))}
           <button

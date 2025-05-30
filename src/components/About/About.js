@@ -37,6 +37,9 @@ const About = () => {
   // Banner slider state
   const [bannerIdx, setBannerIdx] = useState(0);
   const bannerTimer = useRef(null);
+  const touchStartX = useRef(null);
+  const touchEndX = useRef(null);
+  const isDragging = useRef(false);
 
   // Testimonial slider state
   const [testimonialIdx, setTestimonialIdx] = useState(0);
@@ -64,16 +67,70 @@ const About = () => {
   function stopBannerAuto() {
     if (bannerTimer.current) clearInterval(bannerTimer.current);
   }
-  // Pause auto on hover
+
+  // Swipe handling
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+    isDragging.current = true;
+    stopBannerAuto();
+  };
+
+  const handleTouchMove = (e) => {
+    if (!isDragging.current) return;
+    touchEndX.current = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (!isDragging.current || touchStartX.current === null || touchEndX.current === null) {
+      isDragging.current = false;
+      return;
+    }
+
+    const deltaX = touchEndX.current - touchStartX.current;
+    const swipeThreshold = 50; // Minimum distance for a swipe
+
+    if (deltaX > swipeThreshold) {
+      prevBannerSlide();
+    } else if (deltaX < -swipeThreshold) {
+      nextBannerSlide();
+    }
+
+    isDragging.current = false;
+    touchStartX.current = null;
+    touchEndX.current = null;
+    startBannerAuto();
+  };
+
+  // Banner hover and swipe events
   const bannerWrapperRef = useRef(null);
   useEffect(() => {
     const wrapper = bannerWrapperRef.current;
     if (!wrapper) return;
+
     wrapper.addEventListener('mouseenter', stopBannerAuto);
     wrapper.addEventListener('mouseleave', startBannerAuto);
+    wrapper.addEventListener('touchstart', handleTouchStart, { passive: true });
+    wrapper.addEventListener('touchmove', handleTouchMove, { passive: true });
+    wrapper.addEventListener('touchend', handleTouchEnd);
+    wrapper.addEventListener('mousedown', handleTouchStart);
+    wrapper.addEventListener('mousemove', handleTouchMove);
+    wrapper.addEventListener('mouseup', handleTouchEnd);
+    wrapper.addEventListener('mouseleave', () => {
+      if (isDragging.current) handleTouchEnd();
+    });
+
     return () => {
       wrapper.removeEventListener('mouseenter', stopBannerAuto);
       wrapper.removeEventListener('mouseleave', startBannerAuto);
+      wrapper.removeEventListener('touchstart', handleTouchStart);
+      wrapper.removeEventListener('touchmove', handleTouchMove);
+      wrapper.removeEventListener('touchend', handleTouchEnd);
+      wrapper.removeEventListener('mousedown', handleTouchStart);
+      wrapper.removeEventListener('mousemove', handleTouchMove);
+      wrapper.removeEventListener('mouseup', handleTouchEnd);
+      wrapper.removeEventListener('mouseleave', () => {
+        if (isDragging.current) handleTouchEnd();
+      });
     };
   }, []);
 
@@ -99,7 +156,8 @@ const About = () => {
   function stopTestimonialAuto() {
     if (testimonialTimer.current) clearInterval(testimonialTimer.current);
   }
-  // Pause auto on hover
+
+  // Testimonial hover events
   const testimonialSliderRef = useRef(null);
   useEffect(() => {
     const slider = testimonialSliderRef.current;
@@ -222,59 +280,59 @@ const About = () => {
         </div>
       </div>
 
-     {/* Testimonial */}
-<div className={styles.testimonialSection}>
-  <div className={styles.testimonialSlider} ref={testimonialSliderRef}>
-    {testimonials.map((item, idx) => (
-      <div
-        className={`${styles.testimonialSlide} ${idx === testimonialIdx ? styles.active : ''} ${
-          idx === (testimonialIdx - 1 + testimonials.length) % testimonials.length ? styles.prev : ''
-        }`}
-        key={idx}
-      >
-        <div className={styles.testimonialImage}>
-          <img src={item.img} alt={item.author} loading="lazy" />
+      {/* Testimonial */}
+      <div className={styles.testimonialSection}>
+        <div className={styles.testimonialSlider} ref={testimonialSliderRef}>
+          {testimonials.map((item, idx) => (
+            <div
+              className={`${styles.testimonialSlide} ${idx === testimonialIdx ? styles.active : ''} ${
+                idx === (testimonialIdx - 1 + testimonials.length) % testimonials.length ? styles.prev : ''
+              }`}
+              key={idx}
+            >
+              <div className={styles.testimonialImage}>
+                <img src={item.img} alt={item.author} loading="lazy" />
+              </div>
+              <div className={styles.testimonialContent}>
+                <div className={styles.testimonialQuote}>{`"${item.quote}"`}</div>
+                <div className={styles.testimonialAuthor}>{item.author}</div>
+              </div>
+            </div>
+          ))}
         </div>
-        <div className={styles.testimonialContent}>
-          <div className={styles.testimonialQuote}>{`"${item.quote}"`}</div>
-          <div className={styles.testimonialAuthor}>{item.author}</div>
+        <button
+          className={`${styles.bannerBtn} ${styles.testimonialBtnLeft}`}
+          aria-label="Previous Testimonial"
+          onClick={() => {
+            prevTestimonialSlide();
+            stopTestimonialAuto();
+          }}
+        >
+          <i className="fa-solid fa-angle-left"></i>
+        </button>
+        <button
+          className={`${styles.bannerBtn} ${styles.testimonialBtnRight}`}
+          aria-label="Next Testimonial"
+          onClick={() => {
+            nextTestimonialSlide();
+            stopTestimonialAuto();
+          }}
+        >
+          <i className="fa-solid fa-angle-right"></i>
+        </button>
+        <div className={styles.bannerIndicators}>
+          {testimonials.map((_, idx) => (
+            <span
+              key={idx}
+              className={`${styles.indicator} ${idx === testimonialIdx ? styles.active : ''}`}
+              onClick={() => {
+                showTestimonialSlide(idx);
+                stopTestimonialAuto();
+              }}
+            ></span>
+          ))}
         </div>
       </div>
-    ))}
-  </div>
-  <button
-    className={`${styles.bannerBtn} ${styles.testimonialBtnLeft}`} // Changed from bannerBtnLeft
-    aria-label="Previous Testimonial"
-    onClick={() => {
-      prevTestimonialSlide();
-      stopTestimonialAuto();
-    }}
-  >
-    <i className="fa-solid fa-angle-left"></i>
-  </button>
-  <button
-    className={`${styles.bannerBtn} ${styles.testimonialBtnRight}`} // Changed from bannerBtnRight
-    aria-label="Next Testimonial"
-    onClick={() => {
-      nextTestimonialSlide();
-      stopTestimonialAuto();
-    }}
-  >
-    <i className="fa-solid fa-angle-right"></i>
-  </button>
-  <div className={styles.bannerIndicators}>
-    {testimonials.map((_, idx) => (
-      <span
-        key={idx}
-        className={`${styles.indicator} ${idx === testimonialIdx ? styles.active : ''}`}
-        onClick={() => {
-          showTestimonialSlide(idx);
-          stopTestimonialAuto();
-        }}
-      ></span>
-    ))}
-  </div>
-</div>
     </div>
   );
 };
