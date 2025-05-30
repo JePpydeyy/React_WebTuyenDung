@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './Index.module.css';
@@ -6,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleLeft, faAngleRight, faSearch, faBriefcase, faMapMarkerAlt, faUserTie } from '@fortawesome/free-solid-svg-icons';
 
 const bannerImages = [
-  '/assets/images/BANNER2.jpg',   
+  '/assets/images/BANNER2.jpg',
   '/assets/images/BANNER3.jpg',
   '/assets/images/BANNER4.jpg',
 ];
@@ -22,7 +23,6 @@ const acfcLoveItems = [
   {
     title: '5 LÝ DO<br>BẠN YÊU ACFC',
     info: 'Trung thực, chính trực',
-    
     reverse: false,
   },
   {
@@ -32,7 +32,7 @@ const acfcLoveItems = [
   },
   {
     info: 'Thỏa sức sáng tạo trong công việc',
-    images: ['/assets/images/banner-web-04.png', '/assets/images/banner-web-05.png', '/assets/images/banner-web-06.png'],
+    images: ['', '/assets/images/banner-web-05.png', '/assets/images/banner-web-06.png'],
     reverse: true,
   },
   {
@@ -80,10 +80,20 @@ const benefits = [
 
 const Carousel = ({ images }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [translateX, setTranslateX] = useState(0);
   const timerRef = useRef(null);
+  const carouselRef = useRef(null);
 
   const nextSlide = useCallback(() => {
     setCurrentIndex((prev) => (prev + 1) % images.length);
+    setTranslateX(0);
+  }, [images.length]);
+
+  const prevSlide = useCallback(() => {
+    setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
+    setTranslateX(0);
   }, [images.length]);
 
   const stopAutoSlide = useCallback(() => {
@@ -100,13 +110,77 @@ const Carousel = ({ images }) => {
     return stopAutoSlide;
   }, [startAutoSlide, stopAutoSlide]);
 
+  const handleDragStart = useCallback((clientX) => {
+    setIsDragging(true);
+    setStartX(clientX);
+    stopAutoSlide();
+  }, [stopAutoSlide]);
+
+  const handleDragMove = useCallback((clientX) => {
+    if (!isDragging) return;
+    const diffX = clientX - startX;
+    setTranslateX(diffX);
+  }, [isDragging, startX]);
+
+  const handleDragEnd = useCallback(() => {
+    if (!isDragging) return;
+    setIsDragging(false);
+    const threshold = 100; // Ngưỡng pixel để chuyển slide
+    if (translateX < -threshold) {
+      nextSlide();
+    } else if (translateX > threshold) {
+      prevSlide();
+    }
+    setTranslateX(0);
+    startAutoSlide();
+  }, [isDragging, translateX, nextSlide, prevSlide, startAutoSlide]);
+
+  const handleMouseDown = (e) => {
+    e.preventDefault();
+    handleDragStart(e.clientX);
+  };
+
+  const handleMouseMove = (e) => {
+    handleDragMove(e.clientX);
+  };
+
+  const handleMouseUp = () => {
+    handleDragEnd();
+  };
+
+  const handleTouchStart = (e) => {
+    handleDragStart(e.touches[0].clientX);
+  };
+
+  const handleTouchMove = (e) => {
+    handleDragMove(e.touches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    handleDragEnd();
+  };
+
   return (
-    <div className={styles['a-l-img']}>
+    <div
+      className={styles['a-l-img']}
+      ref={carouselRef}
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseUp}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
       <div className={styles.carousel}>
         {images.map((img, idx) => (
           <div
             key={idx}
             className={`${styles['carousel-item']} ${idx === currentIndex ? styles.active : ''}`}
+            style={{
+              transform: `translateX(${translateX}px)`,
+              transition: isDragging ? 'none' : 'opacity 0.7s ease, transform 0.7s ease',
+            }}
           >
             <img src={img} alt={`Slide ${idx + 1}`} loading="lazy" />
           </div>
@@ -119,14 +193,20 @@ const Carousel = ({ images }) => {
 const Index = () => {
   // Banner slider state
   const [bannerIdx, setBannerIdx] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [translateX, setTranslateX] = useState(0);
   const bannerTimer = useRef(null);
+  const bannerRef = useRef(null);
 
   const nextBannerSlide = useCallback(() => {
     setBannerIdx((prev) => (prev + 1) % bannerImages.length);
+    setTranslateX(0);
   }, []);
 
   const prevBannerSlide = useCallback(() => {
     setBannerIdx((prev) => (prev - 1 + bannerImages.length) % bannerImages.length);
+    setTranslateX(0);
   }, []);
 
   const stopBannerAuto = useCallback(() => {
@@ -140,12 +220,63 @@ const Index = () => {
 
   const showBannerSlide = useCallback((idx) => {
     setBannerIdx(idx);
+    setTranslateX(0);
   }, []);
 
   useEffect(() => {
     startBannerAuto();
     return stopBannerAuto;
   }, [startBannerAuto, stopBannerAuto]);
+
+  const handleBannerDragStart = useCallback((clientX) => {
+    setIsDragging(true);
+    setStartX(clientX);
+    stopBannerAuto();
+  }, [stopBannerAuto]);
+
+  const handleBannerDragMove = useCallback((clientX) => {
+    if (!isDragging) return;
+    const diffX = clientX - startX;
+    setTranslateX(diffX);
+  }, [isDragging, startX]);
+
+  const handleBannerDragEnd = useCallback(() => {
+    if (!isDragging) return;
+    setIsDragging(false);
+    const threshold = 100; // Ngưỡng pixel để chuyển slide
+    if (translateX < -threshold) {
+      nextBannerSlide();
+    } else if (translateX > threshold) {
+      prevBannerSlide();
+    }
+    setTranslateX(0);
+    startBannerAuto();
+  }, [isDragging, translateX, nextBannerSlide, prevBannerSlide, startBannerAuto]);
+
+  const handleBannerMouseDown = (e) => {
+    e.preventDefault();
+    handleBannerDragStart(e.clientX);
+  };
+
+  const handleBannerMouseMove = (e) => {
+    handleBannerDragMove(e.clientX);
+  };
+
+  const handleBannerMouseUp = () => {
+    handleBannerDragEnd();
+  };
+
+  const handleBannerTouchStart = (e) => {
+    handleBannerDragStart(e.touches[0].clientX);
+  };
+
+  const handleBannerTouchMove = (e) => {
+    handleBannerDragMove(e.touches[0].clientX);
+  };
+
+  const handleBannerTouchEnd = () => {
+    handleBannerDragEnd();
+  };
 
   // Search form state
   const [searchForm, setSearchForm] = useState({
@@ -160,12 +291,12 @@ const Index = () => {
   const [brandOptions, setBrandOptions] = useState([]);
   const [workplaceOptions, setWorkplaceOptions] = useState([]);
   const [nameOptions, setNameOptions] = useState([]);
-  const [visibleJobs, setVisibleJobs] = useState(8); // State to track number of visible jobs
+  const [visibleJobs, setVisibleJobs] = useState(8);
 
   const handleSearchChange = (e) => {
     const { name, value } = e.target;
     setSearchForm((prev) => ({ ...prev, [name]: value }));
-    setVisibleJobs(8); // Reset visible jobs when search criteria change
+    setVisibleJobs(8);
   };
 
   const handleSearchSubmit = (e) => {
@@ -175,10 +306,9 @@ const Index = () => {
       return;
     }
     setSearching(true);
-    setVisibleJobs(8); // Reset visible jobs on new search
+    setVisibleJobs(8);
   };
 
-  // Fetch jobs from API
   useEffect(() => {
     const fetchJobs = async () => {
       try {
@@ -197,7 +327,6 @@ const Index = () => {
     fetchJobs();
   }, []);
 
-  // Generate dropdown options
   useEffect(() => {
     const brands = Array.from(
       new Set(
@@ -208,7 +337,7 @@ const Index = () => {
       )
     );
     const workplaces = Array.from(
-      new Set(  
+      new Set(
         jobs
           .flatMap((job) => (job.Workplace ? job.Workplace.split(',') : []))
           .map((place) => place.trim())
@@ -221,7 +350,6 @@ const Index = () => {
     setNameOptions(names);
   }, [jobs]);
 
-  // Filter jobs
   const filteredJobs = React.useMemo(() => {
     if (!searching) return jobs;
     return jobs.filter((job) => {
@@ -248,16 +376,24 @@ const Index = () => {
     });
   }, [jobs, searchForm, searching]);
 
-  // Handle View More click
   const handleViewMore = () => {
     setVisibleJobs((prev) => prev + 4);
   };
 
   return (
     <main>
-      {/* Banner Section */}
       <section className={styles.banner}>
-        <div className={styles['banner-wrapper']}>
+        <div
+          className={styles['banner-wrapper']}
+          ref={bannerRef}
+          onMouseDown={handleBannerMouseDown}
+          onMouseMove={handleBannerMouseMove}
+          onMouseUp={handleBannerMouseUp}
+          onMouseLeave={handleBannerMouseUp}
+          onTouchStart={handleBannerTouchStart}
+          onTouchMove={handleBannerTouchMove}
+          onTouchEnd={handleBannerTouchEnd}
+        >
           {bannerImages.map((src, idx) => (
             <img
               key={src}
@@ -267,6 +403,10 @@ const Index = () => {
               src={src}
               alt={`Banner ${idx + 1}`}
               loading="lazy"
+              style={{
+                transform: `translateX(${translateX}px)`,
+                transition: isDragging ? 'none' : 'opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0, 0.2, 1)',
+              }}
             />
           ))}
           <button
@@ -277,7 +417,7 @@ const Index = () => {
             }}
             aria-label="Previous Banner"
           >
-            <i className="fa-solid fa-angle-left"></i>
+            <FontAwesomeIcon icon={faAngleLeft} />
           </button>
           <button
             className={`${styles['banner-btn']} ${styles['banner-btn-right']}`}
@@ -287,7 +427,7 @@ const Index = () => {
             }}
             aria-label="Next Banner"
           >
-            <i className="fa-solid fa-angle-right"></i>
+            <FontAwesomeIcon icon={faAngleRight} />
           </button>
           <div className={styles['banner-indicators']}>
             {bannerImages.map((_, idx) => (
@@ -305,17 +445,14 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Latest Jobs Section */}
       <section className={styles['container-lastest']}>
         <div className={styles['job-search']}>
           <div className={styles['job-search_container']}>
             <p className={styles['job-search_title']}>Tìm kiếm công việc phù hợp</p>
-            <form className={styles['job-search_form']} onSubmit={handleSearchSubmit}>
+            <div className={styles['job-search_form']}>
               <div className={styles['job-search_field']}>
-                <i className={`fa-solid fa-magnifying-glass ${styles['job-search_field-icon']}`}></i>
-            
+                <FontAwesomeIcon icon={faSearch} className={styles['job-search_field-icon']} />
                 <input
-                
                   type="text"
                   name="keyword"
                   placeholder="Từ khóa(tên công việc, thương hiệu, nơi làm việc)"
@@ -325,7 +462,7 @@ const Index = () => {
                 />
               </div>
               <div className={styles['job-search_field']}>
-                <i className={`fa fa-briefcase ${styles['job-search_field-icon']}`}></i>
+                <FontAwesomeIcon icon={faBriefcase} className={styles['job-search_field-icon']} />
                 <select
                   name="brand"
                   className={styles['job-search_select']}
@@ -339,7 +476,7 @@ const Index = () => {
                 </select>
               </div>
               <div className={styles['job-search_field']}>
-                <i className={`fa fa-map-marker-alt ${styles['job-search_field-icon']}`}></i>
+                <FontAwesomeIcon icon={faMapMarkerAlt} className={styles['job-search_field-icon']} />
                 <select
                   name="workplace"
                   className={styles['job-search_select']}
@@ -353,7 +490,7 @@ const Index = () => {
                 </select>
               </div>
               <div className={styles['job-search_field']}>
-                <i className={`fa fa-user-tie ${styles['job-search_field-icon']}`}></i>
+                <FontAwesomeIcon icon={faUserTie} className={styles['job-search_field-icon']} />
                 <select
                   name="name"
                   className={styles['job-search_select']}
@@ -367,15 +504,16 @@ const Index = () => {
                 </select>
               </div>
               <button
-                type="submit"
+                type="button"
                 className={styles['job-search_button']}
+                onClick={handleSearchSubmit}
                 disabled={loading}
                 aria-label="Tìm kiếm công việc"
               >
-                <i className="fa fa-search"></i>
+                <FontAwesomeIcon icon={faSearch} />
                 <span>{loading ? 'Đang tải...' : 'Tìm kiếm'}</span>
               </button>
-            </form>
+            </div>
           </div>
         </div>
 
@@ -424,7 +562,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* ACFC Values Section */}
       <section className={styles['acfc-values-section']}>
         <h2 className={styles['section-title']}>ACFC Việt Nam</h2>
         <div className={styles['values-grid']}>
@@ -439,7 +576,6 @@ const Index = () => {
         </div>
       </section>
 
-
       <section className={`${styles['acfc-love']} ${styles['tttable-mobile']}`}>
         <h2>5 Lý Do Bạn Yêu ACFC</h2>
         <div className={styles['acfc-love-container']}>
@@ -447,7 +583,7 @@ const Index = () => {
             <div key={idx} className={styles['acfc-love-item']}>
               {item.title ? (
                 <div className={styles['title-info-box']}>
-                  <div 
+                  <div
                     className={styles['a-l-title']}
                     dangerouslySetInnerHTML={{ __html: item.title }}
                   />
@@ -464,15 +600,23 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Video Section */}
       <section className={styles['video-section']}>
         <h2>Video Giới Thiệu</h2>
         <div className={styles['video-container']}>
+<<<<<<< HEAD
         <iframe src="https://www.youtube.com/embed/rKaqO1Lnmnc?autoplay=1&amp;loop=1&amp;playlist=rKaqO1Lnmnc" title="Giới thiệu công ty ACFC" frameborder="0" allow="accelerometer;  encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen=""></iframe>
+=======
+          <iframe
+            src="https://www.youtube.com/embed/rKaqO1Lnmnc?autoplay=1&loop=1&playlist=rKaqO1Lnmnc"
+            title="Giới thiệu công ty ACFC"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+          ></iframe>
+>>>>>>> a60310b7c9c1bf0363bc4c576efa21af8ecf7395
         </div>
       </section>
 
-      {/* Benefits Section */}
       <h2 className={styles['benefits-title']}>Phúc lợi công ty</h2>
       <section className={styles['benefits-container']}>
         {benefits.map((benefit, idx) => (
