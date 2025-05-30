@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { debounce } from 'lodash';
@@ -599,3 +600,5 @@ const CandidateManagement = () => {
 };
 
 export default CandidateManagement;
+=======
+>>>>>>> d48131eaafaba5811c1aa646110559d4fbbce8f5

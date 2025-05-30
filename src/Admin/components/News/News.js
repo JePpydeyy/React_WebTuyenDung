@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from './New.module.css';
+import { v4 as uuidv4 } from 'uuid';
 
 const API_URL = 'https://api-tuyendung-cty.onrender.com/api/new';
 const BASE_URL = 'https://api-tuyendung-cty.onrender.com';
@@ -12,6 +13,18 @@ const NewsManagement = () => {
   const [selectedNews, setSelectedNews] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState(null);
+  const [isCreating, setIsCreating] = useState(false);
+  const [createForm, setCreateForm] = useState({
+    title: '',
+    slug: '',
+    thumbnailUrl: '',
+    thumbnailFile: null,
+    thumbnailCaption: '',
+    publishedAt: new Date().toISOString().split('T')[0],
+    views: 0,
+    status: 'Hiển thị',
+    contentBlocks: [],
+  });
   const itemsPerPage = 10;
 
   // Status mapping for display
@@ -123,7 +136,6 @@ const NewsManagement = () => {
       if (!id) throw new Error('ID tin tức không hợp lệ');
       const token = localStorage.getItem('adminToken');
       let url = `${API_URL}/${id}`;
-      // Nếu là admin, thêm header hoặc endpoint để không tăng views (nếu API hỗ trợ)
       const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
       const response = await fetch(url, { headers });
       if (!response.ok) throw new Error(`Không tìm thấy tin tức: ${response.status}`);
@@ -241,17 +253,17 @@ const NewsManagement = () => {
       id: newsItem.id,
       title: newsItem.title || '',
       slug: newsItem.slug || '',
-      thumbnailUrl: addBaseUrl(newsItem.thumbnailUrl) || '',
+      thumbnailUrl: newsItem.thumbnailUrl || '',
+      thumbnailFile: null,
       thumbnailCaption: newsItem.thumbnailCaption || '',
       publishedAt: newsItem.publishedAt ? newsItem.publishedAt.split('/').reverse().join('-') : new Date().toISOString().split('T')[0],
       views: newsItem.views || 0,
-      rating: newsItem.rating ? `${newsItem.rating.score || 0}/${newsItem.rating.votes || 0}` : '0/0',
       status: newsItem.status || 'Hiển thị',
       contentBlocks: Array.isArray(newsItem.contentBlocks)
         ? newsItem.contentBlocks.map(block => ({
             type: block.type || 'text',
             content: block.content || '',
-            url: block.url ? addBaseUrl(block.url) : '',
+            url: block.url || '',
             caption: block.caption || '',
             file: null,
           }))
@@ -262,71 +274,90 @@ const NewsManagement = () => {
     setIsEditing(true);
   };
 
-  const handleFormChange = (e, index = null, field = null) => {
+  const handleFormChange = (e, index = null, field = null, formType = 'edit') => {
+    const targetForm = formType === 'edit' ? editForm : createForm;
+    const setForm = formType === 'edit' ? setEditForm : setCreateForm;
+
     if (index !== null && field) {
-      const updatedBlocks = [...editForm.contentBlocks];
+      const updatedBlocks = [...targetForm.contentBlocks];
       updatedBlocks[index] = { ...updatedBlocks[index], [field]: e.target.value };
-      setEditForm({ ...editForm, contentBlocks: updatedBlocks });
+      setForm({ ...targetForm, contentBlocks: updatedBlocks });
     } else {
-      setEditForm({ ...editForm, [e.target.name]: e.target.value });
+      setForm({ ...targetForm, [e.target.name]: e.target.value });
     }
   };
 
-  const handleFileChange = (e, index) => {
+  const handleFileChange = (e, index = null, formType = 'edit') => {
     const file = e.target.files[0];
     if (!file) return;
-    const updatedBlocks = [...editForm.contentBlocks];
-    updatedBlocks[index] = {
-      ...updatedBlocks[index],
-      file,
-      url: URL.createObjectURL(file),
-    };
-    setEditForm({ ...editForm, contentBlocks: updatedBlocks });
+
+    const targetForm = formType === 'edit' ? editForm : createForm;
+    const setForm = formType === 'edit' ? setEditForm : setCreateForm;
+
+    if (index !== null) {
+      const updatedBlocks = [...targetForm.contentBlocks];
+      updatedBlocks[index] = {
+        ...updatedBlocks[index],
+        file,
+        url: URL.createObjectURL(file),
+      };
+      setForm({ ...targetForm, contentBlocks: updatedBlocks });
+    } else {
+      setForm({
+        ...targetForm,
+        thumbnailFile: file,
+        thumbnailUrl: URL.createObjectURL(file),
+      });
+    }
   };
 
-  const addContentBlock = (type = 'text') => {
-    setEditForm({
-      ...editForm,
-      contentBlocks: [...editForm.contentBlocks, { type, content: '', url: '', caption: '', file: null }],
+  const addContentBlock = (type = 'text', formType = 'edit') => {
+    const targetForm = formType === 'edit' ? editForm : createForm;
+    const setForm = formType === 'edit' ? setEditForm : setCreateForm;
+
+    setForm({
+      ...targetForm,
+      contentBlocks: [...targetForm.contentBlocks, { type, content: '', url: '', caption: '', file: null }],
     });
   };
 
-  const removeContentBlock = (index) => {
-    setEditForm({
-      ...editForm,
-      contentBlocks: editForm.contentBlocks.filter((_, i) => i !== index),
+  const removeContentBlock = (index, formType = 'edit') => {
+    const targetForm = formType === 'edit' ? editForm : createForm;
+    const setForm = formType === 'edit' ? setEditForm : setCreateForm;
+
+    setForm({
+      ...targetForm,
+      contentBlocks: targetForm.contentBlocks.filter((_, i) => i !== index),
     });
   };
 
   const saveNews = async () => {
     try {
       if (!editForm) throw new Error('Dữ liệu chỉnh sửa không hợp lệ');
-      const [score, votes] = editForm.rating.split('/').map(Number);
-      if (isNaN(score) || isNaN(votes)) {
-        throw new Error('Đánh giá phải có định dạng score/votes hợp lệ');
-      }
 
       const formData = new FormData();
       formData.append('title', editForm.title);
       formData.append('slug', editForm.slug);
       formData.append('thumbnailUrl', editForm.thumbnailUrl);
+      if (editForm.thumbnailFile) {
+        formData.append('thumbnail', editForm.thumbnailFile);
+      }
       formData.append('thumbnailCaption', editForm.thumbnailCaption);
       formData.append('publishedAt', new Date(editForm.publishedAt).toISOString());
       formData.append('views', editForm.views.toString());
-      formData.append('rating', JSON.stringify({ score, votes }));
       formData.append('status', statusBackendMap[editForm.status] || editForm.status);
 
       const contentBlocksForSubmission = editForm.contentBlocks.map(block => ({
         type: block.type,
-        content: block.type === 'text' ? block.content : undefined,
-        url: block.url && !block.file ? block.url : undefined,
-        caption: block.type === 'image' ? block.caption : undefined,
+        content: block.type === 'text' ? block.content : '',
+        url: block.url && !block.file ? block.url : '',
+        caption: block.type === 'image' ? block.caption : '',
       }));
       formData.append('contentBlocks', JSON.stringify(contentBlocksForSubmission));
 
       editForm.contentBlocks.forEach((block, index) => {
         if (block.type === 'image' && block.file) {
-          formData.append('images', block.file);
+          formData.append('contentImages', block.file);
         }
       });
 
@@ -344,7 +375,10 @@ const NewsManagement = () => {
         },
       });
 
-      if (!response.ok) throw new Error(`Không thể cập nhật tin tức: ${response.status}`);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Không thể cập nhật tin tức: ${response.status}`);
+      }
       const result = await response.json();
       showNotification(result.message || 'Đã cập nhật tin tức thành công', 'success');
       setIsEditing(false);
@@ -358,6 +392,88 @@ const NewsManagement = () => {
       }
     }
   };
+
+  const createNews = async () => {
+  try {
+    if (!createForm) throw new Error('Dữ liệu tạo mới không hợp lệ');
+
+    // Kiểm tra xem có block hình ảnh nào thiếu file không
+    const hasMissingImageFile = createForm.contentBlocks.some(
+      block => block.type === 'image' && !block.file && !block.url
+    );
+    if (hasMissingImageFile) {
+      showNotification('Vui lòng chọn file cho tất cả block hình ảnh', 'error');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('id', uuidv4());
+    formData.append('title', createForm.title);
+    formData.append('slug', createForm.slug);
+    formData.append('thumbnailUrl', createForm.thumbnailUrl);
+    if (createForm.thumbnailFile) {
+      formData.append('thumbnail', createForm.thumbnailFile);
+    }
+    formData.append('thumbnailCaption', createForm.thumbnailCaption);
+    formData.append('publishedAt', new Date(createForm.publishedAt).toISOString());
+    formData.append('views', createForm.views.toString());
+    formData.append('status', statusBackendMap[createForm.status] || createForm.status);
+
+    const contentBlocksForSubmission = createForm.contentBlocks.map(block => ({
+      type: block.type,
+      content: block.type === 'text' ? block.content : '',
+      url: block.type === 'image' && block.file ? `placeholder-${Date.now()}.jpg` : (block.url || ''),
+      caption: block.type === 'image' ? block.caption : '',
+    }));
+    formData.append('contentBlocks', JSON.stringify(contentBlocksForSubmission));
+
+    createForm.contentBlocks.forEach((block, index) => {
+      if (block.type === 'image' && block.file) {
+        formData.append('contentImages', block.file);
+      }
+    });
+
+    const token = localStorage.getItem('adminToken');
+    if (!token) {
+      showNotification('Bạn cần đăng nhập với tư cách admin để thực hiện hành động này', 'error');
+      return;
+    }
+
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || `Không thể tạo tin tức: ${response.status}`);
+    }
+    const result = await response.json();
+    showNotification(result.message || 'Đã tạo tin tức thành công', 'success');
+    setIsCreating(false);
+    setCreateForm({
+      title: '',
+      slug: '',
+      thumbnailUrl: '',
+      thumbnailFile: null,
+      thumbnailCaption: '',
+      publishedAt: new Date().toISOString().split('T')[0],
+      views: 0,
+      status: 'Hiển thị',
+      contentBlocks: [],
+    });
+    await displayNews(1, filteredNews);
+  } catch (error) {
+    console.error('Lỗi createNews:', error);
+    showNotification(`Lỗi khi tạo tin tức: ${error.message}`, 'error');
+    if (error.message.includes('401')) {
+      showNotification('Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại', 'error');
+    }
+  }
+};
 
   const applyFilters = async () => {
     const statusFilter = document.getElementById('statusFilter').value;
@@ -418,6 +534,7 @@ const NewsManagement = () => {
         </select>
         <button onClick={applyFilters}><i className="fa-solid fa-filter"></i> Áp dụng</button>
         <button onClick={resetFilters}><i className="fa-solid fa-rotate"></i> Đặt lại</button>
+        <button onClick={() => setIsCreating(true)}><i className="fa-solid fa-plus"></i> Thêm tin tức</button>
       </div>
 
       {/* News list */}
@@ -447,23 +564,13 @@ const NewsManagement = () => {
                   <td><span className={`${styles.status} ${getStatusClass(item.status)}`}>{item.status}</span></td>
                   <td>
                     <div className={styles.actionButtons}>
-                      <button
-                        className={styles.view}
-                        onClick={() => viewNews(item.id)}
-                      >
+                      <button className={styles.view} onClick={() => viewNews(item.id)}>
                         <i className="fa-solid fa-eye"></i>
                       </button>
-                      <button
-                        className={styles.edit}
-                        onClick={() => editNews(item)}
-                        disabled={!item.id}
-                      >
+                      <button className={styles.edit} onClick={() => editNews(item)} disabled={!item.id}>
                         <i className="fa-solid fa-edit"></i>
                       </button>
-                      <button
-                        className={styles.delete}
-                        onClick={() => toggleNewsVisibility(item.id)}
-                      >
+                      <button className={styles.delete} onClick={() => toggleNewsVisibility(item.id)}>
                         {item.status === 'Đã ẩn' ? (
                           <i className="fa-solid fa-undo"></i>
                         ) : (
@@ -494,12 +601,150 @@ const NewsManagement = () => {
         </div>
       </div>
 
-      {/* News details modal */}
-      {selectedNews && (
+      {/* Modal for viewing, editing, or creating news */}
+      {(selectedNews || isCreating) && (
         <div className={styles.modal}>
           <div className={styles.modalContent}>
-            <span className={styles.close} onClick={() => { setSelectedNews(null); setIsEditing(false); }}>×</span>
-            {isEditing && editForm ? (
+            <span className={styles.close} onClick={() => { setSelectedNews(null); setIsEditing(false); setIsCreating(false); }}>×</span>
+            {isCreating ? (
+              <>
+                <h3>Thêm Tin Tức Mới</h3>
+                <div className={styles.editForm}>
+                  <div className={styles.detailGroup}>
+                    <label>Tiêu đề:</label>
+                    <input
+                      type="text"
+                      name="title"
+                      value={createForm.title}
+                      onChange={(e) => handleFormChange(e, null, null, 'create')}
+                    />
+                  </div>
+                  <div className={styles.detailGroup}>
+                    <label>Slug:</label>
+                    <input
+                      type="text"
+                      name="slug"
+                      value={createForm.slug}
+                      onChange={(e) => handleFormChange(e, null, null, 'create')}
+                    />
+                  </div>
+                  <div className={styles.detailGroup}>
+                    <label>Thumbnail:</label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleFileChange(e, null, 'create')}
+                    />
+                    {createForm.thumbnailUrl && (
+                      <div className={styles.thumbnailPreview}>
+                        <p>Xem trước:</p>
+                        <img
+                          src={createForm.thumbnailUrl}
+                          alt="Thumbnail Preview"
+                          className={styles.imagePreview}
+                          onError={(e) => (e.target.style.display = 'none')}
+                        />
+                      </div>
+                    )}
+                  </div>
+                  <div className={styles.detailGroup}>
+                    <label>Thumbnail Caption:</label>
+                    <input
+                      type="text"
+                      name="thumbnailCaption"
+                      value={createForm.thumbnailCaption}
+                      onChange={(e) => handleFormChange(e, null, null, 'create')}
+                    />
+                  </div>
+                  <div className={styles.detailGroup}>
+                    <label>Ngày đăng:</label>
+                    <input
+                      type="date"
+                      name="publishedAt"
+                      value={createForm.publishedAt}
+                      onChange={(e) => handleFormChange(e, null, null, 'create')}
+                    />
+                  </div>
+                  <div className={styles.detailGroup}>
+                    <label>Lượt xem:</label>
+                    <input
+                      type="number"
+                      name="views"
+                      value={createForm.views}
+                      onChange={(e) => handleFormChange(e, null, null, 'create')}
+                    />
+                  </div>
+                  <div className={styles.detailGroup}>
+                    <label>Trạng thái:</label>
+                    <select
+                      name="status"
+                      value={createForm.status}
+                      onChange={(e) => handleFormChange(e, null, null, 'create')}
+                    >
+                      <option value="Hiển thị">Hiển thị</option>
+                      <option value="Đã ẩn">Đã ẩn</option>
+                    </select>
+                  </div>
+                  <div className={`${styles.detailGroup} ${styles.full}`}>
+                    <label>Nội dung:</label>
+                    {createForm.contentBlocks.map((block, index) => (
+                      <div key={index} className={styles.contentBlock}>
+                        <select
+                          value={block.type}
+                          onChange={(e) => handleFormChange({ target: { value: e.target.value } }, index, 'type', 'create')}
+                        >
+                          <option value="text">Văn bản</option>
+                          <option value="image">Hình ảnh</option>
+                        </select>
+                        {block.type === 'text' ? (
+                          <textarea
+                            value={block.content}
+                            onChange={(e) => handleFormChange(e, index, 'content', 'create')}
+                            placeholder="Nội dung văn bản"
+                          />
+                        ) : (
+                          <>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={(e) => handleFileChange(e, index, 'create')}
+                            />
+                            {(block.url || block.file) && (
+                              <img
+                                src={block.url || (block.file && URL.createObjectURL(block.file))}
+                                alt="Image Preview"
+                                className={styles.imagePreview}
+                                onError={(e) => (e.target.style.display = 'none')}
+                              />
+                            )}
+                            <input
+                              type="text"
+                              value={block.caption}
+                              onChange={(e) => handleFormChange(e, index, 'caption', 'create')}
+                              placeholder="Chú thích hình ảnh"
+                            />
+                          </>
+                        )}
+                        <button
+                          className={styles.removeBlock}
+                          onClick={() => removeContentBlock(index, 'create')}
+                        >
+                          Xóa khối
+                        </button>
+                      </div>
+                    ))}
+                    <div className={styles.addBlockButtons}>
+                      <button onClick={() => addContentBlock('text', 'create')}>Thêm khối văn bản</button>
+                      <button onClick={() => addContentBlock('image', 'create')}>Thêm khối hình ảnh</button>
+                    </div>
+                  </div>
+                  <div className={styles.detailAction}>
+                    <button className={styles.save} onClick={createNews}>Tạo mới</button>
+                    <button className={styles.cancel} onClick={() => setIsCreating(false)}>Hủy</button>
+                  </div>
+                </div>
+              </>
+            ) : isEditing && editForm ? (
               <>
                 <h3>Chỉnh Sửa Tin Tức: {editForm.title}</h3>
                 <div className={styles.editForm}>
@@ -522,13 +767,11 @@ const NewsManagement = () => {
                     />
                   </div>
                   <div className={styles.detailGroup}>
-                    <label>Thumbnail URL:</label>
+                    <label>Thumbnail:</label>
                     <input
-                      type="text"
-                      name="thumbnailUrl"
-                      value={editForm.thumbnailUrl}
-                      onChange={handleFormChange}
-                      placeholder="Nhập URL hình ảnh thumbnail"
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleFileChange(e)}
                     />
                     {editForm.thumbnailUrl && (
                       <div className={styles.thumbnailPreview}>
@@ -567,16 +810,6 @@ const NewsManagement = () => {
                       name="views"
                       value={editForm.views}
                       onChange={handleFormChange}
-                    />
-                  </div>
-                  <div className={styles.detailGroup}>
-                    <label>Đánh giá (score/votes):</label>
-                    <input
-                      type="text"
-                      name="rating"
-                      value={editForm.rating}
-                      onChange={handleFormChange}
-                      placeholder="Nhập dạng score/votes, ví dụ: 3/15"
                     />
                   </div>
                   <div className={styles.detailGroup}>
@@ -678,10 +911,6 @@ const NewsManagement = () => {
                       <div className={styles.detailGroup}>
                         <label>Slug:</label>
                         <p>{selectedNews.slug}</p>
-                      </div>
-                      <div className={styles.detailGroup}>
-                        <label>Đánh giá:</label>
-                        <p>{selectedNews.rating ? `${selectedNews.rating.score}/${selectedNews.rating.votes}` : '0/0'}</p>
                       </div>
                     </div>
                     <div className={`${styles.detailGroup} ${styles.full}`}>

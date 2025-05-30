@@ -9,14 +9,18 @@ const getStatusInfo = (status) => {
   switch (status) {
     case 'pending':
       return { text: 'Đang chờ xét duyệt', class: styles.statusDangChoXetDuyet };
+    case 'reviewed':
+      return { text: 'Đã xem xét', class: styles.statusDaXemXet }; // Thêm trạng thái reviewed
     case 'interview':
       return { text: 'Đã phỏng vấn', class: styles.statusDaPhongVan };
-    case 'recruitment':
+    case 'accepted':
       return { text: 'Đã tuyển dụng', class: styles.statusDaTuyenDung };
-    case 'refuse':
-      return { text: 'Đã từ chối', class: styles.statusTuChoi };
+    case 'rejected':
+      return { text: 'Đã từ chối', class: styles.statusTuChoi }; // Thay refuse thành rejected
     case 'Đang chờ xét duyệt':
       return { text: status, class: styles.statusDangChoXetDuyet };
+    case 'Đã xem xét':
+      return { text: status, class: styles.statusDaXemXet };
     case 'Đã phỏng vấn':
       return { text: status, class: styles.statusDaPhongVan };
     case 'Đã tuyển dụng':
@@ -24,7 +28,7 @@ const getStatusInfo = (status) => {
     case 'Đã từ chối':
       return { text: status, class: styles.statusTuChoi };
     default:
-      return { text: status, class: '' };
+      return { text: status || 'Không xác định', class: '' };
   }
 };
 
@@ -63,6 +67,7 @@ const ColumnChart = ({ allProfiles }) => {
 
         const statusCounts = {
           'Đang chờ xét duyệt': 0,
+          'Đã xem xét': 0, // Thêm trạng thái Đã xem xét
           'Đã phỏng vấn': 0,
           'Đã tuyển dụng': 0,
           'Đã từ chối': 0,
@@ -82,7 +87,7 @@ const ColumnChart = ({ allProfiles }) => {
 
         const options = {
           title: 'Tỷ lệ trạng thái hồ sơ (%)',
-          colors: ['#4A90E2', '#F5A623', '#50C878', '#E94E77'],
+          colors: ['#4A90E2', '#7F8C8D', '#F5A623', '#50C878', '#E94E77'], // Thêm màu cho trạng thái mới
           chartArea: { width: '80%', height: '70%' },
           legend: { position: 'bottom' },
           vAxis: { 
@@ -151,6 +156,7 @@ const StatusChart = ({ allProfiles }) => {
 
         const statusCounts = {
           'Đang chờ xét duyệt': 0,
+          'Đã xem xét': 0, // Thêm trạng thái Đã xem xét
           'Đã phỏng vấn': 0,
           'Đã tuyển dụng': 0,
           'Đã từ chối': 0,
@@ -167,7 +173,7 @@ const StatusChart = ({ allProfiles }) => {
         const options = {
           title: 'Thống kê trạng thái hồ sơ',
           pieHole: 0,
-          colors: ['#4A90E2', '#F5A623', '#50C878', '#E94E77'],
+          colors: ['#4A90E2', '#7F8C8D', '#F5A623', '#50C878', '#E94E77'], // Thêm màu cho trạng thái mới
           chartArea: { width: '80%', height: '80%' },
           legend: { position: 'bottom' },
         };
@@ -241,7 +247,7 @@ const MainContent = () => {
         const profileData = await profileResponse.json();
         console.log('Profile Data:', profileData);
         setAllProfiles(profileData);
-        const sortedProfiles = profileData.sort((a, b) => parseDate(b.date) - parseDate(a.date)).slice(0, 5);
+        const sortedProfiles = profileData.sort((a, b) => parseDate(b.appliedAt) - parseDate(a.appliedAt)).slice(0, 5);
         setDisplayProfiles(sortedProfiles);
 
         const jobResponse = await fetch('https://api-tuyendung-cty.onrender.com/api/job', { headers });
@@ -303,12 +309,12 @@ const MainContent = () => {
               return (
                 <tr key={profile._id}>
                   <td>{index + 1}</td>
-                  <td>{profile.name}</td>
-                  <td>{profile.email}</td>
-                  <td>{profile.phone}</td>
-                  <td>{profile.position}</td>
+                  <td>{profile.form.fullName}</td>
+                  <td>{profile.form.email}</td>
+                  <td>{profile.form.phone}</td>
+                  <td>{profile.jobName}</td>
                   <td>
-                    {new Date(parseDate(profile.date)).toLocaleDateString('vi-VN', {
+                    {new Date(profile.appliedAt).toLocaleDateString('vi-VN', {
                       day: '2-digit',
                       month: '2-digit',
                       year: 'numeric',
