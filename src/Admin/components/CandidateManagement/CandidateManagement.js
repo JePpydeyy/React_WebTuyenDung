@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { debounce } from 'lodash';
 import styles from './CandidateManagement.module.css';
 
 const API_URL = 'https://api-tuyendung-cty.onrender.com/api/profile';
@@ -71,7 +72,7 @@ const CandidateManagement = () => {
     return { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
   };
 
-  // Fetch all candidates (including all statuses)
+  // Fetch all candidates
   const fetchCandidates = async () => {
     setIsLoading(true);
     const headers = getAuthHeaders();
@@ -137,7 +138,7 @@ const CandidateManagement = () => {
   };
 
   const handlePageChange = (page) => {
-    displayCandidates(page, filteredCandidates);
+    displayCandidates(page, filteredCandidates || candidates);
   };
 
   // View candidate details
@@ -198,7 +199,7 @@ const CandidateManagement = () => {
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       window.open(url, '_blank');
-      setTimeout(() => window.URL.revokeObjectURL(url), 60000); // Clean up after 1 minute
+      setTimeout(() => window.URL.revokeObjectURL(url), 60000);
     } catch (error) {
       console.error('Error viewing CV:', error);
       showNotification('Không tìm thấy CV của ứng viên hoặc lỗi server', 'error');
@@ -233,7 +234,6 @@ const CandidateManagement = () => {
         const errorData = await response.json();
         throw new Error(errorData.message || `Không thể cập nhật trạng thái: ${response.status}`);
       }
-      // Update local state
       const updatedCandidates = candidates.map(c =>
         c.id === id ? { ...c, status: newStatus } : c
       );
@@ -274,7 +274,6 @@ const CandidateManagement = () => {
         const errorData = await response.json();
         throw new Error(errorData.message || `Không thể ẩn ứng viên: ${response.status}`);
       }
-      // Update local state to set status to 'Đã từ chối'
       const updatedCandidates = candidates.map(c =>
         c.id === id ? { ...c, status: 'Đã từ chối' } : c
       );
@@ -287,7 +286,6 @@ const CandidateManagement = () => {
         setSelectedCandidate(null);
       }
       displayCandidates(currentPage, updatedFiltered || updatedCandidates);
-      window.location.reload();
       showNotification('Đã xóa ứng viên thành công', 'success');
     } catch (error) {
       console.error('Error hiding candidate:', error);
@@ -297,51 +295,47 @@ const CandidateManagement = () => {
     }
   };
 
-  // Apply filters
-  const applyFilters = async () => {
+  // Apply filters with debounced search
+  const handleApplyFilters = async () => {
     const positionFilter = document.getElementById('positionFilter')?.value;
-    const searchTerm = document.querySelector('.search-bar')?.value.trim();
+    const statusFilter = document.getElementById('statusFilter')?.value;
+    const searchTerm = document.querySelector('.search-bar')?.value.trim().toLowerCase();
+    let candidatesData = await fetchCandidates();
 
-    setIsLoading(true);
-    try {
-      let candidatesData = await fetchCandidates();
-      if (!candidatesData.length) {
-        setFilteredCandidates([]);
-        await displayCandidates(1, []);
-        showNotification('Không tìm thấy ứng viên phù hợp', 'info');
-        return;
-      }
-
-      if (positionFilter) {
-        candidatesData = candidatesData.filter(c => c.position === positionFilter);
-      }
-
-      if (searchTerm) {
-        const normalizedSearchTerm = normalizeVietnamese(searchTerm);
-        candidatesData = candidatesData.filter(candidate =>
+    if (searchTerm) {
+      const normalizedSearchTerm = normalizeVietnamese(searchTerm);
+      candidatesData = candidatesData.filter(
+        candidate =>
           normalizeVietnamese(candidate.name).includes(normalizedSearchTerm) ||
           normalizeVietnamese(candidate.email).includes(normalizedSearchTerm) ||
           normalizeVietnamese(candidate.id).includes(normalizedSearchTerm) ||
           (candidate.position && normalizeVietnamese(candidate.position).includes(normalizedSearchTerm))
-        );
-      }
-
-      setFilteredCandidates(candidatesData);
-      if (candidatesData.length === 0) {
-        showNotification('Không tìm thấy ứng viên phù hợp', 'info');
-      }
-      await displayCandidates(1, candidatesData);
-    } catch (error) {
-      console.error('Error applying filters:', error);
-      showNotification(`Lỗi khi áp dụng bộ lọc/tìm kiếm: ${error.message}`, 'error');
-    } finally {
-      setIsLoading(false);
+      );
     }
+    if (positionFilter) {
+      candidatesData = candidatesData.filter(c => c.position === positionFilter);
+    }
+    if (statusFilter) {
+      candidatesData = candidatesData.filter(c => c.status === statusFilter);
+    }
+
+    setFilteredCandidates(candidatesData);
+    if (candidatesData.length === 0) {
+      showNotification('Không tìm thấy ứng viên phù hợp', 'info');
+    }
+    displayCandidates(1, candidatesData);
+  };
+
+  const debouncedSearch = debounce(() => handleApplyFilters(), 300);
+
+  const handleSearchChange = () => {
+    debouncedSearch();
   };
 
   // Reset filters
   const resetFilters = async () => {
     document.getElementById('positionFilter').value = '';
+    document.getElementById('statusFilter').value = '';
     document.querySelector('.search-bar').value = '';
     setFilteredCandidates(null);
     const freshData = await fetchCandidates();
@@ -363,6 +357,8 @@ const CandidateManagement = () => {
     };
     loadCandidates();
   }, [navigate]);
+
+  const uniqueStatuses = [...new Set(candidates.map(candidate => candidate.status))];
 
   const getStatusClass = (status) => {
     const statusMap = {
@@ -461,16 +457,22 @@ const CandidateManagement = () => {
           type="text"
           className="search-bar"
           placeholder="Tìm kiếm ứng viên..."
-          onChange={applyFilters}
+          onChange={handleSearchChange}
           disabled={isLoading}
         />
-        <select id="positionFilter" onChange={applyFilters} disabled={isLoading}>
+        <select id="positionFilter" onChange={handleApplyFilters} disabled={isLoading}>
           <option value="">- Tất cả vị trí -</option>
           {positions.map((pos, index) => (
             <option key={index} value={pos}>{pos}</option>
           ))}
         </select>
-        <button onClick={applyFilters} disabled={isLoading}>
+        <select id="statusFilter" onChange={handleApplyFilters} disabled={isLoading}>
+          <option value="">- Tất cả trạng thái -</option>
+          {uniqueStatuses.map(status => (
+            <option key={status} value={status}>{status}</option>
+          ))}
+        </select>
+        <button onClick={handleApplyFilters} disabled={isLoading}>
           <i className="fa-solid fa-filter"></i> Áp dụng
         </button>
         <button onClick={resetFilters} disabled={isLoading}>
@@ -613,13 +615,6 @@ const CandidateManagement = () => {
                   disabled={isLoading}
                 >
                   Đánh dấu Mới
-                </button>
-                <button
-                  className={`${styles.statusBtn} ${styles.daXemXet}`}
-                  onClick={() => changeStatus(selectedCandidate.id, 'Đã xem xét')}
-                  disabled={isLoading}
-                >
-                  Đánh dấu Đã xem xét
                 </button>
                 <button
                   className={`${styles.statusBtn} ${styles.phongVan}`}

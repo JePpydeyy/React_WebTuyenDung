@@ -291,3 +291,41 @@ th {
 .statusBtn:hover {
   opacity: 0.9;
 }
+
+/* Thiết lập độ rộng cho các cột */
+.applications th:nth-child(1), .applications td:nth-child(1) { min-width: 60px; } /* STT */
+.applications th:nth-child(2), .applications td:nth-child(2) { min-width: 150px; } /* Họ và Tên */
+.applications th:nth-child(3), .applications td:nth-child(3) { min-width: 180px; } /* Email */
+.applications th:nth-child(4), .applications td:nth-child(4) { min-width: 120px; } /* SĐT */
+.applications th:nth-child(5), .applications td:nth-child(5) { min-width: 150px; } /* Vị trí */
+.applications th:nth-child(6), .applications td:nth-child(6) { min-width: 100px; } /* Ngày */
+.applications th:nth-child(7), .applications td:nth-child(7) { min-width: 120px; } /* Trạng thái */
+.applications th:nth-child(8), .applications td:nth-child(8) { min-width: 120px; } /* Thao tác */
+
+/* Ngăn xuống dòng cho các cột ngắn */
+.applications td:nth-child(1),
+.applications td:nth-child(4),
+.applications td:nth-child(6),
+.applications td:nth-child(7),
+.applications td:nth-child(8) {
+  white-space: nowrap;
+}
+
+/* Cho phép xuống dòng cho cột có nội dung dài */
+.applications td:nth-child(2),
+.applications td:nth-child(3),
+.applications td:nth-child(5) {
+  white-space: normal;
+  word-wrap: break-word;
+  line-height: 1.4;
+  max-height: 60px;
+}
+
+/* Trạng thái styling */
+.status {
+  padding: 4px 8px;
+  border-radius: var(--border-radius);
+  font-size: 0.875rem;
+  display: inline-block;
+  font-weight: 500;
+}
