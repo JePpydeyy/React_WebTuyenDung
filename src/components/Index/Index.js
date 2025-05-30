@@ -468,7 +468,7 @@ const Index = () => {
       <section className={styles['video-section']}>
         <h2>Video Giới Thiệu</h2>
         <div className={styles['video-container']}>
-        <iframe src="https://www.youtube.com/embed/rKaqO1Lnmnc?autoplay=1&amp;loop=1&amp;playlist=rKaqO1Lnmnc" title="Giới thiệu công ty ACFC" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen=""></iframe>
+        <iframe src="https://www.youtube.com/embed/rKaqO1Lnmnc?autoplay=1&amp;loop=1&amp;playlist=rKaqO1Lnmnc" title="Giới thiệu công ty ACFC" frameborder="0" allow="accelerometer;  encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen=""></iframe>
         </div>
       </section>
 

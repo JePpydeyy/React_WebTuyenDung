@@ -15,6 +15,13 @@
   min-height: 20rem;
   max-height: 45rem;
   background-color: #a00;
+  touch-action: pan-y; /* Ngăn vuốt ngang ảnh hưởng cuộn dọc */
+ 
+  cursor: grab; /* Con trỏ dạng kéo */
+}
+
+.banner-wrapper:active {
+  cursor: grabbing; /* Con trỏ khi đang kéo */
 }
 
 .banner-image {
@@ -94,6 +101,18 @@
 .indicator.active {
   opacity: 1;
   background: #1678f2;
+}
+
+.banner-loading,
+.banner-error {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f0f0f0;
+  color: #333;
+  font-size: 1.2rem;
 }
 
 .container-lastest {
@@ -388,7 +407,6 @@
   display: flex;
   flex-direction: row;
   overflow-x: auto;
- 
   padding: 0 1rem;
 }
 
@@ -589,7 +607,6 @@
     padding: 1rem;
     margin: 2.5rem auto;
   }
-  
   .acfc-love-item {
     width: 240px;
   }
@@ -641,7 +658,7 @@
   .job-search_select,
   .job-search_button {
     width: 100%;
-    padding: 0.75rem 0.75rem 0.75rem 1.5rem;
+    padding: 0.75rem 0.75rem 0.75rem 2.5rem;
   }
   .job-search_select {
     padding-right: 2rem;
@@ -662,19 +679,19 @@
   .acfc-love-container {
     flex-direction: column;
     justify-content: center;
-    gap: 0; /* Loại bỏ gap */
+    gap: 0;
   }
   .acfc-love-item {
     width: 100%;
     max-width: 400px;
-    margin: 0; /* Loại bỏ margin */
+    margin: 0;
   }
   .title-info-box,
   .image-info-box {
-    flex-direction: row; /* Layout ngang */
+    flex-direction: row;
   }
   .image-info-box.reverse {
-    flex-direction: row-reverse; /* Xen kẽ: ảnh - info */
+    flex-direction: row-reverse;
   }
   .a-l-title,
   .a-l-info,
@@ -701,10 +718,10 @@
   .tttable-mobile .acfc-love-container {
     flex-direction: column;
     align-items: center;
-    gap: 0; /* Loại bỏ gap */
+    gap: 0;
   }
   .tttable-mobile .acfc-love-item {
-    margin: 0; /* Loại bỏ margin */
+    margin: 0;
     max-width: 400px;
   }
   .tttable-mobile .a-l-title,
@@ -776,20 +793,20 @@
   .acfc-love-container {
     flex-direction: column;
     align-items: center;
-    gap: 0; /* Loại bỏ gap */
+    gap: 0;
     padding: 0;
   }
   .acfc-love-item {
     width: 100%;
     max-width: 320px;
-    margin: 0; /* Loại bỏ margin */
+    margin: 0;
   }
   .title-info-box,
   .image-info-box {
-    flex-direction: row; /* Layout ngang */
+    flex-direction: row;
   }
   .image-info-box.reverse {
-    flex-direction: row-reverse; /* Xen kẽ: ảnh - info */
+    flex-direction: row-reverse;
   }
   .a-l-title,
   .a-l-info,
@@ -897,7 +914,7 @@
   }
   .acfc-love-item {
     max-width: 280px;
-    margin: 0; /* Loại bỏ margin */
+    margin: 0;
   }
   .a-l-title,
   .a-l-info,
@@ -1049,7 +1066,7 @@
   }
   .acfc-love-item {
     max-width: 280px;
-    margin: 0; /* Loại bỏ margin */
+    margin: 0;
   }
   .a-l-title,
   .a-l-info,

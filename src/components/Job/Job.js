@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
+import { debounce } from 'lodash';
 import styles from './Job.module.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
@@ -12,6 +13,12 @@ const bannerImages = [
 const Jobcontent = () => {
   const [bannerIdx, setBannerIdx] = useState(0);
   const bannerTimer = useRef(null);
+  const bannerRef = useRef(null);
+  const [isMouseDown, setIsMouseDown] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [currentX, setCurrentX] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [loadedImages, setLoadedImages] = useState([bannerImages[0]]);
 
   // Banner slider functions
   const stopBannerAuto = useCallback(() => {
@@ -20,6 +27,10 @@ const Jobcontent = () => {
 
   const nextBannerSlide = useCallback(() => {
     setBannerIdx((prev) => (prev + 1) % bannerImages.length);
+  }, []);
+
+  const prevBannerSlide = useCallback(() => {
+    setBannerIdx((prev) => (prev - 1 + bannerImages.length) % bannerImages.length);
   }, []);
 
   const startBannerAuto = useCallback(() => {
@@ -35,14 +46,104 @@ const Jobcontent = () => {
     [stopBannerAuto]
   );
 
-  const prevBannerSlide = useCallback(() => {
-    setBannerIdx((prev) => (prev - 1 + bannerImages.length) % bannerImages.length);
-  }, []);
+  // Swipe handling functions
+  const handleSwipeStart = useCallback((clientX) => {
+    setIsMouseDown(true);
+    setStartX(clientX);
+    setCurrentX(clientX);
+    setIsDragging(false);
+    stopBannerAuto();
+  }, [stopBannerAuto]);
+
+  const handleSwipeMove = useCallback((clientX) => {
+    if (!isMouseDown) return;
+    setCurrentX(clientX);
+    const diffX = Math.abs(clientX - startX);
+    if (diffX > 10) {
+      setIsDragging(true);
+    }
+  }, [isMouseDown, startX]);
+
+  const handleSwipeEnd = useCallback(() => {
+    if (!isMouseDown) return;
+    setIsMouseDown(false);
+    if (isDragging) {
+      const diffX = currentX - startX;
+      const threshold = window.innerWidth * 0.1; // 10% of viewport width
+      if (Math.abs(diffX) > threshold) {
+        if (diffX > 0) {
+          prevBannerSlide();
+        } else {
+          nextBannerSlide();
+        }
+      }
+    }
+    setIsDragging(false);
+    setTimeout(() => {
+      startBannerAuto();
+    }, 3000);
+  }, [isMouseDown, isDragging, currentX, startX, prevBannerSlide, nextBannerSlide, startBannerAuto]);
+
+  const handleMouseDown = useCallback((e) => {
+    e.preventDefault();
+    handleSwipeStart(e.clientX);
+  }, [handleSwipeStart]);
+
+  const handleMouseMove = useCallback((e) => {
+    handleSwipeMove(e.clientX);
+  }, [handleSwipeMove]);
+
+  const handleMouseUp = useCallback(() => {
+    handleSwipeEnd();
+  }, [handleSwipeEnd]);
+
+  const handleMouseLeave = useCallback(() => {
+    handleSwipeEnd();
+  }, [handleSwipeEnd]);
+
+  const handleTouchStart = useCallback((e) => {
+    const touch = e.touches[0];
+    handleSwipeStart(touch.clientX);
+  }, [handleSwipeStart]);
+
+  const handleTouchMove = useCallback((e) => {
+    if (isDragging) {
+      e.preventDefault(); // Prevent scrolling during swipe
+    }
+    const touch = e.touches[0];
+    handleSwipeMove(touch.clientX);
+  }, [isDragging, handleSwipeMove]);
+
+  const handleTouchEnd = useCallback(() => {
+    handleSwipeEnd();
+  }, [handleSwipeEnd]);
 
   useEffect(() => {
     startBannerAuto();
     return stopBannerAuto;
   }, [startBannerAuto, stopBannerAuto]);
+
+  useEffect(() => {
+    if (isMouseDown) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      return () => {
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+      };
+    }
+  }, [isMouseDown, handleMouseMove, handleMouseUp]);
+
+  useEffect(() => {
+    const preloadImages = async () => {
+      const nextIdx = (bannerIdx + 1) % bannerImages.length;
+      const prevIdx = (bannerIdx - 1 + bannerImages.length) % bannerImages.length;
+      const imagesToLoad = [bannerImages[bannerIdx], bannerImages[nextIdx], bannerImages[prevIdx]];
+      const uniqueImages = [...new Set(imagesToLoad)];
+      setLoadedImages(uniqueImages);
+    };
+    preloadImages();
+  }, [bannerIdx]);
 
   // Search form state
   const [searchForm, setSearchForm] = useState({
@@ -53,10 +154,13 @@ const Jobcontent = () => {
   });
   const [searching, setSearching] = useState(false);
 
-  const handleSearchChange = (e) => {
-    const { name, value } = e.target;
-    setSearchForm((prev) => ({ ...prev, [name]: value }));
-  };
+  const handleSearchChange = useCallback(
+    debounce((e) => {
+      const { name, value } = e.target;
+      setSearchForm((prev) => ({ ...prev, [name]: value }));
+    }, 300),
+    []
+  );
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -79,12 +183,12 @@ const Jobcontent = () => {
   const [workplaceOptions, setWorkplaceOptions] = useState([]);
   const [nameOptions, setNameOptions] = useState([]);
 
-  // Fetch jobs from API with enhanced debugging
-  useEffect(() => {
-    const fetchJobs = async () => {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 giây timeout
+  // Fetch jobs from API with retry mechanism
+  const fetchJobs = useCallback(async (retries = 3, delay = 1000) => {
+    const controller = new AbortController();
+    for (let attempt = 1; attempt <= retries; attempt++) {
       try {
+        const timeoutId = setTimeout(() => controller.abort(), 10000);
         const res = await fetch('https://api-tuyendung-cty.onrender.com/api/job', {
           method: 'GET',
           headers: {
@@ -99,20 +203,29 @@ const Jobcontent = () => {
           throw new Error(`HTTP error! Status: ${res.status}, Response: ${errorText}`);
         }
         const data = await res.json();
-        console.log('API Response:', data); // Log dữ liệu để debug
         if (!Array.isArray(data)) throw new Error('Dữ liệu trả về không phải là mảng');
-        setJobs(data);
+        const filteredJobs = data.filter((job) => job.status === 'show');
+        setJobs(filteredJobs);
         setError(null);
+        return;
       } catch (err) {
-        console.error('Lỗi khi lấy dữ liệu từ API:', err);
-        setError(err.message);
-        setJobs([]);
+        console.error(`Attempt ${attempt} failed:`, err);
+        if (attempt === retries) {
+          setError(`Không thể tải dữ liệu: ${err.message}`);
+          setJobs([]);
+        } else {
+          await new Promise((resolve) => setTimeout(resolve, delay * attempt));
+        }
       } finally {
         setLoading(false);
       }
-    };
-    fetchJobs();
+    }
   }, []);
+
+  // Fetch jobs on mount
+  useEffect(() => {
+    fetchJobs();
+  }, [fetchJobs]);
 
   // Generate dropdown options
   useEffect(() => {
@@ -165,11 +278,11 @@ const Jobcontent = () => {
 
   // Sort and filter jobs by type
   const jobListingsNewStore = [...filteredJobs]
-    .filter((job) => job.JobType === 'Store block jobs') // Sửa từ job['Job Type'] thành job.JobType
+    .filter((job) => job.JobType === 'Store block jobs')
     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   const jobListingsNewOffice = [...filteredJobs]
-    .filter((job) => job.JobType === 'Office work') // Sửa từ job['Job Type'] thành job.JobType
+    .filter((job) => job.JobType === 'Office work')
     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   // Debug log to check filtered jobs
@@ -182,16 +295,38 @@ const Jobcontent = () => {
     <main>
       {/* Banner Section */}
       <section className={styles.banner}>
-        <div className={styles.bannerWrapper}>
+        <div
+          className={`${styles.bannerWrapper} ${isDragging ? styles.dragging : ''}`}
+          ref={bannerRef}
+          onMouseDown={handleMouseDown}
+          onMouseLeave={handleMouseLeave}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'ArrowLeft') {
+              prevBannerSlide();
+              stopBannerAuto();
+            } else if (e.key === 'ArrowRight') {
+              nextBannerSlide();
+              stopBannerAuto();
+            }
+          }}
+          style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+        >
           {bannerImages.map((src, idx) => (
             <img
               key={src}
               className={`${styles.bannerImage} ${idx === bannerIdx ? styles.active : ''} ${
                 idx === (bannerIdx - 1 + bannerImages.length) % bannerImages.length ? styles.prev : ''
               }`}
-              src={src}
+              src={loadedImages.includes(src) ? src : '/assets/images/placeholder.jpg'}
+              srcSet={`${src} 1x, ${src.replace('.webp', '@2x.webp')} 2x`}
               alt={`Banner ${idx + 1}`}
-              loading="lazy"
+              loading={idx === 0 ? 'eager' : 'lazy'}
+              fetchPriority={idx === 0 ? 'high' : 'low'}
+              draggable={false}
             />
           ))}
           <button
@@ -299,7 +434,18 @@ const Jobcontent = () => {
           {loading ? (
             <div>Đang tải...</div>
           ) : error ? (
-            <div>Lỗi: {error}</div>
+            <div>
+              Lỗi: {error}{' '}
+              <button
+                className={styles.loadMoreBtn}
+                onClick={() => {
+                  setLoading(true);
+                  fetchJobs();
+                }}
+              >
+                Thử lại
+              </button>
+            </div>
           ) : jobListingsNewStore.length === 0 ? (
             <div>Không có việc làm mới nhất tại cửa hàng.</div>
           ) : (
@@ -337,7 +483,18 @@ const Jobcontent = () => {
           {loading ? (
             <div>Đang tải...</div>
           ) : error ? (
-            <div>Lỗi: {error}</div>
+            <div>
+              Lỗi: {error}{' '}
+              <button
+                className={styles.loadMoreBtn}
+                onClick={() => {
+                  setLoading(true);
+                  fetchJobs();
+                }}
+              >
+                Thử lại
+              </button>
+            </div>
           ) : jobListingsNewOffice.length === 0 ? (
             <div>Không có việc làm mới nhất tại văn phòng.</div>
           ) : (

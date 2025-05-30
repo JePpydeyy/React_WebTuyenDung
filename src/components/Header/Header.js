@@ -26,7 +26,13 @@ const Header = () => {
 
   return (
     <header className={styles.header}>
-      <img className={styles.logo} src="/assets/images/Logo.svg" alt="Logo" loading="lazy" />
+      <Link
+        to="/"
+        onClick={() => handleLinkClick('/')}
+        aria-label="Go to Home page"
+      >
+        <img className={styles.logo} src="/assets/images/Logo.svg" alt="Logo" loading="lazy" />
+      </Link>
       <button
         className={`${styles['nav-toggle']} ${isNavOpen ? styles.open : ''}`}
         onClick={toggleNav}
@@ -71,8 +77,8 @@ const Header = () => {
           <li>
             <Link
               to="/JobContent"
-              className={location.pathname === '/job' ? styles.active : ''}
-              onClick={() => handleLinkClick('/job')}
+              className={location.pathname === '/JobContent' ? styles.active : ''} // Fixed route path
+              onClick={() => handleLinkClick('/JobContent')}
               aria-label="Go to Career Opportunities page"
             >
               <i className="fas fa-briefcase"></i> Cơ hội nghề nghiệp

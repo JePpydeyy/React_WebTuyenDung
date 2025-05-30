@@ -42,6 +42,14 @@ const JobDetail = () => {
   const [bannerIdx, setBannerIdx] = useState(0);
   const bannerTimer = useRef(null);
 
+  // Parse workplace into individual locations
+  const parseWorkplaces = (workplaceString) => {
+    if (!workplaceString) return [];
+    // Split by comma and remove the city part after the dash
+    const parts = workplaceString.split('-')[0].split(',').map((part) => part.trim());
+    return parts.filter((part) => part !== '');
+  };
+
   useEffect(() => {
     const fetchJob = async () => {
       try {
@@ -154,6 +162,7 @@ const JobDetail = () => {
 
   const validateForm = () => {
     const errors = {};
+    if (!formData.workplace) errors.workplace = 'Vui lòng chọn địa điểm làm việc';
     if (!formData.fullName.trim()) errors.fullName = 'Vui lòng nhập họ tên';
     if (!formData.phone.trim()) errors.phone = 'Vui lòng nhập số điện thoại';
     else if (!/^\d{10,11}$/.test(formData.phone.trim())) errors.phone = 'Số điện thoại không hợp lệ';
@@ -229,6 +238,8 @@ const JobDetail = () => {
   if (loading) return <div className={styles.jobDetailDiv}>Đang tải...</div>;
   if (error) return <div className={styles.jobDetailDiv}>Lỗi: {error}</div>;
   if (!job) return <div className={styles.jobDetailDiv}>Không tìm thấy công việc</div>;
+
+  const workplaceOptions = parseWorkplaces(job.Workplace);
 
   return (
     <main>
@@ -446,18 +457,25 @@ const JobDetail = () => {
               </div>
               <form onSubmit={submitApplication}>
                 <div className={styles.jobFormGroup}>
-                  <label className={styles.jobLabel}>Địa điểm làm việc mong muốn</label>
+                  <label className={styles.jobLabel}>
+                    Địa điểm làm việc mong muốn<span className={styles.jobRequired}>*</span>
+                  </label>
                   <select
                     name="workplace"
                     value={formData.workplace}
                     onChange={handleFormChange}
-                    className={styles.jobSelect}
+                    className={`${styles.jobSelect} ${formErrors.workplace ? styles.jobInputError : ''}`}
                   >
-                    <option value="">- Theo sự sắp xếp -</option>
-                    <option value="Hồ Chí Minh">Hồ Chí Minh</option>
-                    <option value="Hà Nội">Hà Nội</option>
-                    <option value="Đà Nẵng">Đà Nẵng</option>
+                    <option value="">- Chọn địa điểm -</option>
+                    {workplaceOptions.map((location, idx) => (
+                      <option key={idx} value={location}>
+                        {location}
+                      </option>
+                    ))}
                   </select>
+                  {formErrors.workplace && (
+                    <span className={styles.jobError}>{formErrors.workplace}</span>
+                  )}
                 </div>
                 <div className={styles.jobFormRow}>
                   <div className={styles.jobFormGroup}>

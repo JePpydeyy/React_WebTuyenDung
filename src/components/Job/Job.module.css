@@ -1,5 +1,3 @@
-/* Job.module.css */
-
 /* Banner Section */
 .banner {
   position: relative;
@@ -11,10 +9,24 @@
   width: 100%;
   max-width: 100vw;
   overflow: hidden;
-  height: 40vw;
-  min-height: 20rem;
+  aspect-ratio: 16 / 9;
+  min-height: 12rem;
   max-height: 50rem;
   background-color: #a00;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  touch-action: pan-y pinch-zoom;
+}
+
+.bannerWrapper:active {
+  cursor: grabbing;
+}
+
+.bannerWrapper.dragging {
+  cursor: grabbing;
 }
 
 .bannerImage {
@@ -29,6 +41,16 @@
   z-index: 1;
   pointer-events: none;
   object-fit: cover;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+  will-change: opacity, transform;
 }
 
 .bannerImage.active {
@@ -56,6 +78,10 @@
   border-radius: 50%;
   z-index: 3;
   transition: background 0.2s ease;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 .bannerBtnLeft {
@@ -68,6 +94,11 @@
 
 .bannerBtn:hover {
   background: #1678f2;
+}
+
+.bannerBtn:focus {
+  outline: 2px solid #1678f2;
+  outline-offset: 2px;
 }
 
 .bannerIndicators {
@@ -88,7 +119,15 @@
   opacity: 0.5;
   cursor: pointer;
   border: 2px solid #1678f2;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.indicator:hover {
+  transform: scale(1.1);
 }
 
 .indicator.active {
@@ -224,6 +263,7 @@
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   width: 350px;
   flex-shrink: 0;
+  will-change: transform, box-shadow;
 }
 
 .jobCard:hover {
@@ -324,15 +364,15 @@
     grid-template-columns: repeat(auto-fit, 350px);
   }
   .bannerWrapper {
-    height: 45vw;
-    min-height: 18rem;
+    aspect-ratio: 16 / 9;
+    min-height: 12rem;
   }
 }
 
 @media (max-width: 991px) {
   .bannerWrapper {
-    height: 50vw;
-    min-height: 16rem;
+    aspect-ratio: 16 / 9;
+    min-height: 12rem;
   }
   .bannerBtn {
     font-size: 1.25rem;
@@ -340,10 +380,21 @@
   }
 }
 
+@media (max-width: 900px) {
+  .bannerWrapper {
+    aspect-ratio: 16 / 9;
+    min-height: 12rem;
+  }
+  .bannerBtn {
+    font-size: 1.1rem;
+    padding: 0.35rem 0.7rem;
+  }
+}
+
 @media (max-width: 768px) {
   .bannerWrapper {
-    height: 60vw;
-    min-height: 15rem;
+    aspect-ratio: 16 / 9;
+    min-height: 12rem;
   }
   .bannerBtn {
     font-size: 1rem;
@@ -416,8 +467,8 @@
 
 @media (max-width: 500px) {
   .bannerWrapper {
-    height: 70vw;
-    min-height: 12rem;
+    aspect-ratio: 16 / 9;
+    min-height: 10rem;
   }
   .bannerBtn {
     font-size: 0.9rem;
@@ -437,7 +488,7 @@
 
 @media (max-width: 480px) {
   .bannerWrapper {
-    height: 75vw;
+    aspect-ratio: 16 / 9;
     min-height: 10rem;
   }
   .bannerBtn {

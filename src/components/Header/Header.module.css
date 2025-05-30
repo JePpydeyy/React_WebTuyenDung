@@ -3,7 +3,7 @@
   padding: 1rem 2rem;
   border-bottom: 1px solid #ddd;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; /* Maintains logo on left, nav on right/center */
   align-items: center;
   position: relative;
   z-index: 1000;
@@ -15,14 +15,13 @@
 }
 
 .nav {
-    margin-right: 500px;
-  width: auto;
-  max-width: 100%;
+  flex: 1; /* Allow nav to take available space */
+  display: flex;
+  justify-content: center; /* Center the nav content */
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .nav ul {
- align-items: center;
   list-style: none;
   display: flex;
   justify-content: center; /* Center menu items horizontally */
@@ -120,8 +119,11 @@
     height: 3.5rem;
   }
 
-  .nav ul {
+  .nav {
     justify-content: center; /* Ensure centered on tablet */
+  }
+
+  .nav ul {
     gap: 1rem;
   }
 
@@ -197,4 +199,4 @@
     color: #a00;
     font-weight: 600;
   }
-}
+}   

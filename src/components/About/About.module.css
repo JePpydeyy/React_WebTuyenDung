@@ -1,5 +1,3 @@
-/* About.module.css */
-
 /* Banner styles */
 .banner {
     width: 100%;
@@ -8,9 +6,9 @@
 .bannerWrapper {
     position: relative;
     width: 100%;
-    min-height: 300px;
-    max-height: 700px;
+    height: 700px;
     overflow: hidden;
+    touch-action: pan-y;  
 }
 
 .bannerImage {
@@ -128,7 +126,7 @@
 }
 
 .feature p {
-    font-size: clamp(0.8rem, 2vw, 0.9rem);
+    /* font-size: clampchercher: clamp(0.8rem, 2vw, 0.9rem); */
     color: #444;
     margin: 0;
 }
