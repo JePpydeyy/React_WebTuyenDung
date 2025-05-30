@@ -32,7 +32,7 @@ const acfcLoveItems = [
   },
   {
     info: 'Thỏa sức sáng tạo trong công việc',
-    images: ['', '/assets/images/banner-web-05.png', '/assets/images/banner-web-06.png'],
+    images: ['/assets/images/banner-web-04.png', '/assets/images/banner-web-05.png', '/assets/images/banner-web-06.png'],
     reverse: true,
   },
   {
@@ -603,9 +603,6 @@ const Index = () => {
       <section className={styles['video-section']}>
         <h2>Video Giới Thiệu</h2>
         <div className={styles['video-container']}>
-<<<<<<< HEAD
-        <iframe src="https://www.youtube.com/embed/rKaqO1Lnmnc?autoplay=1&amp;loop=1&amp;playlist=rKaqO1Lnmnc" title="Giới thiệu công ty ACFC" frameborder="0" allow="accelerometer;  encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen=""></iframe>
-=======
           <iframe
             src="https://www.youtube.com/embed/rKaqO1Lnmnc?autoplay=1&loop=1&playlist=rKaqO1Lnmnc"
             title="Giới thiệu công ty ACFC"
@@ -613,7 +610,6 @@ const Index = () => {
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowFullScreen
           ></iframe>
->>>>>>> a60310b7c9c1bf0363bc4c576efa21af8ecf7395
         </div>
       </section>
 
@@ -636,5 +632,4 @@ const Index = () => {
     </main>
   );
 };
-
 export default Index;
