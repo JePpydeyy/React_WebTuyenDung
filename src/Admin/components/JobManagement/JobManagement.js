@@ -39,7 +39,6 @@ const JobManagement = () => {
     hidden: 'Tạm dừng',
   };
 
-  // Format date DD/MM/YYYY
   const formatDate = (dateString) => {
     if (!dateString) return '';
     if (dateString.includes('/')) return dateString;
@@ -48,14 +47,12 @@ const JobManagement = () => {
     return date.toLocaleDateString('vi-VN');
   };
 
-  // Convert date to DD/MM/YYYY for backend
   const toBackendDate = (dateString) => {
     if (!dateString) return '';
     const [y, m, d] = dateString.split('-');
     return `${d}/${m}/${y}`;
   };
 
-  // Convert DD/MM/YYYY to YYYY-MM-DD for form
   const toFormDate = (dateString) => {
     if (!dateString) return '';
     if (dateString.includes('/')) {
@@ -65,12 +62,8 @@ const JobManagement = () => {
     return dateString;
   };
 
-  // Fetch jobs from API
   const fetchJobs = async () => {
-    if (!token) {
-      console.log('No token found, skipping fetch');
-      return [];
-    }
+    if (!token) return [];
     setIsLoading(true);
     try {
       const response = await fetch(API_JOBS_URL, {
@@ -79,14 +72,7 @@ const JobManagement = () => {
           'Content-Type': 'application/json',
         },
       });
-      if (!response.ok) {
-        if (response.status === 401) {
-          localStorage.removeItem('adminToken');
-          setToken('');
-          alert('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại!');
-        }
-        throw new Error(`HTTP error ${response.status}`);
-      }
+      if (!response.ok) throw new Error(`HTTP error ${response.status}`);
       const data = await response.json();
       return data.map(job => ({
         id: job._id,
@@ -117,7 +103,6 @@ const JobManagement = () => {
     }
   };
 
-  // Display jobs with pagination
   const displayJobs = async (page = 1, jobsToShow = null) => {
     const data = jobsToShow || (await fetchJobs());
     const startIndex = (page - 1) * itemsPerPage;
@@ -130,7 +115,6 @@ const JobManagement = () => {
 
   const handlePageChange = (page) => displayJobs(page, jobs);
 
-  // View job details
   const handleViewJob = async (jobId) => {
     if (!token) return;
     setIsLoading(true);
@@ -141,14 +125,7 @@ const JobManagement = () => {
           'Content-Type': 'application/json',
         },
       });
-      if (!response.ok) {
-        if (response.status === 401) {
-          localStorage.removeItem('adminToken');
-          setToken('');
-          alert('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại!');
-        }
-        throw new Error(`HTTP error ${response.status}`);
-      }
+      if (!response.ok) throw new Error(`HTTP error ${response.status}`);
       const job = await response.json();
       setSelectedJob({
         id: job._id,
@@ -170,13 +147,11 @@ const JobManagement = () => {
       });
     } catch (error) {
       console.error('Error fetching job:', error);
-      alert('Lỗi khi lấy chi tiết công việc');
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Open add modal
   const handleOpenAddModal = () => {
     setModalMode('add');
     setFormData({
@@ -200,7 +175,6 @@ const JobManagement = () => {
     setShowModal(true);
   };
 
-  // Open edit modal
   const handleOpenEditModal = (jobId) => {
     const job = jobs.find(j => j.id === jobId);
     if (job) {
@@ -229,7 +203,6 @@ const JobManagement = () => {
     }
   };
 
-  // Delete job (soft delete)
   const handleDeleteJob = async (jobId) => {
     if (!token) return;
     if (window.confirm('Bạn có chắc chắn muốn xóa công việc này?')) {
@@ -242,26 +215,16 @@ const JobManagement = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        if (!response.ok) {
-          if (response.status === 401) {
-            localStorage.removeItem('adminToken');
-            setToken('');
-            alert('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại!');
-          }
-          throw new Error(`HTTP error ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`HTTP error ${response.status}`);
         await displayJobs(currentPage);
-        alert('Xóa công việc thành công (xóa mềm)');
       } catch (error) {
         console.error('Error deleting job:', error);
-        alert('Lỗi khi xóa công việc');
       } finally {
         setIsLoading(false);
       }
     }
   };
 
-  // Toggle job visibility
   const handleToggleVisibility = async (jobId) => {
     if (!token) return;
     setIsLoading(true);
@@ -273,25 +236,16 @@ const JobManagement = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      if (!response.ok) {
-        if (response.status === 401) {
-          localStorage.removeItem('adminToken');
-          setToken('');
-          alert('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại!');
-        }
-        throw new Error(`HTTP error ${response.status}`);
-      }
+      if (!response.ok) throw new Error(`HTTP error ${response.status}`);
       setSelectedJob(null);
       await displayJobs(currentPage);
     } catch (error) {
       console.error('Error toggling visibility:', error);
-      alert('Lỗi khi thay đổi trạng thái');
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Handle form input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     if (name === 'Brands') {
@@ -310,7 +264,6 @@ const JobManagement = () => {
     setFormErrors(prev => ({ ...prev, [name]: '' }));
   };
 
-  // Validate form
   const validateForm = () => {
     const errors = {};
     if (!formData.Name.trim()) errors.Name = 'Tên công việc là bắt buộc';
@@ -330,13 +283,9 @@ const JobManagement = () => {
     return Object.keys(errors).length === 0;
   };
 
-  // Handle form submission
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    if (!token) {
-      alert('Bạn chưa đăng nhập hoặc phiên đăng nhập đã hết hạn!');
-      return;
-    }
+    if (!token) return;
     if (!validateForm()) return;
 
     setIsLoading(true);
@@ -370,16 +319,7 @@ const JobManagement = () => {
         body: JSON.stringify(payload),
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        if (response.status === 401) {
-          localStorage.removeItem('adminToken');
-          setToken('');
-          alert('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại!');
-        }
-        throw new Error(errorData.error || 'Lỗi khi lưu công việc');
-      }
-
+      if (!response.ok) throw new Error('Lỗi khi lưu công việc');
       await displayJobs(1);
       setShowModal(false);
       setFormData({
@@ -400,16 +340,13 @@ const JobManagement = () => {
         'Job Requirements': [],
       });
       setFormErrors({});
-      alert(modalMode === 'add' ? 'Thêm công việc thành công!' : 'Cập nhật công việc thành công!');
     } catch (error) {
       console.error('Error submitting form:', error);
-      alert('Đã xảy ra lỗi khi lưu công việc: ' + error.message);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Filter & search
   const handleApplyFilters = () => {
     const search = document.querySelector('.search-bar')?.value.trim().toLowerCase();
     const status = document.getElementById('statusFilter').value;
@@ -455,7 +392,6 @@ const JobManagement = () => {
   const uniqueJobTypes = [...new Set(jobs.map(job => job.jobType))];
   const uniqueStatuses = [...new Set(jobs.map(job => job.status))];
 
-  // Pagination buttons
   const getPaginationButtons = () => {
     const maxButtons = 5;
     const buttons = [];
@@ -673,9 +609,7 @@ const JobManagement = () => {
                     name="Name"
                     value={formData.Name}
                     onChange={handleInputChange}
-                    className={formErrors.Name ? styles.errorInput : ''}
                   />
-                  {formErrors.Name && <p className={styles.error}>{formErrors.Name}</p>}
                 </div>
                 <div className={styles.detailGroup}>
                   <label>Thương hiệu: <span style={{ color: 'red' }}>*</span></label>
@@ -684,10 +618,8 @@ const JobManagement = () => {
                     name="Brands"
                     value={formData.Brands.join(', ')}
                     onChange={handleInputChange}
-                    className={formErrors.Brands ? styles.errorInput : ''}
                     placeholder="Nhập các thương hiệu, cách nhau bằng dấu phẩy"
                   />
-                  {formErrors.Brands && <p className={styles.error}>{formErrors.Brands}</p>}
                 </div>
               </div>
               <div className={styles.detailRow}>
@@ -698,9 +630,7 @@ const JobManagement = () => {
                     name="JobType"
                     value={formData.JobType}
                     onChange={handleInputChange}
-                    className={formErrors.JobType ? styles.errorInput : ''}
                   />
-                  {formErrors.JobType && <p className={styles.error}>{formErrors.JobType}</p>}
                 </div>
                 <div className={styles.detailGroup}>
                   <label>Mức lương: <span style={{ color: 'red' }}>*</span></label>
@@ -709,9 +639,7 @@ const JobManagement = () => {
                     name="Salary"
                     value={formData.Salary}
                     onChange={handleInputChange}
-                    className={formErrors.Salary ? styles.errorInput : ''}
                   />
-                  {formErrors.Salary && <p className={styles.error}>{formErrors.Salary}</p>}
                 </div>
               </div>
               <div className={styles.detailRow}>
@@ -722,9 +650,7 @@ const JobManagement = () => {
                     name="Workplace"
                     value={formData.Workplace}
                     onChange={handleInputChange}
-                    className={formErrors.Workplace ? styles.errorInput : ''}
                   />
-                  {formErrors.Workplace && <p className={styles.error}>{formErrors.Workplace}</p>}
                 </div>
                 <div className={styles.detailGroup}>
                   <label>Hạn nộp: <span style={{ color: 'red' }}>*</span></label>
@@ -733,9 +659,7 @@ const JobManagement = () => {
                     name="Due date"
                     value={formData['Due date']}
                     onChange={handleInputChange}
-                    className={formErrors['Due date'] ? styles.errorInput : ''}
                   />
-                  {formErrors['Due date'] && <p className={styles.error}>{formErrors['Due date']}</p>}
                 </div>
               </div>
               <div className={styles.detailRow}>
@@ -746,9 +670,7 @@ const JobManagement = () => {
                     name="Post-date"
                     value={formData['Post-date']}
                     onChange={handleInputChange}
-                    className={formErrors['Post-date'] ? styles.errorInput : ''}
                   />
-                  {formErrors['Post-date'] && <p className={styles.error}>{formErrors['Post-date']}</p>}
                 </div>
                 <div className={styles.detailGroup}>
                   <label>Số lượng tuyển: <span style={{ color: 'red' }}>*</span></label>
@@ -758,9 +680,7 @@ const JobManagement = () => {
                     value={formData.Slot}
                     onChange={handleInputChange}
                     min="1"
-                    className={formErrors.Slot ? styles.errorInput : ''}
                   />
-                  {formErrors.Slot && <p className={styles.error}>{formErrors.Slot}</p>}
                 </div>
               </div>
               <div className={styles.detailRow}>
@@ -771,9 +691,7 @@ const JobManagement = () => {
                     name="Degree"
                     value={formData.Degree}
                     onChange={handleInputChange}
-                    className={formErrors.Degree ? styles.errorInput : ''}
                   />
-                  {formErrors.Degree && <p className={styles.error}>{formErrors.Degree}</p>}
                 </div>
                 <div className={styles.detailGroup}>
                   <label>Vị trí: <span style={{ color: 'red' }}>*</span></label>
@@ -782,9 +700,7 @@ const JobManagement = () => {
                     name="Position"
                     value={formData.Position}
                     onChange={handleInputChange}
-                    className={formErrors.Position ? styles.errorInput : ''}
                   />
-                  {formErrors.Position && <p className={styles.error}>{formErrors.Position}</p>}
                 </div>
               </div>
               <div className={`${styles.detailGroup} ${styles.full}`}>
@@ -794,9 +710,7 @@ const JobManagement = () => {
                   name="Work Experience"
                   value={formData['Work Experience']}
                   onChange={handleInputChange}
-                  className={formErrors['Work Experience'] ? styles.errorInput : ''}
                 />
-                {formErrors['Work Experience'] && <p className={styles.error}>{formErrors['Work Experience']}</p>}
               </div>
               <div className={`${styles.detailGroup} ${styles.full}`}>
                 <label>Mô tả công việc:</label>
@@ -815,9 +729,7 @@ const JobManagement = () => {
                   onChange={handleInputChange}
                   rows="4"
                   placeholder="Nhập các yêu cầu, mỗi yêu cầu trên một dòng"
-                  className={formErrors['Job Requirements'] ? styles.errorInput : ''}
                 />
-                {formErrors['Job Requirements'] && <p className={styles.error}>{formErrors['Job Requirements']}</p>}
               </div>
               <div className={`${styles.detailGroup} ${styles.full}`}>
                 <label>Quyền lợi: <span style={{ color: 'red' }}>*</span></label>
@@ -827,9 +739,7 @@ const JobManagement = () => {
                   onChange={handleInputChange}
                   rows="4"
                   placeholder="Nhập các quyền lợi, mỗi quyền lợi trên một dòng"
-                  className={formErrors.Welfare ? styles.errorInput : ''}
                 />
-                {formErrors.Welfare && <p className={styles.error}>{formErrors.Welfare}</p>}
               </div>
               <div className={styles.detailRow}>
                 <div className={styles.detailGroup}>
