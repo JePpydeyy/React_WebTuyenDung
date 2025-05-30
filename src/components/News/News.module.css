@@ -182,10 +182,6 @@
   transition: transform 0.3s ease;
 }
 
-.postImage img:hover {
-  transform: scale(1.03);
-}
-
 .postContent {
   flex: 0 0 60%;
   display: flex;
@@ -256,12 +252,8 @@
   height: 100%;
   width: 100%;
   object-fit: cover;
-  transition: transform 0.3s ease;
 }
 
-.gridImage img:hover {
-  transform: scale(1.05);
-}
 
 .gridTitle {
   font-size: 1.1rem;

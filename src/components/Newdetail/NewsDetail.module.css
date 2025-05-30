@@ -113,18 +113,20 @@
   font-weight: bold;
   margin-bottom: 20px;
   transition: all 0.3s ease;
-  color: #333;
+  color: #fff;
   background: #eee;
   border-radius: 8px;
+  border: none;
+  background: #8b1c2c;
 }
 
 .backButton:hover {
-  background: #1678f2;
+  background: #a00;
   color: #fff;
 }
 
 .backButton:focus {
-  outline: 2px solid #1678f2;
+  outline: 2px solid #a00;
   outline-offset: 2px;
 }
 
