@@ -1,3 +1,4 @@
+// src/components/JobManagement.js
 import React, { useState, useEffect } from 'react';
 import { debounce } from 'lodash';
 import styles from './JobManagement.module.css';
@@ -9,125 +10,107 @@ const JobManagement = () => {
   const [selectedJob, setSelectedJob] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [modalMode, setModalMode] = useState('add'); // 'add' or 'edit'
+  const [modalMode, setModalMode] = useState('add');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const itemsPerPage = 10;
   const [formData, setFormData] = useState({
-    name: '',
-    brands: '',
-    jobType: '',
-    salary: '',
-    workplace: '',
-    slot: '',
-    postDate: new Date().toISOString().split('T')[0],
-    dueDate: '',
-    jobDescription: '',
-    workExperience: '',
-    welfare: '',
+    JobType: '',
+    Name: '',
+    Brands: [],
+    Position: '',
+    Workplace: '',
+    Salary: '',
+    Slot: '',
+    'Post-date': new Date().toISOString().split('T')[0],
+    'Due date': '',
+    'Job Description': '',
+    'Work Experience': '',
+    Welfare: [],
     status: 'show',
-    degree: '',
+    Degree: '',
+    'Job Requirements': [],
   });
   const [formErrors, setFormErrors] = useState({});
-  const [token, setToken] = useState(localStorage.getItem('token') || '');
+  const [token, setToken] = useState(localStorage.getItem('adminToken') || '');
 
   const statusDisplayMap = {
     show: 'Đang tuyển',
     hidden: 'Tạm dừng',
   };
 
-  // Show notification
-  const showNotification = (message, type = 'success') => {
-    const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
-    notification.textContent = message;
-    document.body.appendChild(notification);
-    setTimeout(() => notification.remove(), 3000);
-  };
-
-  // Format date for display (DD/MM/YYYY)
+  // Format date DD/MM/YYYY
   const formatDate = (dateString) => {
-    if (!dateString) return 'Không có thông tin';
-    const parts = dateString.includes('/') ? dateString.split('/') : dateString.split('-');
-    const date = dateString.includes('/')
-      ? new Date(`${parts[2]}-${parts[1]}-${parts[0]}`)
-      : new Date(dateString);
-    if (isNaN(date)) return 'Không hợp lệ';
+    if (!dateString) return '';
+    if (dateString.includes('/')) return dateString;
+    const date = new Date(dateString);
+    if (isNaN(date)) return '';
     return date.toLocaleDateString('vi-VN');
   };
 
-  // Convert date to backend format (DD/MM/YYYY)
+  // Convert date to DD/MM/YYYY for backend
   const toBackendDate = (dateString) => {
     if (!dateString) return '';
-    if (dateString.includes('-')) {
-      const [year, month, day] = dateString.split('-');
-      return `${day}/${month}/${year}`;
-    }
-    return dateString;
+    const [y, m, d] = dateString.split('-');
+    return `${d}/${m}/${y}`;
   };
 
-  // Convert date to form format (YYYY-MM-DD)
+  // Convert DD/MM/YYYY to YYYY-MM-DD for form
   const toFormDate = (dateString) => {
     if (!dateString) return '';
     if (dateString.includes('/')) {
-      const [day, month, year] = dateString.split('/');
-      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+      const [d, m, y] = dateString.split('/');
+      return `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
     }
     return dateString;
   };
 
-  // Sanitize text to handle undefined/null/empty values
-  const sanitizeText = (str) => {
-    if (!str || str === '0') return 'Không có thông tin';
-    const div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
-  };
-
   // Fetch jobs from API
-  const fetchJobs = async (showHidden = false) => {
+  const fetchJobs = async () => {
     if (!token) {
-      showNotification('Vui lòng đăng nhập để tiếp tục', 'error');
+      console.log('No token found, skipping fetch');
       return [];
     }
     setIsLoading(true);
     try {
-      const response = await fetch(`${API_JOBS_URL}${showHidden ? '' : '?status=show'}`, {
+      const response = await fetch(API_JOBS_URL, {
         headers: {
           Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
       });
       if (!response.ok) {
-        const errorData = await response.json();
         if (response.status === 401) {
-          showNotification('Phiên đăng nhập hết hạn, vui lòng đăng nhập lại', 'error');
-          localStorage.removeItem('token');
+          localStorage.removeItem('adminToken');
           setToken('');
-          throw new Error('Không có quyền truy cập');
+          alert('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại!');
         }
-        throw new Error(errorData.message || `Không thể tải danh sách công việc: ${response.status}`);
+        throw new Error(`HTTP error ${response.status}`);
       }
       const data = await response.json();
       return data.map(job => ({
         id: job._id,
-        title: sanitizeText(job.Name),
-        brand: sanitizeText(job.Brands),
-        jobType: sanitizeText(job['Job Type'] ? job['Job Type'].charAt(0).toUpperCase() + job['Job Type'].slice(1) : ''),
-        salary: sanitizeText(job.Salary),
-        location: sanitizeText(job.Workplace),
-        deadline: formatDate(job['Due date']),
+        title: job.Name || '',
+        brand: job.Brands || '',
+        brandsArr: job.Brands ? job.Brands.split(', ').filter(Boolean) : [],
+        jobType: job.JobType || '',
+        salary: job.Salary || '',
+        location: job.Workplace || '',
+        deadline: formatDate(job['Due date']) || '',
         status: statusDisplayMap[job.status] || job.status,
-        description: sanitizeText(job['Job Description']),
-        workExperience: sanitizeText(job['Work Experience']),
-        benefits: sanitizeText(job.Welfare),
+        description: Array.isArray(job['Job Description']) ? job['Job Description'].join('\n') : job['Job Description'] || '',
+        workExperience: job['Work Experience'] || '',
+        benefits: Array.isArray(job.Welfare) ? job.Welfare.join('\n') : job.Welfare || '',
+        welfareArr: Array.isArray(job.Welfare) ? job.Welfare : [],
         slot: job.Slot || 0,
-        postDate: formatDate(job['Post-date']),
-        degree: sanitizeText(job.Degree || ''),
-        requirements: sanitizeText(job['Job Requirements'] || ''),
-        position: sanitizeText(job.Position || ''),
+        postDate: formatDate(job['Post-date']) || '',
+        degree: job.Degree || '',
+        requirements: Array.isArray(job['Job Requirements']) ? job['Job Requirements'].join('\n') : job['Job Requirements'] || '',
+        jobRequirementsArr: Array.isArray(job['Job Requirements']) ? job['Job Requirements'] : [],
+        position: job.Position || '',
       }));
     } catch (error) {
-      showNotification(`Lỗi khi tải danh sách công việc: ${error.message}`, 'error');
+      console.error('Error fetching jobs:', error);
       return [];
     } finally {
       setIsLoading(false);
@@ -139,62 +122,55 @@ const JobManagement = () => {
     const data = jobsToShow || (await fetchJobs());
     const startIndex = (page - 1) * itemsPerPage;
     const endIndex = Math.min(startIndex + itemsPerPage, data.length);
-    const paginatedData = data.slice(startIndex, endIndex);
     setJobs(data);
-    setFilteredJobs(paginatedData);
+    setFilteredJobs(data.slice(startIndex, endIndex));
     setTotalPages(Math.ceil(data.length / itemsPerPage));
     setCurrentPage(page);
   };
 
-  // Handle page change
-  const handlePageChange = (page) => {
-    displayJobs(page, jobs);
-  };
+  const handlePageChange = (page) => displayJobs(page, jobs);
 
   // View job details
   const handleViewJob = async (jobId) => {
-    if (!token) {
-      showNotification('Vui lòng đăng nhập để tiếp tục', 'error');
-      return;
-    }
+    if (!token) return;
     setIsLoading(true);
     try {
       const response = await fetch(`${API_JOBS_URL}/${jobId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
       });
       if (!response.ok) {
-        const errorData = await response.json();
         if (response.status === 401) {
-          showNotification('Phiên đăng nhập hết hạn, vui lòng đăng nhập lại', 'error');
-          localStorage.removeItem('token');
+          localStorage.removeItem('adminToken');
           setToken('');
-          throw new Error('Không có quyền truy cập');
+          alert('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại!');
         }
-        throw new Error(errorData.message || `Không tìm thấy công việc: ${response.status}`);
+        throw new Error(`HTTP error ${response.status}`);
       }
       const job = await response.json();
       setSelectedJob({
         id: job._id,
-        title: sanitizeText(job.Name),
-        brand: sanitizeText(job.Brands),
-        jobType: sanitizeText(job['Job Type'] ? job['Job Type'].charAt(0).toUpperCase() + job['Job Type'].slice(1) : ''),
-        salary: sanitizeText(job.Salary),
-        location: sanitizeText(job.Workplace),
-        deadline: formatDate(job['Due date']),
+        title: job.Name || '',
+        brand: job.Brands || '',
+        jobType: job.JobType || '',
+        salary: job.Salary || '',
+        location: job.Workplace || '',
+        deadline: formatDate(job['Due date']) || '',
         status: statusDisplayMap[job.status] || job.status,
-        description: sanitizeText(job['Job Description']),
-        workExperience: sanitizeText(job['Work Experience']),
-        benefits: sanitizeText(job.Welfare),
+        description: Array.isArray(job['Job Description']) ? job['Job Description'].join('\n') : job['Job Description'] || '',
+        workExperience: job['Work Experience'] || '',
+        benefits: Array.isArray(job.Welfare) ? job.Welfare.join('\n') : job.Welfare || '',
         slot: job.Slot || 0,
-        postDate: formatDate(job['Post-date']),
-        degree: sanitizeText(job.Degree || ''),
-        requirements: sanitizeText(job['Job Requirements'] || ''),
-        position: sanitizeText(job.Position || ''),
+        postDate: formatDate(job['Post-date']) || '',
+        degree: job.Degree || '',
+        requirements: Array.isArray(job['Job Requirements']) ? job['Job Requirements'].join('\n') : job['Job Requirements'] || '',
+        position: job.Position || '',
       });
     } catch (error) {
-      showNotification(`Lỗi khi tải chi tiết công việc: ${error.message}`, 'error');
+      console.error('Error fetching job:', error);
+      alert('Lỗi khi lấy chi tiết công việc');
     } finally {
       setIsLoading(false);
     }
@@ -204,19 +180,21 @@ const JobManagement = () => {
   const handleOpenAddModal = () => {
     setModalMode('add');
     setFormData({
-      name: '',
-      brands: '',
-      jobType: '',
-      salary: '',
-      workplace: '',
-      slot: '',
-      postDate: new Date().toISOString().split('T')[0],
-      dueDate: '',
-      jobDescription: '',
-      workExperience: '',
-      welfare: '',
+      JobType: '',
+      Name: '',
+      Brands: [],
+      Position: '',
+      Workplace: '',
+      Salary: '',
+      Slot: '',
+      'Post-date': new Date().toISOString().split('T')[0],
+      'Due date': '',
+      'Job Description': '',
+      'Work Experience': '',
+      Welfare: [],
       status: 'show',
-      degree: '',
+      Degree: '',
+      'Job Requirements': [],
     });
     setFormErrors({});
     setShowModal(true);
@@ -226,39 +204,36 @@ const JobManagement = () => {
   const handleOpenEditModal = (jobId) => {
     const job = jobs.find(j => j.id === jobId);
     if (job) {
-      const reverseStatusMap = {
-        'Đang tuyển': 'show',
-        'Tạm dừng': 'hidden',
-      };
+      const reverseStatusMap = { 'Đang tuyển': 'show', 'Tạm dừng': 'hidden' };
       setModalMode('edit');
       setFormData({
         _id: job.id,
-        name: job.title,
-        brands: job.brand,
-        jobType: job.jobType,
-        salary: job.salary,
-        workplace: job.location,
-        slot: job.slot,
-        postDate: toFormDate(job.postDate),
-        dueDate: toFormDate(job.deadline),
-        jobDescription: job.description,
-        workExperience: job.workExperience,
-        welfare: job.benefits,
+        JobType: job.jobType,
+        Name: job.title,
+        Brands: job.brandsArr,
+        Position: job.position,
+        Workplace: job.location,
+        Salary: job.salary,
+        Slot: job.slot,
+        'Post-date': toFormDate(job.postDate),
+        'Due date': toFormDate(job.deadline),
+        'Job Description': job.description,
+        'Work Experience': job.workExperience,
+        Welfare: job.welfareArr,
         status: reverseStatusMap[job.status] || job.status,
-        degree: job.degree,
+        Degree: job.degree,
+        'Job Requirements': job.jobRequirementsArr,
       });
       setFormErrors({});
       setShowModal(true);
     }
   };
 
-  // Delete job
+  // Delete job (soft delete)
   const handleDeleteJob = async (jobId) => {
-    if (!token) {
-      showNotification('Vui lòng đăng nhập để thực hiện thao tác này', 'error');
-      return;
-    }
+    if (!token) return;
     if (window.confirm('Bạn có chắc chắn muốn xóa công việc này?')) {
+      setIsLoading(true);
       try {
         const response = await fetch(`${API_JOBS_URL}/${jobId}`, {
           method: 'DELETE',
@@ -268,29 +243,28 @@ const JobManagement = () => {
           },
         });
         if (!response.ok) {
-          const errorData = await response.json();
           if (response.status === 401) {
-            showNotification('Phiên đăng nhập hết hạn, vui lòng đăng nhập lại', 'error');
-            localStorage.removeItem('token');
+            localStorage.removeItem('adminToken');
             setToken('');
-            throw new Error('Không có quyền truy cập');
+            alert('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại!');
           }
-          throw new Error(errorData.message || `Không thể xóa công việc: ${response.status}`);
+          throw new Error(`HTTP error ${response.status}`);
         }
         await displayJobs(currentPage);
-        showNotification('Đã xóa công việc thành công!', 'success');
+        alert('Xóa công việc thành công (xóa mềm)');
       } catch (error) {
-        showNotification(`Lỗi khi xóa công việc: ${error.message}`, 'error');
+        console.error('Error deleting job:', error);
+        alert('Lỗi khi xóa công việc');
+      } finally {
+        setIsLoading(false);
       }
     }
   };
 
   // Toggle job visibility
   const handleToggleVisibility = async (jobId) => {
-    if (!token) {
-      showNotification('Vui lòng đăng nhập để thực hiện thao tác này', 'error');
-      return;
-    }
+    if (!token) return;
+    setIsLoading(true);
     try {
       const response = await fetch(`${API_JOBS_URL}/${jobId}/toggle-visibility`, {
         method: 'PUT',
@@ -300,41 +274,58 @@ const JobManagement = () => {
         },
       });
       if (!response.ok) {
-        const errorData = await response.json();
         if (response.status === 401) {
-          showNotification('Phiên đăng nhập hết hạn, vui lòng đăng nhập lại', 'error');
-          localStorage.removeItem('token');
+          localStorage.removeItem('adminToken');
           setToken('');
-          throw new Error('Không có quyền truy cập');
+          alert('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại!');
         }
-        throw new Error(errorData.message || `Không thể thay đổi trạng thái: ${response.status}`);
+        throw new Error(`HTTP error ${response.status}`);
       }
-      const updatedJob = await response.json();
       setSelectedJob(null);
       await displayJobs(currentPage);
-      showNotification(updatedJob.message || 'Cập nhật trạng thái thành công', 'success');
     } catch (error) {
-      showNotification(`Lỗi khi thay đổi trạng thái: ${error.message}`, 'error');
+      console.error('Error toggling visibility:', error);
+      alert('Lỗi khi thay đổi trạng thái');
+    } finally {
+      setIsLoading(false);
     }
   };
 
   // Handle form input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    if (name === 'Brands') {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value.split(',').map(item => item.trim()).filter(item => item),
+      }));
+    } else if (name === 'Job Requirements' || name === 'Welfare') {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value.split('\n').map(item => item.trim()).filter(item => item),
+      }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
     setFormErrors(prev => ({ ...prev, [name]: '' }));
   };
 
   // Validate form
   const validateForm = () => {
     const errors = {};
-    if (!formData.name.trim()) errors.name = 'Tên công việc là bắt buộc';
-    if (!formData.brands.trim()) errors.brands = 'Thương hiệu là bắt buộc';
-    if (!formData.jobType.trim()) errors.jobType = 'Loại công việc là bắt buộc';
-    if (!formData.salary.trim()) errors.salary = 'Mức lương là bắt buộc';
-    if (!formData.workplace.trim()) errors.workplace = 'Địa điểm là bắt buộc';
-    if (!formData.dueDate) errors.dueDate = 'Hạn nộp là bắt buộc';
-    if (!formData.slot || formData.slot <= 0) errors.slot = 'Số lượng tuyển phải lớn hơn 0';
+    if (!formData.Name.trim()) errors.Name = 'Tên công việc là bắt buộc';
+    if (!formData.Brands.length) errors.Brands = 'Thương hiệu là bắt buộc';
+    if (!formData.JobType.trim()) errors.JobType = 'Loại công việc là bắt buộc';
+    if (!formData.Salary.trim()) errors.Salary = 'Mức lương là bắt buộc';
+    if (!formData.Workplace.trim()) errors.Workplace = 'Địa điểm là bắt buộc';
+    if (!formData['Due date']) errors['Due date'] = 'Hạn nộp là bắt buộc';
+    if (!formData.Slot || formData.Slot <= 0) errors.Slot = 'Số lượng tuyển phải lớn hơn 0';
+    if (!formData['Post-date']) errors['Post-date'] = 'Ngày đăng là bắt buộc';
+    if (!formData.Degree.trim()) errors.Degree = 'Trình độ là bắt buộc';
+    if (!formData['Work Experience'].trim()) errors['Work Experience'] = 'Kinh nghiệm làm việc là bắt buộc';
+    if (!formData.Position.trim()) errors.Position = 'Vị trí là bắt buộc';
+    if (!formData['Job Requirements'].length) errors['Job Requirements'] = 'Yêu cầu công việc là bắt buộc';
+    if (!formData.Welfare.length) errors.Welfare = 'Quyền lợi là bắt buộc';
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -343,29 +334,28 @@ const JobManagement = () => {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     if (!token) {
-      showNotification('Vui lòng đăng nhập để thực hiện thao tác này', 'error');
+      alert('Bạn chưa đăng nhập hoặc phiên đăng nhập đã hết hạn!');
       return;
     }
-    if (!validateForm()) {
-      showNotification('Vui lòng điền đầy đủ thông tin bắt buộc', 'error');
-      return;
-    }
+    if (!validateForm()) return;
 
     setIsLoading(true);
     try {
       const payload = {
-        jobType: formData.jobType,
-        name: formData.name,
-        brands: formData.brands,
-        workplace: formData.workplace,
-        salary: formData.salary,
-        slot: parseInt(formData.slot),
-        postDate: toBackendDate(formData.postDate),
-        dueDate: toBackendDate(formData.dueDate),
-        degree: formData.degree,
-        workExperience: formData.workExperience,
-        jobDescription: formData.jobDescription,
-        welfare: formData.welfare,
+        JobType: formData.JobType,
+        Name: formData.Name,
+        Brands: formData.Brands.join(', '),
+        Position: formData.Position,
+        Workplace: formData.Workplace,
+        Salary: formData.Salary,
+        Slot: parseInt(formData.Slot),
+        'Post-date': toBackendDate(formData['Post-date']),
+        'Due date': toBackendDate(formData['Due date']),
+        Degree: formData.Degree,
+        'Work Experience': formData['Work Experience'],
+        'Job Description': formData['Job Description'].split('\n').filter(Boolean),
+        'Job Requirements': formData['Job Requirements'],
+        Welfare: formData.Welfare,
         status: formData.status,
       };
 
@@ -383,41 +373,43 @@ const JobManagement = () => {
       if (!response.ok) {
         const errorData = await response.json();
         if (response.status === 401) {
-          showNotification('Phiên đăng nhập hết hạn, vui lòng đăng nhập lại', 'error');
-          localStorage.removeItem('token');
+          localStorage.removeItem('adminToken');
           setToken('');
-          throw new Error('Không có quyền truy cập');
+          alert('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại!');
         }
-        throw new Error(errorData.error || `Không thể ${modalMode === 'add' ? 'thêm' : 'cập nhật'} công việc`);
+        throw new Error(errorData.error || 'Lỗi khi lưu công việc');
       }
 
       await displayJobs(1);
       setShowModal(false);
       setFormData({
-        name: '',
-        brands: '',
-        jobType: '',
-        salary: '',
-        workplace: '',
-        slot: '',
-        postDate: new Date().toISOString().split('T')[0],
-        dueDate: '',
-        jobDescription: '',
-        workExperience: '',
-        welfare: '',
+        JobType: '',
+        Name: '',
+        Brands: [],
+        Position: '',
+        Workplace: '',
+        Salary: '',
+        Slot: '',
+        'Post-date': new Date().toISOString().split('T')[0],
+        'Due date': '',
+        'Job Description': '',
+        'Work Experience': '',
+        Welfare: [],
         status: 'show',
-        degree: '',
+        Degree: '',
+        'Job Requirements': [],
       });
       setFormErrors({});
-      showNotification(modalMode === 'add' ? 'Thêm công việc thành công!' : 'Cập nhật công việc thành công!', 'success');
+      alert(modalMode === 'add' ? 'Thêm công việc thành công!' : 'Cập nhật công việc thành công!');
     } catch (error) {
-      showNotification(`Lỗi khi ${modalMode === 'add' ? 'thêm' : 'cập nhật'} công việc: ${error.message}`, 'error');
+      console.error('Error submitting form:', error);
+      alert('Đã xảy ra lỗi khi lưu công việc: ' + error.message);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Apply filters
+  // Filter & search
   const handleApplyFilters = () => {
     const search = document.querySelector('.search-bar')?.value.trim().toLowerCase();
     const status = document.getElementById('statusFilter').value;
@@ -433,25 +425,15 @@ const JobManagement = () => {
       );
     }
     if (status) filtered = filtered.filter(j => j.status === status);
-    if (jobType) filtered = filtered.filter(j => j.jobType === jobType);
+    if (jobType) filtered = filtered.filter(j => j.jobType.toLowerCase() === jobType.toLowerCase());
 
     setFilteredJobs(filtered.slice(0, itemsPerPage));
     setTotalPages(Math.ceil(filtered.length / itemsPerPage));
     setCurrentPage(1);
-    if (filtered.length === 0) {
-      showNotification('Không tìm thấy công việc phù hợp', 'info');
-    }
   };
 
-  // Debounced search
   const debouncedSearch = debounce(() => handleApplyFilters(), 300);
-
-  // Handle search input change
-  const handleSearchChange = () => {
-    debouncedSearch();
-  };
-
-  // Reset filters
+  const handleSearchChange = () => debouncedSearch();
   const handleResetFilters = () => {
     document.querySelector('.search-bar').value = '';
     document.getElementById('statusFilter').value = '';
@@ -459,36 +441,21 @@ const JobManagement = () => {
     displayJobs(1);
   };
 
-  // Handle show/hidden toggle
-  const handleShowHiddenToggle = async () => {
-    const showHidden = document.getElementById('statusFilter').value === 'Tạm dừng';
-    await displayJobs(1, await fetchJobs(showHidden));
-  };
-
-  // Watch for token changes
   useEffect(() => {
-    const handleStorageChange = () => {
-      setToken(localStorage.getItem('token') || '');
-    };
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
-
-  // Initial job fetch
-  useEffect(() => {
-    if (token) {
+    const storedToken = localStorage.getItem('adminToken');
+    setToken(storedToken || '');
+    if (storedToken) {
       displayJobs();
     } else {
-      showNotification('Vui lòng đăng nhập để xem danh sách công việc', 'error');
       setJobs([]);
       setFilteredJobs([]);
     }
-  }, [token]);
+  }, []);
 
   const uniqueJobTypes = [...new Set(jobs.map(job => job.jobType))];
   const uniqueStatuses = [...new Set(jobs.map(job => job.status))];
 
-  // Generate pagination buttons
+  // Pagination buttons
   const getPaginationButtons = () => {
     const maxButtons = 5;
     const buttons = [];
@@ -496,29 +463,16 @@ const JobManagement = () => {
     const endPage = Math.min(totalPages, startPage + maxButtons - 1);
 
     buttons.push(
-      <button
-        key="first"
-        onClick={() => handlePageChange(1)}
-        disabled={currentPage === 1}
-      >
+      <button key="first" onClick={() => handlePageChange(1)} disabled={currentPage === 1}>
         <i className="fa-solid fa-angles-left"></i>
       </button>
     );
-
     buttons.push(
-      <button
-        key="prev"
-        onClick={() => handlePageChange(currentPage - 1)}
-        disabled={currentPage === 1}
-      >
+      <button key="prev" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
         <i className="fa-solid fa-angle-left"></i>
       </button>
     );
-
-    if (startPage > 1) {
-      buttons.push(<span key="start-ellipsis">...</span>);
-    }
-
+    if (startPage > 1) buttons.push(<span key="start-ellipsis">...</span>);
     for (let page = startPage; page <= endPage; page++) {
       buttons.push(
         <button
@@ -530,63 +484,47 @@ const JobManagement = () => {
         </button>
       );
     }
-
-    if (endPage < totalPages) {
-      buttons.push(<span key="end-ellipsis">...</span>);
-    }
-
+    if (endPage < totalPages) buttons.push(<span key="end-ellipsis">...</span>);
     buttons.push(
-      <button
-        key="next"
-        onClick={() => handlePageChange(currentPage + 1)}
-        disabled={currentPage === totalPages}
-      >
+      <button key="next" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
         <i className="fa-solid fa-angle-right"></i>
       </button>
     );
-
     buttons.push(
-      <button
-        key="last"
-        onClick={() => handlePageChange(totalPages)}
-        disabled={currentPage === totalPages}
-      >
+      <button key="last" onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages}>
         <i className="fa-solid fa-angles-right"></i>
       </button>
     );
-
     return buttons;
   };
 
   return (
     <div className={styles.container}>
+      {!token && <p>Vui lòng đăng nhập để quản lý công việc.</p>}
       <div className={styles.filters}>
         <input
           type="text"
           className={`${styles.searchBar} search-bar`}
           placeholder="Tìm kiếm công việc..."
           onChange={handleSearchChange}
+          disabled={!token}
         />
-        <select id="statusFilter" onChange={e => { handleApplyFilters(); handleShowHiddenToggle(); }}>
+        <select id="statusFilter" onChange={handleApplyFilters} disabled={!token}>
           <option value="">- Tất cả trạng thái -</option>
           {uniqueStatuses.map(status => (
-            <option key={status} value={status}>
-              {status}
-            </option>
+            <option key={status} value={status}>{status}</option>
           ))}
         </select>
-        <select id="levelFilter" onChange={handleApplyFilters}>
+        <select id="levelFilter" onChange={handleApplyFilters} disabled={!token}>
           <option value="">- Tất cả loại công việc -</option>
           {uniqueJobTypes.map(jobType => (
-            <option key={jobType} value={jobType}>
-              {jobType}
-            </option>
+            <option key={jobType} value={jobType}>{jobType}</option>
           ))}
         </select>
-        <button onClick={handleApplyFilters}>
+        <button onClick={handleApplyFilters} disabled={!token}>
           <i className="fa-solid fa-filter"></i> Áp dụng
         </button>
-        <button onClick={handleResetFilters}>
+        <button onClick={handleResetFilters} disabled={!token}>
           <i className="fa-solid fa-rotate"></i> Đặt lại
         </button>
       </div>
@@ -594,7 +532,7 @@ const JobManagement = () => {
       <div className={styles.jobs}>
         <h3>
           Danh Sách Công Việc
-          <button onClick={handleOpenAddModal}>
+          <button onClick={handleOpenAddModal} disabled={!token}>
             <i className="fa-solid fa-plus"></i> Thêm Công Việc
           </button>
         </h3>
@@ -614,15 +552,11 @@ const JobManagement = () => {
           <tbody>
             {isLoading ? (
               <tr>
-                <td colSpan="8" style={{ textAlign: 'center' }}>
-                  Đang tải...
-                </td>
+                <td colSpan="8" style={{ textAlign: 'center' }}>Đang tải...</td>
               </tr>
             ) : filteredJobs.length === 0 ? (
               <tr>
-                <td colSpan="8" style={{ textAlign: 'center' }}>
-                  Không tìm thấy công việc nào
-                </td>
+                <td colSpan="8" style={{ textAlign: 'center' }}>Không tìm thấy công việc nào</td>
               </tr>
             ) : (
               filteredJobs.map(job => (
@@ -635,9 +569,7 @@ const JobManagement = () => {
                   <td>{job.deadline}</td>
                   <td>
                     <span
-                      className={`${styles.status} ${
-                        job.status === 'Đang tuyển' ? styles.active : styles.inactive
-                      }`}
+                      className={`${styles.status} ${job.status === 'Đang tuyển' ? styles.active : styles.inactive}`}
                     >
                       {job.status}
                     </span>
@@ -660,86 +592,42 @@ const JobManagement = () => {
             )}
           </tbody>
         </table>
-        <div className={styles.pagination}>
-          {getPaginationButtons()}
-        </div>
+        <div className={styles.pagination}>{getPaginationButtons()}</div>
       </div>
 
       {selectedJob && (
         <div className={styles.modal}>
           <div className={styles.modalContent}>
-            <span className={styles.close} onClick={() => setSelectedJob(null)}>
-              ×
-            </span>
+            <span className={styles.close} onClick={() => setSelectedJob(null)}>×</span>
             <h3>Chi Tiết Công Việc: {selectedJob.title}</h3>
             <div className={styles.jobDetails}>
               <div className={styles.detailRow}>
-                <div className={styles.detailGroup}>
-                  <label>ID:</label>
-                  <p>{selectedJob.id}</p>
-                </div>
-                <div className={styles.detailGroup}>
-                  <label>Trạng thái:</label>
+                <div className={styles.detailGroup}><label>ID:</label><p>{selectedJob.id}</p></div>
+                <div className={styles.detailGroup}><label>Trạng thái:</label>
                   <p>
-                    <span
-                      className={`${styles.status} ${
-                        selectedJob.status === 'Đang tuyển' ? styles.active : styles.inactive
-                      }`}
-                    >
-                      {selectedJob.status}
-                    </span>
+                    <span className={`${styles.status} ${selectedJob.status === 'Đang tuyển' ? styles.active : styles.inactive}`}>{selectedJob.status}</span>
                   </p>
                 </div>
               </div>
               <div className={styles.detailRow}>
-                <div className={styles.detailGroup}>
-                  <label>Tên công việc:</label>
-                  <p>{selectedJob.title}</p>
-                </div>
-                <div className={styles.detailGroup}>
-                  <label>Thương hiệu:</label>
-                  <p>{selectedJob.brand}</p>
-                </div>
+                <div className={styles.detailGroup}><label>Tên công việc:</label><p>{selectedJob.title}</p></div>
+                <div className={styles.detailGroup}><label>Thương hiệu:</label><p>{selectedJob.brand}</p></div>
               </div>
               <div className={styles.detailRow}>
-                <div className={styles.detailGroup}>
-                  <label>Loại công việc:</label>
-                  <p>{selectedJob.jobType}</p>
-                </div>
-                <div className={styles.detailGroup}>
-                  <label>Mức lương:</label>
-                  <p>{selectedJob.salary}</p>
-                </div>
+                <div className={styles.detailGroup}><label>Loại công việc:</label><p>{selectedJob.jobType}</p></div>
+                <div className={styles.detailGroup}><label>Mức lương:</label><p>{selectedJob.salary}</p></div>
               </div>
               <div className={styles.detailRow}>
-                <div className={styles.detailGroup}>
-                  <label>Địa điểm:</label>
-                  <p>{selectedJob.location}</p>
-                </div>
-                <div className={styles.detailGroup}>
-                  <label>Hạn nộp:</label>
-                  <p>{selectedJob.deadline}</p>
-                </div>
+                <div className={styles.detailGroup}><label>Địa điểm:</label><p>{selectedJob.location}</p></div>
+                <div className={styles.detailGroup}><label>Hạn nộp:</label><p>{selectedJob.deadline}</p></div>
               </div>
               <div className={styles.detailRow}>
-                <div className={styles.detailGroup}>
-                  <label>Ngày đăng:</label>
-                  <p>{selectedJob.postDate}</p>
-                </div>
-                <div className={styles.detailGroup}>
-                  <label>Số lượng tuyển:</label>
-                  <p>{selectedJob.slot}</p>
-                </div>
+                <div className={styles.detailGroup}><label>Ngày đăng:</label><p>{selectedJob.postDate}</p></div>
+                <div className={styles.detailGroup}><label>Số lượng tuyển:</label><p>{selectedJob.slot}</p></div>
               </div>
               <div className={styles.detailRow}>
-                <div className={styles.detailGroup}>
-                  <label>Trình độ:</label>
-                  <p>{selectedJob.degree}</p>
-                </div>
-                <div className={styles.detailGroup}>
-                  <label>Vị trí:</label>
-                  <p>{selectedJob.position}</p>
-                </div>
+                <div className={styles.detailGroup}><label>Trình độ:</label><p>{selectedJob.degree}</p></div>
+                <div className={styles.detailGroup}><label>Vị trí:</label><p>{selectedJob.position}</p></div>
               </div>
               <div className={`${styles.detailGroup} ${styles.full}`}>
                 <label>Kinh nghiệm làm việc:</label>
@@ -760,9 +648,7 @@ const JobManagement = () => {
               <div className={`${styles.detailGroup} ${styles.full}`}>
                 <label>Đổi trạng thái:</label>
                 <button
-                  className={`${styles.statusBtn} ${
-                    selectedJob.status === 'Đang tuyển' ? styles.inactive : styles.active
-                  }`}
+                  className={`${styles.statusBtn} ${selectedJob.status === 'Đang tuyển' ? styles.inactive : styles.active}`}
                   onClick={() => handleToggleVisibility(selectedJob.id)}
                 >
                   {selectedJob.status === 'Đang tuyển' ? 'Tạm dừng' : 'Đang tuyển'}
@@ -776,9 +662,7 @@ const JobManagement = () => {
       {showModal && (
         <div className={styles.modal}>
           <div className={styles.modalContent}>
-            <span className={styles.close} onClick={() => setShowModal(false)}>
-              ×
-            </span>
+            <span className={styles.close} onClick={() => setShowModal(false)}>×</span>
             <h3>{modalMode === 'add' ? 'Thêm Công Việc Mới' : 'Chỉnh Sửa Công Việc'}</h3>
             <form onSubmit={handleFormSubmit}>
               <div className={styles.detailRow}>
@@ -786,23 +670,24 @@ const JobManagement = () => {
                   <label>Tên công việc: <span style={{ color: 'red' }}>*</span></label>
                   <input
                     type="text"
-                    name="name"
-                    value={formData.name}
+                    name="Name"
+                    value={formData.Name}
                     onChange={handleInputChange}
-                    className={formErrors.name ? styles.errorInput : ''}
+                    className={formErrors.Name ? styles.errorInput : ''}
                   />
-                  {formErrors.name && <p className={styles.error}>{formErrors.name}</p>}
+                  {formErrors.Name && <p className={styles.error}>{formErrors.Name}</p>}
                 </div>
                 <div className={styles.detailGroup}>
                   <label>Thương hiệu: <span style={{ color: 'red' }}>*</span></label>
                   <input
                     type="text"
-                    name="brands"
-                    value={formData.brands}
+                    name="Brands"
+                    value={formData.Brands.join(', ')}
                     onChange={handleInputChange}
-                    className={formErrors.brands ? styles.errorInput : ''}
+                    className={formErrors.Brands ? styles.errorInput : ''}
+                    placeholder="Nhập các thương hiệu, cách nhau bằng dấu phẩy"
                   />
-                  {formErrors.brands && <p className={styles.error}>{formErrors.brands}</p>}
+                  {formErrors.Brands && <p className={styles.error}>{formErrors.Brands}</p>}
                 </div>
               </div>
               <div className={styles.detailRow}>
@@ -810,23 +695,23 @@ const JobManagement = () => {
                   <label>Loại công việc: <span style={{ color: 'red' }}>*</span></label>
                   <input
                     type="text"
-                    name="jobType"
-                    value={formData.jobType}
+                    name="JobType"
+                    value={formData.JobType}
                     onChange={handleInputChange}
-                    className={formErrors.jobType ? styles.errorInput : ''}
+                    className={formErrors.JobType ? styles.errorInput : ''}
                   />
-                  {formErrors.jobType && <p className={styles.error}>{formErrors.jobType}</p>}
+                  {formErrors.JobType && <p className={styles.error}>{formErrors.JobType}</p>}
                 </div>
                 <div className={styles.detailGroup}>
                   <label>Mức lương: <span style={{ color: 'red' }}>*</span></label>
                   <input
                     type="text"
-                    name="salary"
-                    value={formData.salary}
+                    name="Salary"
+                    value={formData.Salary}
                     onChange={handleInputChange}
-                    className={formErrors.salary ? styles.errorInput : ''}
+                    className={formErrors.Salary ? styles.errorInput : ''}
                   />
-                  {formErrors.salary && <p className={styles.error}>{formErrors.salary}</p>}
+                  {formErrors.Salary && <p className={styles.error}>{formErrors.Salary}</p>}
                 </div>
               </div>
               <div className={styles.detailRow}>
@@ -834,85 +719,117 @@ const JobManagement = () => {
                   <label>Địa điểm: <span style={{ color: 'red' }}>*</span></label>
                   <input
                     type="text"
-                    name="workplace"
-                    value={formData.workplace}
+                    name="Workplace"
+                    value={formData.Workplace}
                     onChange={handleInputChange}
-                    className={formErrors.workplace ? styles.errorInput : ''}
+                    className={formErrors.Workplace ? styles.errorInput : ''}
                   />
-                  {formErrors.workplace && <p className={styles.error}>{formErrors.workplace}</p>}
+                  {formErrors.Workplace && <p className={styles.error}>{formErrors.Workplace}</p>}
                 </div>
                 <div className={styles.detailGroup}>
                   <label>Hạn nộp: <span style={{ color: 'red' }}>*</span></label>
                   <input
                     type="date"
-                    name="dueDate"
-                    value={formData.dueDate}
+                    name="Due date"
+                    value={formData['Due date']}
                     onChange={handleInputChange}
-                    className={formErrors.dueDate ? styles.errorInput : ''}
+                    className={formErrors['Due date'] ? styles.errorInput : ''}
                   />
-                  {formErrors.dueDate && <p className={styles.error}>{formErrors.dueDate}</p>}
+                  {formErrors['Due date'] && <p className={styles.error}>{formErrors['Due date']}</p>}
                 </div>
               </div>
               <div className={styles.detailRow}>
                 <div className={styles.detailGroup}>
-                  <label>Ngày đăng:</label>
+                  <label>Ngày đăng: <span style={{ color: 'red' }}>*</span></label>
                   <input
                     type="date"
-                    name="postDate"
-                    value={formData.postDate}
+                    name="Post-date"
+                    value={formData['Post-date']}
                     onChange={handleInputChange}
+                    className={formErrors['Post-date'] ? styles.errorInput : ''}
                   />
+                  {formErrors['Post-date'] && <p className={styles.error}>{formErrors['Post-date']}</p>}
                 </div>
                 <div className={styles.detailGroup}>
                   <label>Số lượng tuyển: <span style={{ color: 'red' }}>*</span></label>
                   <input
                     type="number"
-                    name="slot"
-                    value={formData.slot}
+                    name="Slot"
+                    value={formData.Slot}
                     onChange={handleInputChange}
                     min="1"
-                    className={formErrors.slot ? styles.errorInput : ''}
+                    className={formErrors.Slot ? styles.errorInput : ''}
                   />
-                  {formErrors.slot && <p className={styles.error}>{formErrors.slot}</p>}
+                  {formErrors.Slot && <p className={styles.error}>{formErrors.Slot}</p>}
                 </div>
               </div>
               <div className={styles.detailRow}>
                 <div className={styles.detailGroup}>
-                  <label>Trình độ:</label>
+                  <label>Trình độ: <span style={{ color: 'red' }}>*</span></label>
                   <input
                     type="text"
-                    name="degree"
-                    value={formData.degree}
+                    name="Degree"
+                    value={formData.Degree}
                     onChange={handleInputChange}
+                    className={formErrors.Degree ? styles.errorInput : ''}
                   />
+                  {formErrors.Degree && <p className={styles.error}>{formErrors.Degree}</p>}
+                </div>
+                <div className={styles.detailGroup}>
+                  <label>Vị trí: <span style={{ color: 'red' }}>*</span></label>
+                  <input
+                    type="text"
+                    name="Position"
+                    value={formData.Position}
+                    onChange={handleInputChange}
+                    className={formErrors.Position ? styles.errorInput : ''}
+                  />
+                  {formErrors.Position && <p className={styles.error}>{formErrors.Position}</p>}
                 </div>
               </div>
               <div className={`${styles.detailGroup} ${styles.full}`}>
-                <label>Kinh nghiệm làm việc:</label>
+                <label>Kinh nghiệm làm việc: <span style={{ color: 'red' }}>*</span></label>
                 <input
                   type="text"
-                  name="workExperience"
-                  value={formData.workExperience}
+                  name="Work Experience"
+                  value={formData['Work Experience']}
                   onChange={handleInputChange}
+                  className={formErrors['Work Experience'] ? styles.errorInput : ''}
                 />
+                {formErrors['Work Experience'] && <p className={styles.error}>{formErrors['Work Experience']}</p>}
               </div>
               <div className={`${styles.detailGroup} ${styles.full}`}>
                 <label>Mô tả công việc:</label>
                 <textarea
-                  name="jobDescription"
-                  value={formData.jobDescription}
+                  name="Job Description"
+                  value={formData['Job Description']}
                   onChange={handleInputChange}
                   rows="4"
                 />
               </div>
               <div className={`${styles.detailGroup} ${styles.full}`}>
-                <label>Quyền lợi:</label>
+                <label>Yêu cầu công việc: <span style={{ color: 'red' }}>*</span></label>
                 <textarea
-                  name="welfare"
-                  value={formData.welfare}
+                  name="Job Requirements"
+                  value={formData['Job Requirements'].join('\n')}
                   onChange={handleInputChange}
                   rows="4"
+                  placeholder="Nhập các yêu cầu, mỗi yêu cầu trên một dòng"
+                  className={formErrors['Job Requirements'] ? styles.errorInput : ''}
                 />
+                {formErrors['Job Requirements'] && <p className={styles.error}>{formErrors['Job Requirements']}</p>}
+              </div>
+              <div className={`${styles.detailGroup} ${styles.full}`}>
+                <label>Quyền lợi: <span style={{ color: 'red' }}>*</span></label>
+                <textarea
+                  name="Welfare"
+                  value={formData.Welfare.join('\n')}
+                  onChange={handleInputChange}
+                  rows="4"
+                  placeholder="Nhập các quyền lợi, mỗi quyền lợi trên một dòng"
+                  className={formErrors.Welfare ? styles.errorInput : ''}
+                />
+                {formErrors.Welfare && <p className={styles.error}>{formErrors.Welfare}</p>}
               </div>
               <div className={styles.detailRow}>
                 <div className={styles.detailGroup}>

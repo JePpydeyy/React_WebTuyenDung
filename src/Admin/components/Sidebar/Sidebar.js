@@ -62,7 +62,7 @@ const Sidebar = ({ isAlwaysVisible = false }) => {
             </a>
           </li>
           <li>
-            <a href="/admin/job">
+            <a href="/admin/jobs">
               <i className="fa-solid fa-briefcase"></i> Quản Lý Công Việc
             </a>
           </li>
