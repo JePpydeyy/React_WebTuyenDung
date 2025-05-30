@@ -98,8 +98,8 @@ th,
 td {
   padding: 12px;
   text-align: left;
-  font-size: 0.875rem;
-  border-bottom: 1px solid #eee;
+  font-size: 15px;
+  border-bottom: 1px solid #d3d3d3;
 }
 
 th {
