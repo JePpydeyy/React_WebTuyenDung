@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './Index.module.css';
@@ -6,6 +5,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleLeft, faAngleRight, faSearch, faBriefcase, faMapMarkerAlt, faUserTie } from '@fortawesome/free-solid-svg-icons';
 
+// Static data (unchanged)
 const bannerImages = [
   '/assets/images/BANNER2.jpg',
   '/assets/images/BANNER3.jpg',
@@ -78,6 +78,7 @@ const benefits = [
   },
 ];
 
+// Carousel component (unchanged)
 const Carousel = ({ images }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -125,7 +126,7 @@ const Carousel = ({ images }) => {
   const handleDragEnd = useCallback(() => {
     if (!isDragging) return;
     setIsDragging(false);
-    const threshold = 100; // Ngưỡng pixel để chuyển slide
+    const threshold = 100;
     if (translateX < -threshold) {
       nextSlide();
     } else if (translateX > threshold) {
@@ -191,7 +192,7 @@ const Carousel = ({ images }) => {
 };
 
 const Index = () => {
-  // Banner slider state
+  // Banner slider state (unchanged)
   const [bannerIdx, setBannerIdx] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
@@ -243,7 +244,7 @@ const Index = () => {
   const handleBannerDragEnd = useCallback(() => {
     if (!isDragging) return;
     setIsDragging(false);
-    const threshold = 100; // Ngưỡng pixel để chuyển slide
+    const threshold = 100;
     if (translateX < -threshold) {
       nextBannerSlide();
     } else if (translateX > threshold) {
@@ -328,23 +329,28 @@ const Index = () => {
   }, []);
 
   useEffect(() => {
+    // Generate options for search dropdowns
     const brands = Array.from(
       new Set(
         jobs
-          .flatMap((job) => (job.Brands ? job.Brands.split(',') : []))
-          .map((brand) => brand.trim())
+          .flatMap((job) => (Array.isArray(job.Brands) ? job.Brands : []))
           .filter(Boolean)
       )
     );
     const workplaces = Array.from(
       new Set(
         jobs
-          .flatMap((job) => (job.Workplace ? job.Workplace.split(',') : []))
-          .map((place) => place.trim())
+          .map((job) => job.Workplace)
           .filter(Boolean)
       )
     );
-    const names = Array.from(new Set(jobs.map((job) => job.Name).filter(Boolean)));
+    const names = Array.from(
+      new Set(
+        jobs
+          .map((job) => job.Name)
+          .filter(Boolean)
+      )
+    );
     setBrandOptions(brands);
     setWorkplaceOptions(workplaces);
     setNameOptions(names);
@@ -355,22 +361,16 @@ const Index = () => {
     return jobs.filter((job) => {
       const brandMatch =
         !searchForm.brand ||
-        (job.Brands &&
-          job.Brands.split(',')
-            .map((b) => b.trim())
-            .includes(searchForm.brand));
+        (Array.isArray(job.Brands) && job.Brands.includes(searchForm.brand));
       const workplaceMatch =
         !searchForm.workplace ||
-        (job.Workplace &&
-          job.Workplace.split(',')
-            .map((place) => place.trim())
-            .includes(searchForm.workplace));
+        (job.Workplace && job.Workplace === searchForm.workplace);
       const nameMatch = !searchForm.name || job.Name === searchForm.name;
       const keyword = searchForm.keyword?.trim().toLowerCase();
       const keywordMatch =
         !keyword ||
         (job.Name && job.Name.toLowerCase().includes(keyword)) ||
-        (job.Brands && job.Brands.toLowerCase().includes(keyword)) ||
+        (Array.isArray(job.Brands) && job.Brands.some((brand) => brand.toLowerCase().includes(keyword))) ||
         (job.Workplace && job.Workplace.toLowerCase().includes(keyword));
       return brandMatch && workplaceMatch && nameMatch && keywordMatch;
     });
@@ -380,8 +380,20 @@ const Index = () => {
     setVisibleJobs((prev) => prev + 4);
   };
 
+  // Format date to DD/MM/YYYY
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    if (isNaN(date)) return 'Không xác định';
+    return date.toLocaleDateString('vi-VN', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+  };
+
   return (
     <main>
+      {/* Banner Section (unchanged) */}
       <section className={styles.banner}>
         <div
           className={styles['banner-wrapper']}
@@ -445,6 +457,7 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Job Search and Listings */}
       <section className={styles['container-lastest']}>
         <div className={styles['job-search']}>
           <div className={styles['job-search_container']}>
@@ -455,7 +468,7 @@ const Index = () => {
                 <input
                   type="text"
                   name="keyword"
-                  placeholder="Từ khóa(tên công việc, thương hiệu, nơi làm việc)"
+                  placeholder="Từ khóa (tên công việc, thương hiệu, nơi làm việc)"
                   className={styles['job-search_input']}
                   value={searchForm.keyword}
                   onChange={handleSearchChange}
@@ -530,19 +543,19 @@ const Index = () => {
                   <div className={styles['job-title-block']}>{job.Name}</div>
                   <div className={styles['job-details-wrapper']}>
                     <p className={styles['job-brand']}>
-                      <strong>Thương hiệu:</strong> {job.Brands}
+                      <strong>Thương hiệu:</strong> {Array.isArray(job.Brands) ? job.Brands.join(', ') : job.Brands || 'Không xác định'}
                     </p>
                     <p className={styles['job-location']}>
-                      <strong>Nơi làm việc:</strong> {job.Workplace}
+                      <strong>Nơi làm việc:</strong> {job.Workplace || 'Không xác định'}
                     </p>
                     <p className={styles['job-salary']}>
-                      <strong>Mức lương:</strong> {job.Salary}
+                      <strong>Mức lương:</strong> {job.Salary || 'Không xác định'}
                     </p>
                     <p className={styles['job-quantity']}>
-                      <strong>Số lượng tuyển:</strong> {job.Slot}
+                      <strong>Số lượng tuyển:</strong> {job.Slot || 'Không xác định'}
                     </p>
                     <p className={styles['job-date']}>
-                      <strong>Ngày hết hạn:</strong> {job['Due date']}
+                      <strong>Ngày hết hạn:</strong> {formatDate(job['Due date'])}
                     </p>
                     <Link to={`/DetailJob/${job._id}`} className={styles['job-apply-btn']}>
                       Xem chi tiết
@@ -562,6 +575,7 @@ const Index = () => {
         </div>
       </section>
 
+      {/* ACFC Values Section (unchanged) */}
       <section className={styles['acfc-values-section']}>
         <h2 className={styles['section-title']}>ACFC Việt Nam</h2>
         <div className={styles['values-grid']}>
@@ -576,6 +590,7 @@ const Index = () => {
         </div>
       </section>
 
+      {/* ACFC Love Section (unchanged) */}
       <section className={`${styles['acfc-love']} ${styles['tttable-mobile']}`}>
         <h2>5 Lý Do Bạn Yêu ACFC</h2>
         <div className={styles['acfc-love-container']}>
@@ -600,6 +615,7 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Video Section (unchanged) */}
       <section className={styles['video-section']}>
         <h2>Video Giới Thiệu</h2>
         <div className={styles['video-container']}>
@@ -613,6 +629,7 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Benefits Section (unchanged) */}
       <h2 className={styles['benefits-title']}>Phúc lợi công ty</h2>
       <section className={styles['benefits-container']}>
         {benefits.map((benefit, idx) => (
@@ -632,4 +649,5 @@ const Index = () => {
     </main>
   );
 };
+
 export default Index;

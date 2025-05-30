@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { debounce } from 'lodash';
 import styles from './Job.module.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
@@ -154,13 +153,11 @@ const Jobcontent = () => {
   });
   const [searching, setSearching] = useState(false);
 
-  const handleSearchChange = useCallback(
-    debounce((e) => {
-      const { name, value } = e.target;
-      setSearchForm((prev) => ({ ...prev, [name]: value }));
-    }, 300),
-    []
-  );
+  const handleSearchChange = useCallback((e) => {
+    const { name, value } = e.target;
+    console.log('Input changed:', { name, value }); // Debug
+    setSearchForm((prev) => ({ ...prev, [name]: value }));
+  }, []);
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -232,22 +229,33 @@ const Jobcontent = () => {
     const brands = Array.from(
       new Set(
         jobs
-          .flatMap((job) => (job.Brands ? job.Brands.split(',').map((b) => b.trim()) : []))
+          .flatMap((job) => (Array.isArray(job.Brands) ? job.Brands : []))
           .filter(Boolean)
       )
     );
     const workplaces = Array.from(
       new Set(
         jobs
-          .flatMap((job) => (job.Workplace ? job.Workplace.split(',').map((p) => p.trim()) : []))
+          .map((job) => job.Workplace)
           .filter(Boolean)
       )
     );
-    const names = Array.from(new Set(jobs.map((job) => job.Name).filter(Boolean)));
+    const names = Array.from(
+      new Set(
+        jobs
+          .map((job) => job.Name)
+          .filter(Boolean)
+      )
+    );
     setBrandOptions(brands);
     setWorkplaceOptions(workplaces);
     setNameOptions(names);
   }, [jobs]);
+
+  // Debug searchForm state
+  useEffect(() => {
+    console.log('searchForm:', searchForm);
+  }, [searchForm]);
 
   // Filter jobs
   const filteredJobs = React.useMemo(() => {
@@ -255,22 +263,16 @@ const Jobcontent = () => {
     return jobs.filter((job) => {
       const brandMatch =
         !searchForm.brand ||
-        (job.Brands &&
-          job.Brands.split(',')
-            .map((b) => b.trim())
-            .includes(searchForm.brand));
+        (Array.isArray(job.Brands) && job.Brands.includes(searchForm.brand));
       const workplaceMatch =
         !searchForm.workplace ||
-        (job.Workplace &&
-          job.Workplace.split(',')
-            .map((place) => place.trim())
-            .includes(searchForm.workplace));
+        (job.Workplace && job.Workplace === searchForm.workplace);
       const nameMatch = !searchForm.name || job.Name === searchForm.name;
       const keyword = searchForm.keyword?.trim().toLowerCase();
       const keywordMatch =
         !keyword ||
         (job.Name && job.Name.toLowerCase().includes(keyword)) ||
-        (job.Brands && job.Brands.toLowerCase().includes(keyword)) ||
+        (Array.isArray(job.Brands) && job.Brands.some((brand) => brand.toLowerCase().includes(keyword))) ||
         (job.Workplace && job.Workplace.toLowerCase().includes(keyword));
       return brandMatch && workplaceMatch && nameMatch && keywordMatch;
     });
@@ -290,6 +292,17 @@ const Jobcontent = () => {
     console.log('Filtered Store Jobs:', jobListingsNewStore);
     console.log('Filtered Office Jobs:', jobListingsNewOffice);
   }, [jobListingsNewStore, jobListingsNewOffice]);
+
+  // Format date to DD/MM/YYYY
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    if (isNaN(date)) return 'Không xác định';
+    return date.toLocaleDateString('vi-VN', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+  };
 
   return (
     <main>
@@ -375,6 +388,8 @@ const Jobcontent = () => {
                 className={styles.jobSearchInput}
                 value={searchForm.keyword}
                 onChange={handleSearchChange}
+                onFocus={() => console.log('Input focused')} // Debug
+                onKeyDown={(e) => console.log('Key down:', e.key)} // Debug
               />
             </div>
             <div className={styles.jobSearchField}>
@@ -452,13 +467,26 @@ const Jobcontent = () => {
             jobListingsNewStore.slice(0, storeVisible).map((job, idx) => (
               <div key={job._id || idx} className={styles.jobCard}>
                 <div className={styles.jobCardContent}>
-                  <div className={styles.jobCardTitle}>{job.Name}</div>
-                  <p className={styles.jobCardInfo}><strong>Thương hiệu:</strong> {job.Brands}</p>
-                  <p className={styles.jobCardInfo}><strong>Nơi làm việc:</strong> {job.Workplace}</p>
-                  <p className={styles.jobCardInfo}><strong>Mức lương:</strong> {job.Salary}</p>
-                  <p className={styles.jobCardInfo}><strong>Số lượng:</strong> {job.Slot}</p>
-                  <p className={styles.jobCardInfo}><strong>Ngày hết hạn:</strong> {job['Due date']}</p>
-                  <Link to={`/DetailJob/${job._id}`} className={styles.jobCardButton}>Xem chi tiết</Link>
+                  <div className={styles.jobCardTitle}>{job.Name || 'Không xác định'}</div>
+                  <p className={styles.jobCardInfo}>
+                    <strong>Thương hiệu:</strong>{' '}
+                    {Array.isArray(job.Brands) ? job.Brands.join(', ') : job.Brands || 'Không xác định'}
+                  </p>
+                  <p className={styles.jobCardInfo}>
+                    <strong>Nơi làm việc:</strong> {job.Workplace || 'Không xác định'}
+                  </p>
+                  <p className={styles.jobCardInfo}>
+                    <strong>Mức lương:</strong> {job.Salary || 'Không xác định'}
+                  </p>
+                  <p className={styles.jobCardInfo}>
+                    <strong>Số lượng:</strong> {job.Slot || 'Không xác định'}
+                  </p>
+                  <p className={styles.jobCardInfo}>
+                    <strong>Ngày hết hạn:</strong> {formatDate(job['Due date'])}
+                  </p>
+                  <Link to={`/DetailJob/${job._id}`} className={styles.jobCardButton}>
+                    Xem chi tiết
+                  </Link>
                 </div>
               </div>
             ))
@@ -501,13 +529,26 @@ const Jobcontent = () => {
             jobListingsNewOffice.slice(0, officeVisible).map((job, idx) => (
               <div key={job._id || idx} className={styles.jobCard}>
                 <div className={styles.jobCardContent}>
-                  <div className={styles.jobCardTitle}>{job.Name}</div>
-                  <p className={styles.jobCardInfo}><strong>Thương hiệu:</strong> {job.Brands}</p>
-                  <p className={styles.jobCardInfo}><strong>Nơi làm việc:</strong> {job.Workplace}</p>
-                  <p className={styles.jobCardInfo}><strong>Mức lương:</strong> {job.Salary}</p>
-                  <p className={styles.jobCardInfo}><strong>Số lượng:</strong> {job.Slot}</p>
-                  <p className={styles.jobCardInfo}><strong>Ngày hết hạn:</strong> {job['Due date']}</p>
-                  <Link to={`/DetailJob/${job._id}`} className={styles.jobCardButton}>Xem chi tiết</Link>
+                  <div className={styles.jobCardTitle}>{job.Name || 'Không xác định'}</div>
+                  <p className={styles.jobCardInfo}>
+                    <strong>Thương hiệu:</strong>{' '}
+                    {Array.isArray(job.Brands) ? job.Brands.join(', ') : job.Brands || 'Không xác định'}
+                  </p>
+                  <p className={styles.jobCardInfo}>
+                    <strong>Nơi làm việc:</strong> {job.Workplace || 'Không xác định'}
+                  </p>
+                  <p className={styles.jobCardInfo}>
+                    <strong>Mức lương:</strong> {job.Salary || 'Không xác định'}
+                  </p>
+                  <p className={styles.jobCardInfo}>
+                    <strong>Số lượng:</strong> {job.Slot || 'Không xác định'}
+                  </p>
+                  <p className={styles.jobCardInfo}>
+                    <strong>Ngày hết hạn:</strong> {formatDate(job['Due date'])}
+                  </p>
+                  <Link to={`/DetailJob/${job._id}`} className={styles.jobCardButton}>
+                    Xem chi tiết
+                  </Link>
                 </div>
               </div>
             ))
