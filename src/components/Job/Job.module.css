@@ -1,3 +1,5 @@
+/* News.module.css */
+
 /* Banner Section */
 .banner {
   position: relative;
@@ -40,7 +42,7 @@
   transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 1;
   pointer-events: none;
-  object-fit: cover;
+  object-fit: fill; /* Sử dụng object-fit: fill theo yêu cầu */
   user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -72,8 +74,8 @@
   background: rgba(0, 0, 0, 0.4);
   color: #fff;
   border: none;
-  font-size: 1.5rem;
-  padding: 0.5rem 1rem;
+  font-size: 1rem; /* Điều chỉnh theo mẫu CSS */
+  padding: 0.5rem;
   cursor: pointer;
   border-radius: 50%;
   z-index: 3;
@@ -82,14 +84,19 @@
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .bannerBtnLeft {
-  left: 1.5rem;
+  left: 1rem; /* Điều chỉnh theo mẫu CSS */
 }
 
 .bannerBtnRight {
-  right: 1.5rem;
+  right: 1rem; /* Điều chỉnh theo mẫu CSS */
 }
 
 .bannerBtn:hover {
@@ -103,23 +110,21 @@
 
 .bannerIndicators {
   position: absolute;
-  bottom: 1.5rem;
+  bottom: 1rem; /* Điều chỉnh theo mẫu CSS */
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 0.75rem;
+  gap: 0.5rem; /* Điều chỉnh theo mẫu CSS */
   z-index: 3;
 }
 
 .indicator {
-  width: 0.875rem;
-  height: 0.875rem;
+  width: 10px; /* Điều chỉnh theo mẫu CSS */
+  height: 10px;
   border-radius: 50%;
-  background: #fff;
-  opacity: 0.5;
+  background: rgba(255, 255, 255, 0.4); /* Điều chỉnh theo mẫu CSS */
   cursor: pointer;
-  border: 2px solid #1678f2;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition: background 0.3s ease, transform 0.2s ease;
   user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -131,8 +136,7 @@
 }
 
 .indicator.active {
-  opacity: 1;
-  background: #1678f2;
+  background: #fff; /* Điều chỉnh theo mẫu CSS */
 }
 
 /* Job Search Section */
@@ -375,8 +379,9 @@
     min-height: 12rem;
   }
   .bannerBtn {
-    font-size: 1.25rem;
-    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+    width: 32px;
+    height: 32px;
   }
 }
 
@@ -386,26 +391,39 @@
     min-height: 12rem;
   }
   .bannerBtn {
-    font-size: 1.1rem;
-    padding: 0.35rem 0.7rem;
+    font-size: 0.9rem;
+    width: 32px;
+    height: 32px;
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 780px) {
   .bannerWrapper {
-    aspect-ratio: 16 / 9;
-    min-height: 12rem;
+    height: 350px; /* Chiều cao cố định 350px tại 780px */
+    min-height: unset; /* Loại bỏ min-height để sử dụng chiều cao cố định */
+    aspect-ratio: unset; /* Loại bỏ aspect-ratio để ưu tiên chiều cao cố định */
+  }
+  .bannerImage {
+    object-fit: fill; /* Giữ object-fit: fill */
   }
   .bannerBtn {
-    font-size: 1rem;
-    padding: 0.3rem 0.6rem;
+    font-size: 0.9rem;
+    width: 32px;
+    height: 32px;
+  }
+  .bannerBtnLeft {
+    left: 0.5rem;
+  }
+  .bannerBtnRight {
+    right: 0.5rem;
   }
   .bannerIndicators {
-    gap: 0.5rem;
+    bottom: 0.8rem;
+    gap: 0.4rem;
   }
   .indicator {
-    width: 0.75rem;
-    height: 0.75rem;
+    width: 8px;
+    height: 8px;
   }
   .jobSearch {
     padding: 0 15px;
@@ -465,50 +483,35 @@
   }
 }
 
-@media (max-width: 500px) {
+@media (max-width: 380px) {
   .bannerWrapper {
-    aspect-ratio: 16 / 9;
-    min-height: 10rem;
+    height: 200px; /* Chiều cao tại 380px */
+    min-height: unset; /* Loại bỏ min-height */
+    aspect-ratio: unset; /* Loại bỏ aspect-ratio */
   }
-  .bannerBtn {
-    font-size: 0.9rem;
-    padding: 0.25rem 0.5rem;
-  }
-  .bannerBtnLeft {
-    left: 1rem;
-  }
-  .bannerBtnRight {
-    right: 1rem;
-  }
-  .indicator {
-    width: 0.625rem;
-    height: 0.625rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .bannerWrapper {
-    aspect-ratio: 16 / 9;
-    min-height: 10rem;
+  .bannerImage {
+    object-fit: fill; /* Giữ object-fit: fill */
   }
   .bannerBtn {
     font-size: 0.8rem;
-    padding: 0.2rem 0.4rem;
+    width: 28px;
+    height: 28px;
   }
   .bannerBtnLeft {
-    left: 0.75rem;
+    left: 0.5rem;
   }
   .bannerBtnRight {
-    right: 0.75rem;
+    right: 0.5rem;
   }
   .bannerIndicators {
-    bottom: 1rem;
-    gap: 0.4rem;
+    bottom: 0.5rem;
+    gap: 0.3rem;
   }
   .indicator {
-    width: 0.5rem;
-    height: 0.5rem;
+    width: 6px;
+    height: 6px;
     border-width: 1px;
+    padding: 0.3rem; /* Tăng vùng chạm cho thiết bị cảm ứng */
   }
   .jobSearch {
     padding: 0 10px;

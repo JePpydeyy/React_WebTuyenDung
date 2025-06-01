@@ -313,7 +313,7 @@ const About = () => {
             stopTestimonialAuto();
           }}
         >
-          <i className="fa-solid fa-angle-left"></i>
+          <i className="fa-solid fa-angle-right"></i>
         </button>
         <div className={styles.bannerIndicators}>
           {testimonials.map((_, idx) => (

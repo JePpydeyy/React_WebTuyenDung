@@ -41,11 +41,17 @@ const JobDetail = () => {
   const [latestJobs, setLatestJobs] = useState([]);
   const [bannerIdx, setBannerIdx] = useState(0);
   const bannerTimer = useRef(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [currentTranslate, setCurrentTranslate] = useState(0);
+  const [prevTranslate, setPrevTranslate] = useState(0);
+  const [velocity, setVelocity] = useState(0);
+  const [lastMoveTime, setLastMoveTime] = useState(0);
+  const bannerRef = useRef(null);
 
   // Parse workplace into individual locations
   const parseWorkplaces = (workplaceString) => {
     if (!workplaceString) return [];
-    // Split by comma and remove the city part after the dash
     const parts = workplaceString.split('-')[0].split(',').map((part) => part.trim());
     return parts.filter((part) => part !== '');
   };
@@ -105,20 +111,95 @@ const JobDetail = () => {
       if (bannerTimer.current) clearInterval(bannerTimer.current);
     };
 
-    startBannerAuto();
+    if (!isDragging) {
+      startBannerAuto();
+    } else {
+      stopBannerAuto();
+    }
+
     return stopBannerAuto;
-  }, [bannerIdx]);
+  }, [bannerIdx, isDragging]);
 
   const showBannerSlide = (idx) => {
     setBannerIdx(idx);
+    setCurrentTranslate(0);
+    setPrevTranslate(0);
+    setVelocity(0);
   };
 
   const nextBannerSlide = () => {
     setBannerIdx((prev) => (prev + 1) % bannerImages.length);
+    setCurrentTranslate(0);
+    setPrevTranslate(0);
+    setVelocity(0);
   };
 
   const prevBannerSlide = () => {
     setBannerIdx((prev) => (prev - 1 + bannerImages.length) % bannerImages.length);
+    setCurrentTranslate(0);
+    setPrevTranslate(0);
+    setVelocity(0);
+  };
+
+  const handleMouseDown = (e) => {
+    setIsDragging(true);
+    setStartX(e.clientX);
+    setPrevTranslate(currentTranslate);
+    setVelocity(0);
+    setLastMoveTime(Date.now());
+    if (bannerRef.current) {
+      bannerRef.current.style.cursor = 'grabbing';
+    }
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+    const currentX = e.clientX;
+    const diffX = currentX - startX;
+    const currentTime = Date.now();
+    const timeDiff = currentTime - lastMoveTime;
+    if (timeDiff > 0) {
+      const newVelocity = (diffX - (currentTranslate - prevTranslate)) / timeDiff;
+      setVelocity(newVelocity);
+    }
+    setCurrentTranslate(prevTranslate + diffX);
+    setLastMoveTime(currentTime);
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+    if (bannerRef.current) {
+      bannerRef.current.style.cursor = 'grab';
+    }
+
+    const threshold = window.innerWidth * 0.25; // Reduced to 25% for smoother response
+    const absVelocity = Math.abs(velocity);
+    const momentumThreshold = 0.5; // Pixels per millisecond
+
+    if (absVelocity > momentumThreshold) {
+      if (velocity > 0) {
+        prevBannerSlide();
+      } else {
+        nextBannerSlide();
+      }
+    } else if (currentTranslate > threshold) {
+      prevBannerSlide();
+    } else if (currentTranslate < -threshold) {
+      nextBannerSlide();
+    } else {
+      setCurrentTranslate(0); // Smooth snap-back
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (isDragging) {
+      setIsDragging(false);
+      if (bannerRef.current) {
+        bannerRef.current.style.cursor = 'grab';
+      }
+      setCurrentTranslate(0);
+      setVelocity(0);
+    }
   };
 
   const openModal = () => {
@@ -149,7 +230,7 @@ const JobDetail = () => {
     const { name, value, files } = e.target;
     if (name === 'resume') {
       const file = files[0];
-      if (file && file.size > 5 * 1024 * 1024) { // Giới hạn 5MB
+      if (file && file.size > 5 * 1024 * 1024) {
         setFormErrors((prev) => ({ ...prev, resume: 'File CV không được vượt quá 5MB' }));
         return;
       }
@@ -244,15 +325,30 @@ const JobDetail = () => {
   return (
     <main>
       <section className={styles.jobBanner}>
-        <div className={styles.jobBannerWrapper}>
+        <div
+          className={styles.jobBannerWrapper}
+          ref={bannerRef}
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseLeave}
+        >
           {bannerImages.map((src, idx) => (
             <img
               key={`banner-${idx}`}
-              className={`${styles.jobBannerImage} ${idx === bannerIdx ? styles.jobBannerImageActive : ''} ${
-                idx === (bannerIdx - 1 + bannerImages.length) % bannerImages.length ? styles.jobBannerImagePrev : ''
+              className={`${styles.jobBannerImage} ${
+                idx === bannerIdx ? styles.jobBannerImageActive : ''
+              } ${
+                idx === (bannerIdx - 1 + bannerImages.length) % bannerImages.length
+                  ? styles.jobBannerImagePrev
+                  : ''
               }`}
               src={src}
               alt={`Banner ${idx + 1}`}
+              style={{
+                transform: `translateX(${currentTranslate}px)`,
+                transition: isDragging ? 'none' : 'transform 0.3s ease-out',
+              }}
               loading="lazy"
             />
           ))}
@@ -434,7 +530,7 @@ const JobDetail = () => {
               <div className={styles.jobCardContent}>Không có công việc mới</div>
             </div>
           )}
-          <Link to="/Job" className={styles.jobBackToProducts}>
+          <Link to="/JobContent" className={styles.jobBackToProducts}>
             Xem Thêm
           </Link>
         </div>
