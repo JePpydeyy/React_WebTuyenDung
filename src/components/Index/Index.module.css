@@ -1,5 +1,3 @@
-/* News.module.css */
-
 /* Text Only Box */
 .text-only-box {
   display: flex;
@@ -14,12 +12,12 @@
   position: relative;
   width: 100%;
   max-width: 100vw;
-  aspect-ratio: 16 / 9; /* Tỷ lệ khung hình mặc định */
+  aspect-ratio: 16 / 9; /* Default aspect ratio for larger screens */
   min-height: 20rem;
   max-height: 45rem;
   background-color: #a00;
   overflow: hidden;
-  touch-action: pan-y pinch-zoom; /* Hỗ trợ pinch-zoom */
+  touch-action: pan-y pinch-zoom; /* Support pinch-zoom */
   user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -37,15 +35,13 @@
   transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 1;
   pointer-events: none;
-  object-fit: fill; /* Sử dụng object-fit: fill theo yêu cầu */
+  object-fit: fill; /* Ensure images fill the container */
   object-position: center;
   display: block;
- 
   -webkit-user-drag: none;
   -khtml-user-drag: none;
   -moz-user-drag: none;
   -o-user-drag: none;
-
   will-change: opacity, transform;
 }
 
@@ -74,7 +70,7 @@
   border-radius: 50%;
   z-index: 3;
   transition: background 0.2s ease;
-  touch-action: manipulation; /* Tối ưu cho thiết bị cảm ứng */
+  touch-action: manipulation; /* Optimize for touch devices */
 }
 
 .banner-btn-left {
@@ -113,7 +109,7 @@
   cursor: pointer;
   border: 2px solid #1678f2;
   transition: opacity 0.2s ease;
-  touch-action: manipulation; /* Tối ưu cho thiết bị cảm ứng */
+  touch-action: manipulation; /* Optimize for touch devices */
 }
 
 .indicator.active {
@@ -284,7 +280,7 @@
 .job-details-wrapper p {
   font-size: 1rem;
   color: #444;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0._ixrem;
   line-height: 1.4;
 }
 
@@ -449,7 +445,6 @@
   aspect-ratio: 1 / 1;
   flex-shrink: 0;
   overflow: hidden;
- 
   touch-action: pan-y pinch-zoom;
 }
 
@@ -678,61 +673,52 @@
     margin-bottom: 20px;
   }
 }
+
 @media screen and (max-width: 1024px) {
   .acfc-love {
     padding: 1rem;
     margin: 2rem auto;
   }
-
   .acfc-love h2 {
     font-size: 1.8rem;
     margin-bottom: 1.5rem;
   }
-
   .acfc-love-container {
-    flex-direction: row; /* Giữ flex-direction: row để hiển thị ngang */
-    overflow-x: auto; /* Cho phép cuộn ngang nếu nội dung vượt quá */
-   
+    flex-direction: row;
+    overflow-x: auto;
     padding: 0 0.5rem;
-    justify-content: flex-start; /* Đảm bảo các item bắt đầu từ trái */
+    justify-content: flex-start;
   }
-
   .acfc-love-item {
-    width: 180px; /* Giảm kích thước item để phù hợp hơn */
+    width: 180px;
     flex-shrink: 0;
     margin: 0;
   }
-
   .title-info-box,
   .image-info-box {
-    flex-direction: column; /* Chuyển về column để tiết kiệm không gian ngang */
+    flex-direction: column;
   }
-
   .image-info-box.reverse {
     flex-direction: column-reverse;
   }
-
   .a-l-title,
   .a-l-info,
   .a-l-img,
   .carousel-item {
-    width: 180px; /* Giảm kích thước để phù hợp */
+    width: 180px;
     height: 180px;
     aspect-ratio: 1 / 1;
   }
-
   .carousel-item img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: center;
   }
-
   .a-l-title {
     font-size: 1.5rem;
     padding: 8px;
   }
-
   .a-l-info {
     font-size: 0.95rem;
     padding: 8px;
@@ -768,7 +754,7 @@
   .job-search_select,
   .job-search_button {
     width: 100%;
-    padding: 0.75rem 0.75rem 0.75rem 1.5rem;
+   
   }
   .job-search_select {
     padding-right: 2rem;
@@ -853,10 +839,10 @@
 
 @media screen and (max-width: 780px) {
   .banner-wrapper {
-    height: 350px; /* Chiều cao cố định 350px tại 780px */
-    min-height: unset; /* Loại bỏ min-height */
-    max-height: unset; /* Loại bỏ max-height */
-    aspect-ratio: unset; /* Loại bỏ aspect-ratio */
+    height: 350px; /* Fixed height for consistency */
+    min-height: unset; /* Remove min-height */
+    max-height: unset; /* Remove max-height */
+    aspect-ratio: unset; /* Remove aspect ratio to use fixed height */
     overflow: hidden;
   }
   .banner-image {
@@ -988,10 +974,10 @@
 
 @media screen and (max-width: 380px) {
   .banner-wrapper {
-    height: 200px; /* Chiều cao cố định 200px tại 380px */
-    min-height: unset; /* Loại bỏ min-height */
-    max-height: unset; /* Loại bỏ max-height */
-    aspect-ratio: unset; /* Loại bỏ aspect-ratio */
+    height: 200px; /* Fixed height for smaller screens */
+    min-height: unset; /* Remove min-height */
+    max-height: unset; /* Remove max-height */
+    aspect-ratio: unset; /* Remove aspect ratio to use fixed height */
     overflow: hidden;
   }
   .banner-image {
@@ -1020,7 +1006,7 @@
     width: 0.5rem;
     height: 0.5rem;
     border-width: 1px;
-    padding: 0.3rem; /* Tăng vùng chạm cho thiết bị cảm ứng */
+    padding: 0.3rem; /* Increase touch area for mobile */
   }
   .container-lastest {
     padding: 0.5rem;

@@ -394,7 +394,7 @@ const Index = () => {
 
   return (
     <main>
-      {/* Banner Section (unchanged) */}
+      {/* Banner Section */}
       <section className={styles.banner}>
         <div
           className={styles['banner-wrapper']}
@@ -576,7 +576,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* ACFC Values Section (unchanged) */}
+      {/* ACFC Values Section */}
       <section className={styles['acfc-values-section']}>
         <h2 className={styles['section-title']}>ACFC Việt Nam</h2>
         <div className={styles['values-grid']}>
@@ -591,7 +591,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* ACFC Love Section (unchanged) */}
+      {/* ACFC Love Section */}
       <section className={`${styles['acfc-love']} ${styles['tttable-mobile']}`}>
         <h2>5 Lý Do Bạn Yêu ACFC</h2>
         <div className={styles['acfc-love-container']}>
@@ -616,7 +616,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Video Section (updated to disable autoplay) */}
+      {/* Video Section */}
       <section className={styles['video-section']}>
         <h2>Video Giới Thiệu</h2>
         <div className={styles['video-container']}>
@@ -630,7 +630,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Benefits Section (unchanged) */}
+      {/* Benefits Section */}
       <h2 className={styles['benefits-title']}>Phúc lợi công ty</h2>
       <section className={styles['benefits-container']}>
         {benefits.map((benefit, idx) => (
