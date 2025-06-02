@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom'; // Import Link
 import styles from './Sidebar.module.css';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../AuthContext/AuthContext'; 
+import { useAuth } from '../AuthContext/AuthContext';
 
 const Sidebar = ({ isAlwaysVisible = false }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const navigate = useNavigate(); // Thêm dòng này
-  const { checkAuth } = useAuth(); // Thêm dòng này
+  const navigate = useNavigate();
+  const { checkAuth } = useAuth();
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -15,8 +15,8 @@ const Sidebar = ({ isAlwaysVisible = false }) => {
   const handleLogout = () => {
     localStorage.removeItem('adminToken');
     localStorage.removeItem('user');
-    checkAuth(); // Đã có
-    navigate('/'); // Đã có
+    checkAuth();
+    navigate('/');
   };
 
   useEffect(() => {
@@ -41,9 +41,9 @@ const Sidebar = ({ isAlwaysVisible = false }) => {
       <div className={`${styles.sidebar} ${isOpen ? styles.open : ''}`}>
         <div className={styles.header}>
           <div className={styles.logo}>
-            <a href="/admin">
+            <Link to="/admin">
               <img src="https://api-tuyendung-cty.onrender.com/images/Logo.svg" alt="Logo" />
-            </a>
+            </Link>
           </div>
           {/* Nút toggle trong sidebar, chỉ hiển thị trên desktop */}
           <button className={styles.toggleButton} onClick={toggleSidebar}>
@@ -52,30 +52,35 @@ const Sidebar = ({ isAlwaysVisible = false }) => {
         </div>
         <ul className={styles.menu}>
           <li>
-            <a href="/admin">
+            <Link to="/admin">
               <i className="fa-solid fa-chart-line"></i> Dashboard
-            </a>
+            </Link>
           </li>
           <li>
-            <a href="/admin/news">
+            <Link to="/admin/news">
               <i className="fa-regular fa-newspaper"></i> Tin Tức
-            </a>
+            </Link>
           </li>
           <li>
-            <a href="/admin/jobs">
+            <Link to="/admin/jobs">
               <i className="fa-solid fa-briefcase"></i> Quản Lý Công Việc
-            </a>
+            </Link>
           </li>
           <li>
-            <a href="/admin/submit-profile">
+            <Link to="/admin/submit-profile">
               <i className="fa-solid fa-address-card"></i> Hồ Sơ Ứng Tuyển
-            </a>
+            </Link>
           </li>
           <li>
-          <button onClick={handleLogout} className={styles.logoutBtn}>
-            <i className="fa-solid fa-right-from-bracket"></i> Đăng Xuất
-          </button>
-        </li>
+            <Link to="/admin/banners">
+              <i className="fa-solid fa-image"></i> Quản Lý Banner
+            </Link>
+          </li>
+          <li>
+            <button onClick={handleLogout} className={styles.logoutBtn}>
+              <i className="fa-solid fa-right-from-bracket"></i> Đăng Xuất
+            </button>
+          </li>
         </ul>
       </div>
 
