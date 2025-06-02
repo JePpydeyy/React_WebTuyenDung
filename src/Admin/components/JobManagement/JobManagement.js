@@ -1,4 +1,3 @@
-// src/components/JobManagement.js
 import React, { useState, useEffect } from 'react';
 import { debounce } from 'lodash';
 import styles from './JobManagement.module.css';
@@ -14,23 +13,25 @@ const JobManagement = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const itemsPerPage = 10;
+
   const [formData, setFormData] = useState({
     JobType: '',
     Name: '',
-    Brands: [],
+    Brands: '',
     Position: '',
     Workplace: '',
     Salary: '',
     Slot: '',
     'Post-date': new Date().toISOString().split('T')[0],
     'Due date': '',
-    'Job Description': '',
+    'Job Description': [''],
     'Work Experience': '',
-    Welfare: [],
+    Welfare: [''],
     status: 'show',
     Degree: '',
-    'Job Requirements': [],
+    'Job Requirements': [''],
   });
+
   const [formErrors, setFormErrors] = useState({});
   const [token, setToken] = useState(localStorage.getItem('adminToken') || '');
 
@@ -44,13 +45,13 @@ const JobManagement = () => {
     if (dateString.includes('/')) return dateString;
     const date = new Date(dateString);
     if (isNaN(date)) return '';
-    return date.toLocaleDateString('vi-VN');
+    return date.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '/');
   };
 
   const toBackendDate = (dateString) => {
     if (!dateString) return '';
     const [y, m, d] = dateString.split('-');
-    return `${d}/${m}/${y}`;
+    return `${d.padStart(2, '0')}/${m.padStart(2, '0')}/${y}`;
   };
 
   const toFormDate = (dateString) => {
@@ -66,7 +67,7 @@ const JobManagement = () => {
     if (!token) return [];
     setIsLoading(true);
     try {
-      const response = await fetch(API_JOBS_URL, {
+      const response = await fetch(`${API_JOBS_URL}?status=all`, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
@@ -76,27 +77,24 @@ const JobManagement = () => {
       const data = await response.json();
       return data.map(job => ({
         id: job._id,
-        title: job.Name || '',
+        title: job.Name,
         brand: job.Brands || '',
-        brandsArr: job.Brands ? job.Brands.split(', ').filter(Boolean) : [],
-        jobType: job.JobType || '',
-        salary: job.Salary || '',
-        location: job.Workplace || '',
-        deadline: formatDate(job['Due date']) || '',
+        jobType: job.JobType,
+        salary: job.Salary,
+        location: job.Workplace,
+        deadline: formatDate(job['Due date']),
         status: statusDisplayMap[job.status] || job.status,
-        description: Array.isArray(job['Job Description']) ? job['Job Description'].join('\n') : job['Job Description'] || '',
-        workExperience: job['Work Experience'] || '',
-        benefits: Array.isArray(job.Welfare) ? job.Welfare.join('\n') : job.Welfare || '',
-        welfareArr: Array.isArray(job.Welfare) ? job.Welfare : [],
-        slot: job.Slot || 0,
-        postDate: formatDate(job['Post-date']) || '',
-        degree: job.Degree || '',
-        requirements: Array.isArray(job['Job Requirements']) ? job['Job Requirements'].join('\n') : job['Job Requirements'] || '',
-        jobRequirementsArr: Array.isArray(job['Job Requirements']) ? job['Job Requirements'] : [],
-        position: job.Position || '',
+        description: Array.isArray(job['Job Description']) ? job['Job Description'] : [''],
+        workExperience: job['Work Experience'],
+        benefits: Array.isArray(job.Welfare) ? job.Welfare : [''],
+        slot: job.Slot,
+        postDate: formatDate(job['Post-date']),
+        degree: job.Degree,
+        requirements: Array.isArray(job['Job Requirements']) ? job['Job Requirements'] : [''],
+        position: job.Position,
       }));
     } catch (error) {
-      console.error('Error fetching jobs:', error);
+      console.error('Lỗi khi lấy danh sách công việc:', error);
       return [];
     } finally {
       setIsLoading(false);
@@ -129,24 +127,25 @@ const JobManagement = () => {
       const job = await response.json();
       setSelectedJob({
         id: job._id,
-        title: job.Name || '',
+        title: job.Name,
         brand: job.Brands || '',
-        jobType: job.JobType || '',
-        salary: job.Salary || '',
-        location: job.Workplace || '',
-        deadline: formatDate(job['Due date']) || '',
+        jobType: job.JobType,
+        salary: job.Salary,
+        location: job.Workplace,
+        deadline: formatDate(job['Due date']),
         status: statusDisplayMap[job.status] || job.status,
-        description: Array.isArray(job['Job Description']) ? job['Job Description'].join('\n') : job['Job Description'] || '',
-        workExperience: job['Work Experience'] || '',
-        benefits: Array.isArray(job.Welfare) ? job.Welfare.join('\n') : job.Welfare || '',
-        slot: job.Slot || 0,
-        postDate: formatDate(job['Post-date']) || '',
-        degree: job.Degree || '',
-        requirements: Array.isArray(job['Job Requirements']) ? job['Job Requirements'].join('\n') : job['Job Requirements'] || '',
-        position: job.Position || '',
+        description: Array.isArray(job['Job Description']) ? job['Job Description'] : [''],
+        workExperience: job['Work Experience'],
+        benefits: Array.isArray(job.Welfare) ? job.Welfare : [''],
+        slot: job.Slot,
+        postDate: formatDate(job['Post-date']),
+        degree: job.Degree,
+        requirements: Array.isArray(job['Job Requirements']) ? job['Job Requirements'] : [''],
+        position: job.Position,
       });
     } catch (error) {
-      console.error('Error fetching job:', error);
+      console.error('Lỗi khi xem chi tiết công việc:', error);
+      alert('Có lỗi xảy ra khi xem chi tiết công việc.');
     } finally {
       setIsLoading(false);
     }
@@ -157,19 +156,19 @@ const JobManagement = () => {
     setFormData({
       JobType: '',
       Name: '',
-      Brands: [],
+      Brands: '',
       Position: '',
       Workplace: '',
       Salary: '',
       Slot: '',
       'Post-date': new Date().toISOString().split('T')[0],
       'Due date': '',
-      'Job Description': '',
+      'Job Description': [''],
       'Work Experience': '',
-      Welfare: [],
+      Welfare: [''],
       status: 'show',
       Degree: '',
-      'Job Requirements': [],
+      'Job Requirements': [''],
     });
     setFormErrors({});
     setShowModal(true);
@@ -182,21 +181,21 @@ const JobManagement = () => {
       setModalMode('edit');
       setFormData({
         _id: job.id,
-        JobType: job.jobType,
-        Name: job.title,
-        Brands: job.brandsArr,
-        Position: job.position,
-        Workplace: job.location,
-        Salary: job.salary,
-        Slot: job.slot,
-        'Post-date': toFormDate(job.postDate),
-        'Due date': toFormDate(job.deadline),
-        'Job Description': job.description,
-        'Work Experience': job.workExperience,
-        Welfare: job.welfareArr,
-        status: reverseStatusMap[job.status] || job.status,
-        Degree: job.degree,
-        'Job Requirements': job.jobRequirementsArr,
+        JobType: job.jobType || '',
+        Name: job.title || '',
+        Brands: job.brand || '',
+        Position: job.position || '',
+        Workplace: job.location || '',
+        Salary: job.salary || '',
+        Slot: job.slot || '',
+        'Post-date': toFormDate(job.postDate) || '',
+        'Due date': toFormDate(job.deadline) || '',
+        'Job Description': job.description.length > 0 ? job.description : [''],
+        'Work Experience': job.workExperience || '',
+        Welfare: job.benefits.length > 0 ? job.benefits : [''],
+        status: reverseStatusMap[job.status] || job.status || 'show',
+        Degree: job.degree || '',
+        'Job Requirements': job.requirements.length > 0 ? job.requirements : [''],
       });
       setFormErrors({});
       setShowModal(true);
@@ -205,20 +204,22 @@ const JobManagement = () => {
 
   const handleDeleteJob = async (jobId) => {
     if (!token) return;
-    if (window.confirm('Bạn có chắc chắn muốn xóa công việc này?')) {
+    if (window.confirm('Bạn có chắc chắn muốn tạm dừng công việc này?')) {
       setIsLoading(true);
       try {
-        const response = await fetch(`${API_JOBS_URL}/${jobId}`, {
-          method: 'DELETE',
+        const response = await fetch(`${API_JOBS_URL}/${jobId}/toggle-visibility`, {
+          method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
+          body: JSON.stringify({ status: 'hidden' }),
         });
         if (!response.ok) throw new Error(`HTTP error ${response.status}`);
         await displayJobs(currentPage);
       } catch (error) {
-        console.error('Error deleting job:', error);
+        console.error('Lỗi khi tạm dừng công việc:', error);
+        alert('Có lỗi xảy ra khi tạm dừng công việc.');
       } finally {
         setIsLoading(false);
       }
@@ -229,18 +230,35 @@ const JobManagement = () => {
     if (!token) return;
     setIsLoading(true);
     try {
+      const jobResponse = await fetch(`${API_JOBS_URL}/${jobId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!jobResponse.ok) throw new Error(`Không thể lấy thông tin công việc: HTTP error ${jobResponse.status}`);
+      const job = await jobResponse.json();
+      const newStatus = job.status === 'show' ? 'hidden' : 'show';
+
       const response = await fetch(`${API_JOBS_URL}/${jobId}/toggle-visibility`, {
-        method: 'PUT',
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
+        body: JSON.stringify({ status: newStatus }),
       });
-      if (!response.ok) throw new Error(`HTTP error ${response.status}`);
-      setSelectedJob(null);
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`Không thể thay đổi trạng thái: HTTP error ${response.status} - ${JSON.stringify(errorData)}`);
+      }
+
       await displayJobs(currentPage);
+      setSelectedJob(null);
     } catch (error) {
-      console.error('Error toggling visibility:', error);
+      console.error('Lỗi khi thay đổi trạng thái:', error.message);
+      alert(`Có lỗi xảy ra khi thay đổi trạng thái công việc: ${error.message}`);
     } finally {
       setIsLoading(false);
     }
@@ -248,15 +266,13 @@ const JobManagement = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    if (name === 'Brands') {
+    if (name === 'Slot') {
+      setFormData(prev => ({ ...prev, [name]: value ? parseInt(value) : '' }));
+    } else if (name === 'Job Description' || name === 'Job Requirements' || name === 'Welfare') {
+      const newValue = value.split('\n').filter(item => item.trim() !== '');
       setFormData(prev => ({
         ...prev,
-        [name]: value.split(',').map(item => item.trim()).filter(item => item),
-      }));
-    } else if (name === 'Job Requirements' || name === 'Welfare') {
-      setFormData(prev => ({
-        ...prev,
-        [name]: value.split('\n').map(item => item.trim()).filter(item => item),
+        [name]: newValue.length > 0 ? newValue : [''],
       }));
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
@@ -264,21 +280,42 @@ const JobManagement = () => {
     setFormErrors(prev => ({ ...prev, [name]: '' }));
   };
 
+  const handleTextareaKeyDown = (e, fieldName) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      setFormData(prev => ({
+        ...prev,
+        [fieldName]: [...prev[fieldName], ''],
+      }));
+    }
+  };
+
   const validateForm = () => {
     const errors = {};
-    if (!formData.Name.trim()) errors.Name = 'Tên công việc là bắt buộc';
-    if (!formData.Brands.length) errors.Brands = 'Thương hiệu là bắt buộc';
-    if (!formData.JobType.trim()) errors.JobType = 'Loại công việc là bắt buộc';
-    if (!formData.Salary.trim()) errors.Salary = 'Mức lương là bắt buộc';
-    if (!formData.Workplace.trim()) errors.Workplace = 'Địa điểm là bắt buộc';
-    if (!formData['Due date']) errors['Due date'] = 'Hạn nộp là bắt buộc';
+    if (!formData.JobType?.trim()) errors.JobType = 'Loại công việc là bắt buộc';
+    if (!formData.Name?.trim()) errors.Name = 'Tên công việc là bắt buộc';
+    if (!formData.Position?.trim()) errors.Position = 'Vị trí là bắt buộc';
+    if (!formData.Workplace?.trim()) errors.Workplace = 'Địa điểm là bắt buộc';
+    if (!formData.Salary?.trim()) errors.Salary = 'Mức lương là bắt buộc';
     if (!formData.Slot || formData.Slot <= 0) errors.Slot = 'Số lượng tuyển phải lớn hơn 0';
     if (!formData['Post-date']) errors['Post-date'] = 'Ngày đăng là bắt buộc';
-    if (!formData.Degree.trim()) errors.Degree = 'Trình độ là bắt buộc';
-    if (!formData['Work Experience'].trim()) errors['Work Experience'] = 'Kinh nghiệm làm việc là bắt buộc';
-    if (!formData.Position.trim()) errors.Position = 'Vị trí là bắt buộc';
-    if (!formData['Job Requirements'].length) errors['Job Requirements'] = 'Yêu cầu công việc là bắt buộc';
-    if (!formData.Welfare.length) errors.Welfare = 'Quyền lợi là bắt buộc';
+    if (!formData['Due date']) errors['Due date'] = 'Hạn nộp là bắt buộc';
+    if (!formData.Degree?.trim()) errors.Degree = 'Trình độ là bắt buộc';
+    if (!formData['Work Experience']?.trim()) errors['Work Experience'] = 'Kinh nghiệm làm việc là bắt buộc';
+    if (!formData['Job Requirements']?.length || formData['Job Requirements'][0] === '') errors['Job Requirements'] = 'Yêu cầu công việc là bắt buộc';
+    if (!formData.Welfare?.length || formData.Welfare[0] === '') errors.Welfare = 'Quyền lợi là bắt buộc';
+
+    if (formData['Post-date'] && formData['Due date']) {
+      const postDateObj = new Date(formData['Post-date']);
+      const dueDateObj = new Date(formData['Due date']);
+      if (isNaN(postDateObj.getTime()) || isNaN(dueDateObj.getTime())) {
+        errors['Post-date'] = errors['Post-date'] || 'Ngày đăng không hợp lệ';
+        errors['Due date'] = errors['Due date'] || 'Hạn nộp không hợp lệ';
+      } else if (dueDateObj <= postDateObj) {
+        errors['Due date'] = 'Hạn nộp phải sau ngày đăng';
+      }
+    }
+
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -293,7 +330,7 @@ const JobManagement = () => {
       const payload = {
         JobType: formData.JobType,
         Name: formData.Name,
-        Brands: formData.Brands.join(', '),
+        Brands: formData.Brands,
         Position: formData.Position,
         Workplace: formData.Workplace,
         Salary: formData.Salary,
@@ -302,9 +339,9 @@ const JobManagement = () => {
         'Due date': toBackendDate(formData['Due date']),
         Degree: formData.Degree,
         'Work Experience': formData['Work Experience'],
-        'Job Description': formData['Job Description'].split('\n').filter(Boolean),
-        'Job Requirements': formData['Job Requirements'],
-        Welfare: formData.Welfare,
+        'Job Description': formData['Job Description'].filter(item => item.trim() !== ''),
+        'Job Requirements': formData['Job Requirements'].filter(item => item.trim() !== ''),
+        Welfare: formData.Welfare.filter(item => item.trim() !== ''),
         status: formData.status,
       };
 
@@ -319,29 +356,34 @@ const JobManagement = () => {
         body: JSON.stringify(payload),
       });
 
-      if (!response.ok) throw new Error('Lỗi khi lưu công việc');
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`HTTP error ${response.status}: ${JSON.stringify(errorData)}`);
+      }
+
       await displayJobs(1);
       setShowModal(false);
       setFormData({
         JobType: '',
         Name: '',
-        Brands: [],
+        Brands: '',
         Position: '',
         Workplace: '',
         Salary: '',
         Slot: '',
         'Post-date': new Date().toISOString().split('T')[0],
         'Due date': '',
-        'Job Description': '',
+        'Job Description': [''],
         'Work Experience': '',
-        Welfare: [],
+        Welfare: [''],
         status: 'show',
         Degree: '',
-        'Job Requirements': [],
+        'Job Requirements': [''],
       });
       setFormErrors({});
     } catch (error) {
-      console.error('Error submitting form:', error);
+      console.error('Lỗi khi lưu công việc:', error.message);
+      alert(`Có lỗi xảy ra khi lưu công việc: ${error.message}`);
     } finally {
       setIsLoading(false);
     }
@@ -435,7 +477,7 @@ const JobManagement = () => {
   };
 
   return (
-    <div className={styles.container}>
+   <div className={styles.container}>
       {!token && <p>Vui lòng đăng nhập để quản lý công việc.</p>}
       <div className={styles.filters}>
         <input
@@ -463,15 +505,13 @@ const JobManagement = () => {
         <button onClick={handleResetFilters} disabled={!token}>
           <i className="fa-solid fa-rotate"></i> Đặt lại
         </button>
+        <button onClick={handleOpenAddModal} disabled={!token}>
+          <i className="fa-solid fa-plus"></i> Thêm Công Việc
+        </button>
       </div>
 
       <div className={styles.jobs}>
-        <h3>
-          Danh Sách Công Việc
-          <button onClick={handleOpenAddModal} disabled={!token}>
-            <i className="fa-solid fa-plus"></i> Thêm Công Việc
-          </button>
-        </h3>
+        <h3>Danh Sách Công Việc</h3> {/* Xóa nút "Thêm Công Việc" khỏi đây */}
         <table>
           <thead>
             <tr>
@@ -518,8 +558,8 @@ const JobManagement = () => {
                       <button className={styles.edit} onClick={() => handleOpenEditModal(job.id)}>
                         <i className="fa-solid fa-edit"></i>
                       </button>
-                      <button className={styles.delete} onClick={() => handleDeleteJob(job.id)}>
-                        <i className="fa-solid fa-trash"></i>
+                      <button className={styles.delete} onClick={() => handleToggleVisibility(job.id)}>
+                        <i className={job.status === 'Đang tuyển' ? 'fa-solid fa-pause' : 'fa-solid fa-play'}></i>
                       </button>
                     </div>
                   </td>
@@ -539,9 +579,12 @@ const JobManagement = () => {
             <div className={styles.jobDetails}>
               <div className={styles.detailRow}>
                 <div className={styles.detailGroup}><label>ID:</label><p>{selectedJob.id}</p></div>
-                <div className={styles.detailGroup}><label>Trạng thái:</label>
+                <div className={styles.detailGroup}>
+                  <label>Trạng thái:</label>
                   <p>
-                    <span className={`${styles.status} ${selectedJob.status === 'Đang tuyển' ? styles.active : styles.inactive}`}>{selectedJob.status}</span>
+                    <span className={`${styles.status} ${selectedJob.status === 'Đang tuyển' ? styles.active : styles.inactive}`}>
+                      {selectedJob.status}
+                    </span>
                   </p>
                 </div>
               </div>
@@ -571,15 +614,27 @@ const JobManagement = () => {
               </div>
               <div className={`${styles.detailGroup} ${styles.full}`}>
                 <label>Mô tả công việc:</label>
-                <p style={{ whiteSpace: 'pre-line' }}>{selectedJob.description}</p>
+                <ul>
+                  {selectedJob.description.map((desc, index) => (
+                    <li key={index}>{desc}</li>
+                  ))}
+                </ul>
               </div>
               <div className={`${styles.detailGroup} ${styles.full}`}>
                 <label>Yêu cầu công việc:</label>
-                <p style={{ whiteSpace: 'pre-line' }}>{selectedJob.requirements}</p>
+                <ul>
+                  {selectedJob.requirements.map((req, index) => (
+                    <li key={index}>{req}</li>
+                  ))}
+                </ul>
               </div>
               <div className={`${styles.detailGroup} ${styles.full}`}>
                 <label>Quyền lợi:</label>
-                <p style={{ whiteSpace: 'pre-line' }}>{selectedJob.benefits}</p>
+                <ul>
+                  {selectedJob.benefits.map((welfare, index) => (
+                    <li key={index}>{welfare}</li>
+                  ))}
+                </ul>
               </div>
               <div className={`${styles.detailGroup} ${styles.full}`}>
                 <label>Đổi trạng thái:</label>
@@ -603,43 +658,50 @@ const JobManagement = () => {
             <form onSubmit={handleFormSubmit}>
               <div className={styles.detailRow}>
                 <div className={styles.detailGroup}>
-                  <label>Tên công việc: <span style={{ color: 'red' }}>*</span></label>
-                  <input
-                    type="text"
-                    name="Name"
-                    value={formData.Name}
-                    onChange={handleInputChange}
-                  />
-                </div>
-                <div className={styles.detailGroup}>
-                  <label>Thương hiệu: <span style={{ color: 'red' }}>*</span></label>
-                  <input
-                    type="text"
-                    name="Brands"
-                    value={formData.Brands.join(', ')}
-                    onChange={handleInputChange}
-                    placeholder="Nhập các thương hiệu, cách nhau bằng dấu phẩy"
-                  />
-                </div>
-              </div>
-              <div className={styles.detailRow}>
-                <div className={styles.detailGroup}>
                   <label>Loại công việc: <span style={{ color: 'red' }}>*</span></label>
                   <input
                     type="text"
                     name="JobType"
                     value={formData.JobType}
                     onChange={handleInputChange}
+                    required
                   />
+                  {formErrors.JobType && <p style={{ color: 'red' }}>{formErrors.JobType}</p>}
                 </div>
                 <div className={styles.detailGroup}>
-                  <label>Mức lương: <span style={{ color: 'red' }}>*</span></label>
+                  <label>Tên công việc: <span style={{ color: 'red' }}>*</span></label>
                   <input
                     type="text"
-                    name="Salary"
-                    value={formData.Salary}
+                    name="Name"
+                    value={formData.Name}
                     onChange={handleInputChange}
+                    required
                   />
+                  {formErrors.Name && <p style={{ color: 'red' }}>{formErrors.Name}</p>}
+                </div>
+              </div>
+              <div className={styles.detailRow}>
+                <div className={styles.detailGroup}>
+                  <label>Thương hiệu:</label>
+                  <input
+                    type="text"
+                    name="Brands"
+                    value={formData.Brands}
+                    onChange={handleInputChange}
+                    placeholder="Nhập các thương hiệu, cách nhau bằng dấu phẩy"
+                  />
+                  {formErrors.Brands && <p style={{ color: 'red' }}>{formErrors.Brands}</p>}
+                </div>
+                <div className={styles.detailGroup}>
+                  <label>Vị trí: <span style={{ color: 'red' }}>*</span></label>
+                  <input
+                    type="text"
+                    name="Position"
+                    value={formData.Position}
+                    onChange={handleInputChange}
+                    required
+                  />
+                  {formErrors.Position && <p style={{ color: 'red' }}>{formErrors.Position}</p>}
                 </div>
               </div>
               <div className={styles.detailRow}>
@@ -650,28 +712,23 @@ const JobManagement = () => {
                     name="Workplace"
                     value={formData.Workplace}
                     onChange={handleInputChange}
+                    required
                   />
+                  {formErrors.Workplace && <p style={{ color: 'red' }}>{formErrors.Workplace}</p>}
                 </div>
                 <div className={styles.detailGroup}>
-                  <label>Hạn nộp: <span style={{ color: 'red' }}>*</span></label>
+                  <label>Mức lương: <span style={{ color: 'red' }}>*</span></label>
                   <input
-                    type="date"
-                    name="Due date"
-                    value={formData['Due date']}
+                    type="text"
+                    name="Salary"
+                    value={formData.Salary}
                     onChange={handleInputChange}
+                    required
                   />
+                  {formErrors.Salary && <p style={{ color: 'red' }}>{formErrors.Salary}</p>}
                 </div>
               </div>
               <div className={styles.detailRow}>
-                <div className={styles.detailGroup}>
-                  <label>Ngày đăng: <span style={{ color: 'red' }}>*</span></label>
-                  <input
-                    type="date"
-                    name="Post-date"
-                    value={formData['Post-date']}
-                    onChange={handleInputChange}
-                  />
-                </div>
                 <div className={styles.detailGroup}>
                   <label>Số lượng tuyển: <span style={{ color: 'red' }}>*</span></label>
                   <input
@@ -680,10 +737,34 @@ const JobManagement = () => {
                     value={formData.Slot}
                     onChange={handleInputChange}
                     min="1"
+                    required
                   />
+                  {formErrors.Slot && <p style={{ color: 'red' }}>{formErrors.Slot}</p>}
+                </div>
+                <div className={styles.detailGroup}>
+                  <label>Ngày đăng: <span style={{ color: 'red' }}>*</span></label>
+                  <input
+                    type="date"
+                    name="Post-date"
+                    value={formData['Post-date']}
+                    onChange={handleInputChange}
+                    required
+                  />
+                  {formErrors['Post-date'] && <p style={{ color: 'red' }}>{formErrors['Post-date']}</p>}
                 </div>
               </div>
               <div className={styles.detailRow}>
+                <div className={styles.detailGroup}>
+                  <label>Hạn nộp: <span style={{ color: 'red' }}>*</span></label>
+                  <input
+                    type="date"
+                    name="Due date"
+                    value={formData['Due date']}
+                    onChange={handleInputChange}
+                    required
+                  />
+                  {formErrors['Due date'] && <p style={{ color: 'red' }}>{formErrors['Due date']}</p>}
+                </div>
                 <div className={styles.detailGroup}>
                   <label>Trình độ: <span style={{ color: 'red' }}>*</span></label>
                   <input
@@ -691,34 +772,35 @@ const JobManagement = () => {
                     name="Degree"
                     value={formData.Degree}
                     onChange={handleInputChange}
+                    required
                   />
-                </div>
-                <div className={styles.detailGroup}>
-                  <label>Vị trí: <span style={{ color: 'red' }}>*</span></label>
-                  <input
-                    type="text"
-                    name="Position"
-                    value={formData.Position}
-                    onChange={handleInputChange}
-                  />
+                  {formErrors.Degree && <p style={{ color: 'red' }}>{formErrors.Degree}</p>}
                 </div>
               </div>
-              <div className={`${styles.detailGroup} ${styles.full}`}>
-                <label>Kinh nghiệm làm việc: <span style={{ color: 'red' }}>*</span></label>
-                <input
-                  type="text"
-                  name="Work Experience"
-                  value={formData['Work Experience']}
-                  onChange={handleInputChange}
-                />
+              <div className={styles.detailRow}>
+                <div className={`${styles.detailGroup} ${styles.full}`}>
+                  <label>Kinh nghiệm làm việc: <span style={{ color: 'red' }}>*</span></label>
+                  <input
+                    type="text"
+                    name="Work Experience"
+                    value={formData['Work Experience']}
+                    onChange={handleInputChange}
+                    required
+                  />
+                  {formErrors['Work Experience'] && <p style={{ color: 'red' }}>{formErrors['Work Experience']}</p>}
+                </div>
               </div>
               <div className={`${styles.detailGroup} ${styles.full}`}>
                 <label>Mô tả công việc:</label>
                 <textarea
                   name="Job Description"
-                  value={formData['Job Description']}
+                  value={formData['Job Description'].join('\n')}
                   onChange={handleInputChange}
+                  onKeyDown={(e) => handleTextareaKeyDown(e, 'Job Description')}
                   rows="4"
+                  className={styles.textareaWithLineBreaks}
+                  style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}
+                  wrap="soft"
                 />
               </div>
               <div className={`${styles.detailGroup} ${styles.full}`}>
@@ -727,9 +809,14 @@ const JobManagement = () => {
                   name="Job Requirements"
                   value={formData['Job Requirements'].join('\n')}
                   onChange={handleInputChange}
+                  onKeyDown={(e) => handleTextareaKeyDown(e, 'Job Requirements')}
                   rows="4"
                   placeholder="Nhập các yêu cầu, mỗi yêu cầu trên một dòng"
+                  className={styles.textareaWithLineBreaks}
+                  style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}
+                  wrap="soft"
                 />
+                {formErrors['Job Requirements'] && <p style={{ color: 'red' }}>{formErrors['Job Requirements']}</p>}
               </div>
               <div className={`${styles.detailGroup} ${styles.full}`}>
                 <label>Quyền lợi: <span style={{ color: 'red' }}>*</span></label>
@@ -737,9 +824,14 @@ const JobManagement = () => {
                   name="Welfare"
                   value={formData.Welfare.join('\n')}
                   onChange={handleInputChange}
+                  onKeyDown={(e) => handleTextareaKeyDown(e, 'Welfare')}
                   rows="4"
                   placeholder="Nhập các quyền lợi, mỗi quyền lợi trên một dòng"
+                  className={styles.textareaWithLineBreaks}
+                  style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}
+                  wrap="soft"
                 />
+                {formErrors.Welfare && <p style={{ color: 'red' }}>{formErrors.Welfare}</p>}
               </div>
               <div className={styles.detailRow}>
                 <div className={styles.detailGroup}>

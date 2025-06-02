@@ -16,7 +16,7 @@ const Sidebar = ({ isAlwaysVisible = false }) => {
     localStorage.removeItem('adminToken');
     localStorage.removeItem('user');
     checkAuth(); // Đã có
-    navigate('/admin/login'); // Đã có
+    navigate('/'); // Đã có
   };
 
   useEffect(() => {

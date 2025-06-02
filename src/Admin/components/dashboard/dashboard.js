@@ -9,18 +9,14 @@ const getStatusInfo = (status) => {
   switch (status) {
     case 'pending':
       return { text: 'Đang chờ xét duyệt', class: styles.statusDangChoXetDuyet };
-    case 'reviewed':
-      return { text: 'Đã xem xét', class: styles.statusDaXemXet }; // Thêm trạng thái reviewed
     case 'interview':
       return { text: 'Đã phỏng vấn', class: styles.statusDaPhongVan };
     case 'accepted':
       return { text: 'Đã tuyển dụng', class: styles.statusDaTuyenDung };
     case 'rejected':
-      return { text: 'Đã từ chối', class: styles.statusTuChoi }; // Thay refuse thành rejected
+      return { text: 'Đã từ chối', class: styles.statusTuChoi };
     case 'Đang chờ xét duyệt':
       return { text: status, class: styles.statusDangChoXetDuyet };
-    case 'Đã xem xét':
-      return { text: status, class: styles.statusDaXemXet };
     case 'Đã phỏng vấn':
       return { text: status, class: styles.statusDaPhongVan };
     case 'Đã tuyển dụng':
@@ -38,7 +34,6 @@ const parseDate = (dateStr) => {
   const [day, month, year] = dateStr.split('/');
   return new Date(`${year}-${month}-${day}`);
 };
-
 // Component cho biểu đồ cột (Column Chart)
 const ColumnChart = ({ allProfiles }) => {
   const [chartError, setChartError] = useState(null);
@@ -62,41 +57,93 @@ const ColumnChart = ({ allProfiles }) => {
     const drawChart = () => {
       try {
         const data = new window.google.visualization.DataTable();
-        data.addColumn('string', 'Trạng Thái');
+        data.addColumn('string', 'Ngày');
         data.addColumn('number', 'Tỷ lệ (%)');
 
-        const statusCounts = {
-          'Đang chờ xét duyệt': 0,
-          'Đã xem xét': 0, // Thêm trạng thái Đã xem xét
-          'Đã phỏng vấn': 0,
-          'Đã tuyển dụng': 0,
-          'Đã từ chối': 0,
-        };
+        const totalProfiles = allProfiles.length;
+        if (totalProfiles === 0) {
+          setChartError('Không có dữ liệu hồ sơ để hiển thị biểu đồ.');
+          return;
+        }
 
-        allProfiles.forEach(profile => {
-          const status = getStatusInfo(profile.status).text;
-          statusCounts[status] = (statusCounts[status] || 0) + 1;
+        // Lấy ngày hiện tại
+        const now = new Date();
+        const currentWeekStart = new Date(now);
+        currentWeekStart.setDate(now.getDate() - now.getDay() + (now.getDay() === 0 ? -6 : 1)); // Thứ Hai của tuần hiện tại
+
+        // Lọc hồ sơ trong tuần hiện tại
+        const profilesInCurrentWeek = allProfiles.filter(profile => {
+          const profileDate = new Date(profile.appliedAt);
+          if (isNaN(profileDate.getTime())) return false; // Bỏ qua nếu ngày không hợp lệ
+          const profileWeekStart = new Date(profileDate);
+          profileWeekStart.setDate(profileDate.getDate() - profileDate.getDay() + (profileDate.getDay() === 0 ? -6 : 1));
+          return profileWeekStart.toDateString() === currentWeekStart.toDateString();
         });
 
-        const totalProfiles = allProfiles.length;
-        const chartData = Object.entries(statusCounts).map(([key, value]) => [
-          key,
-          (value / totalProfiles) * 1000 / 10
-        ]);
+        const totalProfilesInWeek = profilesInCurrentWeek.length;
+
+        // Nhóm hồ sơ theo ngày trong tuần (Thứ Hai đến Chủ Nhật)
+        const profilesByDay = profilesInCurrentWeek.reduce((acc, profile) => {
+          const date = new Date(profile.appliedAt);
+          if (isNaN(date.getTime())) return acc;
+
+          const dayOfWeek = date.getDay();
+          let dayName;
+          switch (dayOfWeek) {
+            case 0: dayName = 'Chủ Nhật'; break;
+            case 1: dayName = 'Thứ Hai'; break;
+            case 2: dayName = 'Thứ Ba'; break;
+            case 3: dayName = 'Thứ Tư'; break;
+            case 4: dayName = 'Thứ Năm'; break;
+            case 5: dayName = 'Thứ Sáu'; break;
+            case 6: dayName = 'Thứ Bảy'; break;
+            default: dayName = ''; break;
+          }
+          acc[dayName] = (acc[dayName] || 0) + 1;
+          return acc;
+        }, {});
+
+        // Tạo dữ liệu cho tất cả các ngày trong tuần, bao gồm cả ngày 0%
+        const daysOfWeek = ['Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy', 'Chủ Nhật'];
+        const chartData = daysOfWeek.map(day => {
+          const count = profilesByDay[day] || 0;
+          const percentage = totalProfilesInWeek > 0 ? Number(((count / totalProfilesInWeek) * 100).toFixed(2)) : 0;
+          return [day, percentage]; // Luôn bao gồm tất cả ngày, 0% nếu không có dữ liệu
+        });
+
+        // Kiểm tra tổng tỷ lệ và điều chỉnh nếu cần
+        const totalPercentage = chartData.reduce((sum, [, percentage]) => sum + percentage, 0);
+        if (totalPercentage > 100) {
+          const adjustmentFactor = 100 / totalPercentage;
+          chartData.forEach(([day, percentage], index) => {
+            chartData[index] = [day, Number((percentage * adjustmentFactor).toFixed(2))];
+          });
+        }
+
         data.addRows(chartData);
 
         const options = {
-          title: 'Tỷ lệ trạng thái hồ sơ (%)',
-          colors: ['#4A90E2', '#7F8C8D', '#F5A623', '#50C878', '#E94E77'], // Thêm màu cho trạng thái mới
+          title: `Tỷ lệ Tổng hồ sơ ứng tuyển theo ngày trong tuần (Tuần bắt đầu ${currentWeekStart.toLocaleDateString('vi-VN')}) (%)`,
+          colors: ['#4A90E2'], // Sử dụng một màu duy nhất
           chartArea: { width: '80%', height: '70%' },
-          legend: { position: 'bottom' },
+          legend: { position: 'none' }, // Ẩn legend
           vAxis: { 
             title: 'Tỷ lệ (%)',
             minValue: 0,
-            maxValue: 10,
-            format: '#.##%'
+            maxValue: 100,
+            viewWindow: { min: 0, max: 100 },
+            format: '#.##%',
+            ticks: [0, 20, 40, 60, 80, 100],
+            gridlines: { count: 6 },
+            scaleType: 'linear',
+            textPosition: 'out'
           },
-          hAxis: { title: 'Trạng Thái' },
+          hAxis: { 
+            title: 'Ngày trong tuần',
+            textStyle: { fontSize: 12 },
+            slantedText: false // Không xoay nhãn vì số ngày cố định
+          },
+          bar: { groupWidth: '20%' }, // Giữ độ rộng cột nhỏ
         };
 
         const chartElement = document.getElementById('columnchart');
@@ -115,7 +162,7 @@ const ColumnChart = ({ allProfiles }) => {
     if (allProfiles.length > 0) {
       loadGoogleCharts();
     }
-  }, [allProfiles]);
+  }, [allProfiles]); // Dependency array giữ nguyên vì useEffect sẽ chạy lại khi allProfiles thay đổi
 
   return (
     <div>
@@ -156,15 +203,16 @@ const StatusChart = ({ allProfiles }) => {
 
         const statusCounts = {
           'Đang chờ xét duyệt': 0,
-          'Đã xem xét': 0, // Thêm trạng thái Đã xem xét
           'Đã phỏng vấn': 0,
           'Đã tuyển dụng': 0,
-          'Đã từ chối': 0,
+          'Đã từ chối': 0, // Loại bỏ "Đã xem xét" để đồng bộ với Column Chart
         };
 
         allProfiles.forEach(profile => {
           const status = getStatusInfo(profile.status).text;
-          statusCounts[status] = (statusCounts[status] || 0) + 1;
+          if (statusCounts[status] !== undefined) {
+            statusCounts[status] = (statusCounts[status] || 0) + 1;
+          }
         });
 
         const chartData = Object.entries(statusCounts).map(([key, value]) => [key, value]);
@@ -173,7 +221,7 @@ const StatusChart = ({ allProfiles }) => {
         const options = {
           title: 'Thống kê trạng thái hồ sơ',
           pieHole: 0,
-          colors: ['#4A90E2', '#7F8C8D', '#F5A623', '#50C878', '#E94E77'], // Thêm màu cho trạng thái mới
+          colors: ['#4A90E2', '#F5A623', '#50C878', '#E94E77'], // Cập nhật màu cho 4 cột
           chartArea: { width: '80%', height: '80%' },
           legend: { position: 'bottom' },
         };
@@ -309,16 +357,18 @@ const MainContent = () => {
               return (
                 <tr key={profile._id}>
                   <td>{index + 1}</td>
-                  <td>{profile.form.fullName}</td>
-                  <td>{profile.form.email}</td>
-                  <td>{profile.form.phone}</td>
-                  <td>{profile.jobName}</td>
+                  <td>{profile.form?.fullName || 'Không có dữ liệu'}</td>
+                  <td>{profile.form?.email || 'Không có dữ liệu'}</td>
+                  <td>{profile.form?.phone || 'Không có dữ liệu'}</td>
+                  <td>{profile.jobName || 'Không có dữ liệu'}</td>
                   <td>
-                    {new Date(profile.appliedAt).toLocaleDateString('vi-VN', {
-                      day: '2-digit',
-                      month: '2-digit',
-                      year: 'numeric',
-                    })}
+                    {profile.appliedAt
+                      ? new Date(profile.appliedAt).toLocaleDateString('vi-VN', {
+                          day: '2-digit',
+                          month: '2-digit',
+                          year: 'numeric',
+                        })
+                      : 'Không có dữ liệu'}
                   </td>
                   <td>
                     <span className={`${styles.status} ${statusInfo.class}`}>
