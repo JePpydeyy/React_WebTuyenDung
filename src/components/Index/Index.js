@@ -357,7 +357,7 @@ const Index = () => {
   }, [jobs]);
 
   const filteredJobs = React.useMemo(() => {
-    if (!searching) return jobs;
+    if (!searching) return jobs.filter((job) => job.status === 'show');
     return jobs.filter((job) => {
       const brandMatch =
         !searchForm.brand ||
@@ -372,7 +372,8 @@ const Index = () => {
         (job.Name && job.Name.toLowerCase().includes(keyword)) ||
         (Array.isArray(job.Brands) && job.Brands.some((brand) => brand.toLowerCase().includes(keyword))) ||
         (job.Workplace && job.Workplace.toLowerCase().includes(keyword));
-      return brandMatch && workplaceMatch && nameMatch && keywordMatch;
+      const statusMatch = job.status === 'show';
+      return brandMatch && workplaceMatch && nameMatch && keywordMatch && statusMatch;
     });
   }, [jobs, searchForm, searching]);
 
@@ -615,15 +616,15 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Video Section (unchanged) */}
+      {/* Video Section (updated to disable autoplay) */}
       <section className={styles['video-section']}>
         <h2>Video Giới Thiệu</h2>
         <div className={styles['video-container']}>
           <iframe
-            src="https://www.youtube.com/embed/rKaqO1Lnmnc?autoplay=1&loop=1&playlist=rKaqO1Lnmnc"
+            src="https://www.youtube.com/embed/rKaqO1Lnmnc?loop=1&playlist=rKaqO1Lnmnc"
             title="Giới thiệu công ty ACFC"
             frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowFullScreen
           ></iframe>
         </div>

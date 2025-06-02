@@ -40,12 +40,12 @@
   object-fit: fill; /* Sử dụng object-fit: fill theo yêu cầu */
   object-position: center;
   display: block;
-  user-select: none;
+ 
   -webkit-user-drag: none;
   -khtml-user-drag: none;
   -moz-user-drag: none;
   -o-user-drag: none;
-  user-drag: none;
+
   will-change: opacity, transform;
 }
 
@@ -449,7 +449,7 @@
   aspect-ratio: 1 / 1;
   flex-shrink: 0;
   overflow: hidden;
-  user-select: none;
+ 
   touch-action: pan-y pinch-zoom;
 }
 
@@ -676,6 +676,66 @@
   .benefit-card {
     width: 48%;
     margin-bottom: 20px;
+  }
+}
+@media screen and (max-width: 1024px) {
+  .acfc-love {
+    padding: 1rem;
+    margin: 2rem auto;
+  }
+
+  .acfc-love h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .acfc-love-container {
+    flex-direction: row; /* Giữ flex-direction: row để hiển thị ngang */
+    overflow-x: auto; /* Cho phép cuộn ngang nếu nội dung vượt quá */
+   
+    padding: 0 0.5rem;
+    justify-content: flex-start; /* Đảm bảo các item bắt đầu từ trái */
+  }
+
+  .acfc-love-item {
+    width: 180px; /* Giảm kích thước item để phù hợp hơn */
+    flex-shrink: 0;
+    margin: 0;
+  }
+
+  .title-info-box,
+  .image-info-box {
+    flex-direction: column; /* Chuyển về column để tiết kiệm không gian ngang */
+  }
+
+  .image-info-box.reverse {
+    flex-direction: column-reverse;
+  }
+
+  .a-l-title,
+  .a-l-info,
+  .a-l-img,
+  .carousel-item {
+    width: 180px; /* Giảm kích thước để phù hợp */
+    height: 180px;
+    aspect-ratio: 1 / 1;
+  }
+
+  .carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .a-l-title {
+    font-size: 1.5rem;
+    padding: 8px;
+  }
+
+  .a-l-info {
+    font-size: 0.95rem;
+    padding: 8px;
   }
 }
 
