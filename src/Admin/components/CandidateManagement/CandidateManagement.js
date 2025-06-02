@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { debounce } from 'lodash';
 import styles from './CandidateManagement.module.css';
@@ -7,7 +7,7 @@ const API_URL = 'https://api-tuyendung-cty.onrender.com/api/profile';
 
 const CandidateManagement = () => {
   const [candidates, setCandidates] = useState([]);
-  const [filteredCandidates, setFilteredCandidates] = useState(null);
+  const [filteredCandidates, setFilteredCandidates] = useState([]);
   const [positions, setPositions] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -16,7 +16,7 @@ const CandidateManagement = () => {
   const navigate = useNavigate();
   const itemsPerPage = 10;
 
-  // Status mapping for display (backend -> UI)
+  // Status mappings
   const statusDisplayMap = {
     pending: 'Mới',
     reviewed: 'Đã xem xét',
@@ -25,7 +25,6 @@ const CandidateManagement = () => {
     rejected: 'Đã từ chối',
   };
 
-  // Status mapping for backend (UI -> backend)
   const statusBackendMap = {
     'Mới': 'pending',
     'Đã xem xét': 'reviewed',
@@ -34,35 +33,39 @@ const CandidateManagement = () => {
     'Đã từ chối': 'rejected',
   };
 
-  const showNotification = (message, type = 'success') => {
+  const showNotification = useCallback((message, type = 'success') => {
     const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
+    notification.className = `notification ${type} ${styles.notification}`;
     notification.textContent = message;
     document.body.appendChild(notification);
-    setTimeout(() => notification.remove(), 3000);
-  };
+    notification.style.opacity = '0';
+    setTimeout(() => (notification.style.opacity = '1'), 10); // Fade-in
+    setTimeout(() => {
+      notification.style.opacity = '0';
+      setTimeout(() => notification.remove(), 300);
+    }, 3000); // Fade-out
+  }, []);
 
-  const normalizeVietnamese = (str) => {
+  const normalizeVietnamese = useCallback((str) => {
     if (!str) return '';
     return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-  };
+  }, []);
 
-  const formatDate = (dateString) => {
+  const formatDate = useCallback((dateString) => {
     if (!dateString) return '';
     const date = new Date(dateString);
     if (isNaN(date.getTime())) return '';
-    return date.toLocaleDateString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' });
-  };
+    return date.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '/');
+  }, []);
 
-  const sanitizeHTML = (str) => {
+  const sanitizeHTML = useCallback((str) => {
     if (!str) return '';
     const div = document.createElement('div');
     div.textContent = str;
     return div.innerHTML;
-  };
+  }, []);
 
-  // Get auth headers
-  const getAuthHeaders = () => {
+  const getAuthHeaders = useCallback(() => {
     const token = localStorage.getItem('adminToken');
     if (!token) {
       showNotification('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.', 'error');
@@ -70,10 +73,9 @@ const CandidateManagement = () => {
       return null;
     }
     return { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
-  };
+  }, [navigate, showNotification]);
 
-  // Fetch all candidates
-  const fetchCandidates = async () => {
+  const fetchCandidates = useCallback(async () => {
     setIsLoading(true);
     const headers = getAuthHeaders();
     if (!headers) return [];
@@ -85,7 +87,7 @@ const CandidateManagement = () => {
         navigate('/admin/login');
         return [];
       }
-      if (!response.ok) throw new Error(`Không thể tải danh sách ứng viên: ${response.status} ${response.statusText}`);
+      if (!response.ok) throw new Error(`Không thể tải danh sách ứng viên: ${response.status}`);
       const data = await response.json();
       return data.map(candidate => ({
         ...candidate,
@@ -104,244 +106,268 @@ const CandidateManagement = () => {
         status: statusDisplayMap[candidate.status] || candidate.status,
       }));
     } catch (error) {
-      console.error('Error fetching candidates:', error);
+      console.error('Lỗi khi lấy danh sách ứng viên:', error);
       showNotification(`Lỗi khi tải danh sách ứng viên: ${error.message}`, 'error');
       return [];
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [getAuthHeaders, showNotification, sanitizeHTML, formatDate, navigate]);
 
-  // Update positions based on fetched candidates
-  const updatePositions = (candidatesData) => {
-    const uniquePositions = [...new Set(candidatesData.map(c => c.position).filter(Boolean))];
-    setPositions(uniquePositions);
-  };
+  const displayCandidates = useCallback(
+    async (page = 1, candidatesToShow = null) => {
+      const data = candidatesToShow || (await fetchCandidates());
+      const startIndex = (page - 1) * itemsPerPage;
+      const endIndex = Math.min(startIndex + itemsPerPage, data.length);
+      setCandidates(data);
+      setFilteredCandidates(data.slice(startIndex, endIndex));
+      setTotalPages(Math.ceil(data.length / itemsPerPage));
+      setCurrentPage(page);
+      setPositions([...new Set(data.map(c => c.position).filter(Boolean))]);
+    },
+    [fetchCandidates]
+  );
 
-  // Display candidates with pagination
-  const displayCandidates = (page = 1, data) => {
-    const displayData = data || (filteredCandidates || candidates);
-    if (displayData.length === 0) {
-      setCandidates([]);
-      setTotalPages(1);
-      setCurrentPage(1);
-      setFilteredCandidates(null);
-      return;
-    }
-    updatePositions(displayData);
-    const startIndex = (page - 1) * itemsPerPage;
-    const endIndex = Math.min(startIndex + itemsPerPage, displayData.length);
-    const paginatedData = displayData.slice(startIndex, endIndex);
-    setCandidates(paginatedData);
-    setTotalPages(Math.ceil(displayData.length / itemsPerPage));
-    setCurrentPage(page);
-  };
+  const handlePageChange = useCallback((page) => {
+    displayCandidates(page, candidates);
+  }, [displayCandidates, candidates]);
 
-  const handlePageChange = (page) => {
-    displayCandidates(page, filteredCandidates || candidates);
-  };
+  const viewCandidate = useCallback(
+    async (id) => {
+      const headers = getAuthHeaders();
+      if (!headers) return;
+      setIsLoading(true);
+      try {
+        const response = await fetch(`${API_URL}/${id}`, { headers });
+        if (response.status === 401) {
+          localStorage.removeItem('adminToken');
+          showNotification('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.', 'error');
+          navigate('/admin/login');
+          return;
+        }
+        if (!response.ok) throw new Error(`Không tìm thấy ứng viên: ${response.status}`);
+        const candidate = await response.json();
+        setSelectedCandidate({
+          ...candidate,
+          id: candidate._id || candidate.jobId,
+          name: sanitizeHTML(candidate.form?.fullName),
+          email: sanitizeHTML(candidate.form?.email),
+          phone: sanitizeHTML(candidate.form?.phone),
+          position: sanitizeHTML(candidate.jobName),
+          workplace: sanitizeHTML(candidate.jobWorkplace),
+          desiredWorkplace: sanitizeHTML(candidate.form?.desiredWorkplace),
+          date: formatDate(candidate.appliedAt),
+          birthdate: formatDate(candidate.form?.dob),
+          gender: sanitizeHTML(candidate.form?.gender),
+          note: sanitizeHTML(candidate.form?.note),
+          resume: candidate.form?.resume,
+          status: statusDisplayMap[candidate.status] || candidate.status,
+        });
+      } catch (error) {
+        console.error('Lỗi khi xem chi tiết ứng viên:', error);
+        showNotification(`Lỗi khi tải thông tin ứng viên: ${error.message}`, 'error');
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [getAuthHeaders, showNotification, sanitizeHTML, formatDate, navigate]
+  );
 
-  // View candidate details
-  const viewCandidate = async (id) => {
-    const headers = getAuthHeaders();
-    if (!headers) return;
-    setIsLoading(true);
-    try {
-      const response = await fetch(`${API_URL}/${id}`, { headers });
-      if (response.status === 401) {
-        localStorage.removeItem('adminToken');
-        showNotification('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.', 'error');
-        navigate('/admin/login');
+  const viewCV = useCallback(
+    async (candidateId) => {
+      const headers = getAuthHeaders();
+      if (!headers) return;
+      setIsLoading(true);
+      try {
+        const response = await fetch(`${API_URL}/${candidateId}/cv`, { headers });
+        if (response.status === 401) {
+          localStorage.removeItem('adminToken');
+          showNotification('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.', 'error');
+          navigate('/admin/login');
+          return;
+        }
+        if (!response.ok) throw new Error(`Không thể tải CV: ${response.status}`);
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        window.open(url, '_blank');
+        setTimeout(() => window.URL.revokeObjectURL(url), 60000);
+      } catch (error) {
+        console.error('Lỗi khi xem CV:', error);
+        showNotification('Không tìm thấy CV của ứng viên hoặc lỗi server', 'error');
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [getAuthHeaders, showNotification, navigate]
+  );
+
+  // Change Status với cập nhật lạc quan
+  const changeStatus = useCallback(
+    async (id, newStatus) => {
+      const backendStatus = statusBackendMap[newStatus];
+      if (!backendStatus) {
+        showNotification('Trạng thái không hợp lệ', 'error');
         return;
       }
-      if (!response.ok) throw new Error(`Không tìm thấy ứng viên: ${response.status} ${response.statusText}`);
-      const candidate = await response.json();
-      setSelectedCandidate({
-        ...candidate,
-        id: candidate._id || candidate.jobId,
-        name: sanitizeHTML(candidate.form?.fullName),
-        email: sanitizeHTML(candidate.form?.email),
-        phone: sanitizeHTML(candidate.form?.phone),
-        position: sanitizeHTML(candidate.jobName),
-        workplace: sanitizeHTML(candidate.jobWorkplace),
-        desiredWorkplace: sanitizeHTML(candidate.form?.desiredWorkplace),
-        date: formatDate(candidate.appliedAt),
-        birthdate: formatDate(candidate.form?.dob),
-        gender: sanitizeHTML(candidate.form?.gender),
-        note: sanitizeHTML(candidate.form?.note),
-        resume: candidate.form?.resume,
-        status: statusDisplayMap[candidate.status] || candidate.status,
-      });
-    } catch (error) {
-      console.error('Error viewing candidate:', error);
-      showNotification(`Lỗi khi tải thông tin ứng viên: ${error.message}`, 'error');
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
-  // View CV using a Blob response
-  const viewCV = async (candidateId) => {
-    const headers = getAuthHeaders();
-    if (!headers) return;
-    setIsLoading(true);
-    try {
-      const response = await fetch(`${API_URL}/${candidateId}/cv`, { headers });
-      if (response.status === 401) {
-        localStorage.removeItem('adminToken');
-        showNotification('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.', 'error');
-        navigate('/admin/login');
-        return;
+      // Cập nhật lạc quan
+      const previousCandidates = [...candidates];
+      const previousFiltered = [...filteredCandidates];
+      setCandidates(prev => prev.map(c => (c.id === id ? { ...c, status: newStatus } : c)));
+      setFilteredCandidates(prev => prev.map(c => (c.id === id ? { ...c, status: newStatus } : c)));
+      if (selectedCandidate?.id === id) {
+        setSelectedCandidate(prev => ({ ...prev, status: newStatus }));
       }
-      if (!response.ok) {
-        throw new Error(`Không thể tải CV: ${response.status} ${response.statusText}`);
-      }
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      window.open(url, '_blank');
-      setTimeout(() => window.URL.revokeObjectURL(url), 60000);
-    } catch (error) {
-      console.error('Error viewing CV:', error);
-      showNotification('Không tìm thấy CV của ứng viên hoặc lỗi server', 'error');
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
-  // Update candidate status
-  const changeStatus = async (id, newStatus) => {
-    const backendStatus = statusBackendMap[newStatus];
-    if (!backendStatus) {
-      showNotification('Trạng thái không hợp lệ', 'error');
-      return;
-    }
-    const headers = getAuthHeaders();
-    if (!headers) return;
-    setIsLoading(true);
-    try {
-      const response = await fetch(`${API_URL}/${id}`, {
-        method: 'PUT',
-        headers,
-        body: JSON.stringify({ status: backendStatus }),
-      });
-      if (response.status === 401) {
-        localStorage.removeItem('adminToken');
-        showNotification('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.', 'error');
-        navigate('/admin/login');
-        return;
-      }
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || `Không thể cập nhật trạng thái: ${response.status}`);
-      }
-      const updatedCandidates = candidates.map(c =>
-        c.id === id ? { ...c, status: newStatus } : c
-      );
-      const updatedFiltered = filteredCandidates
-        ? filteredCandidates.map(c => c.id === id ? { ...c, status: newStatus } : c)
-        : null;
-      setCandidates(updatedCandidates);
-      setFilteredCandidates(updatedFiltered);
-      setSelectedCandidate(null);
-      displayCandidates(currentPage, updatedFiltered || updatedCandidates);
-      showNotification(`Đã cập nhật trạng thái thành "${newStatus}"`, 'success');
-    } catch (error) {
-      console.error('Error changing status:', error);
-      showNotification(`Lỗi khi cập nhật trạng thái: ${error.message}`, 'error');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+      const headers = getAuthHeaders();
+      if (!headers) return;
 
-  // Soft delete (hide) candidate
-  const hideCandidate = async (id) => {
-    if (!window.confirm('Bạn có chắc chắn muốn xóa ứng viên này?')) return;
-    const headers = getAuthHeaders();
-    if (!headers) return;
-    setIsLoading(true);
-    try {
-      const response = await fetch(`${API_URL}/${id}`, {
-        method: 'DELETE',
-        headers,
-      });
-      if (response.status === 401) {
-        localStorage.removeItem('adminToken');
-        showNotification('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.', 'error');
-        navigate('/admin/login');
-        return;
+      setIsLoading(true);
+      try {
+        const response = await fetch(`${API_URL}/${id}`, {
+          method: 'PUT',
+          headers,
+          body: JSON.stringify({ status: backendStatus }),
+        });
+        if (response.status === 401) {
+          localStorage.removeItem('adminToken');
+          showNotification('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.', 'error');
+          navigate('/admin/login');
+          setCandidates(previousCandidates);
+          setFilteredCandidates(previousFiltered);
+          if (selectedCandidate?.id === id) {
+            setSelectedCandidate(prev => ({
+              ...prev,
+              status: previousCandidates.find(c => c.id === id)?.status,
+            }));
+          }
+          return;
+        }
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || `Không thể cập nhật trạng thái: ${response.status}`);
+        }
+        showNotification(`Đã cập nhật trạng thái thành "${newStatus}"`, 'success');
+      } catch (error) {
+        console.error('Lỗi khi thay đổi trạng thái:', error);
+        showNotification(`Lỗi khi cập nhật trạng thái: ${error.message}`, 'error');
+        setCandidates(previousCandidates);
+        setFilteredCandidates(previousFiltered);
+        if (selectedCandidate?.id === id) {
+          setSelectedCandidate(prev => ({
+            ...prev,
+            status: previousCandidates.find(c => c.id === id)?.status,
+          }));
+        }
+      } finally {
+        setIsLoading(false);
       }
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || `Không thể ẩn ứng viên: ${response.status}`);
-      }
-      const updatedCandidates = candidates.map(c =>
-        c.id === id ? { ...c, status: 'Đã từ chối' } : c
-      );
-      const updatedFiltered = filteredCandidates
-        ? filteredCandidates.map(c => c.id === id ? { ...c, status: 'Đã từ chối' } : c)
-        : null;
-      setCandidates(updatedCandidates);
-      setFilteredCandidates(updatedFiltered);
+    },
+    [getAuthHeaders, showNotification, navigate, selectedCandidate, candidates, filteredCandidates]
+  );
+
+  // Delete Candidate với cập nhật lạc quan
+  const hideCandidate = useCallback(
+    async (id) => {
+      if (!window.confirm('Bạn có chắc chắn muốn xóa ứng viên này?')) return;
+
+      // Cập nhật lạc quan
+      const previousCandidates = [...candidates];
+      const previousFiltered = [...filteredCandidates];
+      setCandidates(prev => prev.map(c => (c.id === id ? { ...c, status: 'Đã từ chối' } : c)));
+      setFilteredCandidates(prev => prev.map(c => (c.id === id ? { ...c, status: 'Đã từ chối' } : c)));
       if (selectedCandidate?.id === id) {
         setSelectedCandidate(null);
       }
-      displayCandidates(currentPage, updatedFiltered || updatedCandidates);
-      showNotification('Đã xóa ứng viên thành công', 'success');
-    } catch (error) {
-      console.error('Error hiding candidate:', error);
-      showNotification(`Lỗi khi ẩn ứng viên: ${error.message}`, 'error');
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
-  // Apply filters with debounced search
-  const handleApplyFilters = async () => {
-    const positionFilter = document.getElementById('positionFilter')?.value;
-    const statusFilter = document.getElementById('statusFilter')?.value;
-    const searchTerm = document.querySelector('.search-bar')?.value.trim().toLowerCase();
-    let candidatesData = await fetchCandidates();
+      const headers = getAuthHeaders();
+      if (!headers) return;
 
-    if (searchTerm) {
-      const normalizedSearchTerm = normalizeVietnamese(searchTerm);
-      candidatesData = candidatesData.filter(
-        candidate =>
-          normalizeVietnamese(candidate.name).includes(normalizedSearchTerm) ||
-          normalizeVietnamese(candidate.email).includes(normalizedSearchTerm) ||
-          normalizeVietnamese(candidate.id).includes(normalizedSearchTerm) ||
-          (candidate.position && normalizeVietnamese(candidate.position).includes(normalizedSearchTerm))
-      );
-    }
-    if (positionFilter) {
-      candidatesData = candidatesData.filter(c => c.position === positionFilter);
-    }
-    if (statusFilter) {
-      candidatesData = candidatesData.filter(c => c.status === statusFilter);
-    }
+      setIsLoading(true);
+      try {
+        const response = await fetch(`${API_URL}/${id}`, {
+          method: 'DELETE',
+          headers,
+        });
+        if (response.status === 401) {
+          localStorage.removeItem('adminToken');
+          showNotification('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.', 'error');
+          navigate('/admin/login');
+          setCandidates(previousCandidates);
+          setFilteredCandidates(previousFiltered);
+          if (previousCandidates.find(c => c.id === id)) {
+            setSelectedCandidate(previousCandidates.find(c => c.id === id));
+          }
+          return;
+        }
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || `Không thể ẩn ứng viên: ${response.status}`);
+        }
+        showNotification('Đã xóa ứng viên thành công', 'success');
+      } catch (error) {
+        console.error('Lỗi khi xóa ứng viên:', error);
+        showNotification(`Lỗi khi ẩn ứng viên: ${error.message}`, 'error');
+        setCandidates(previousCandidates);
+        setFilteredCandidates(previousFiltered);
+        if (previousCandidates.find(c => c.id === id)) {
+          setSelectedCandidate(previousCandidates.find(c => c.id === id));
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [getAuthHeaders, showNotification, navigate, selectedCandidate, candidates, filteredCandidates]
+  );
 
-    setFilteredCandidates(candidatesData);
-    if (candidatesData.length === 0) {
-      showNotification('Không tìm thấy ứng viên phù hợp', 'info');
-    }
-    displayCandidates(1, candidatesData);
-  };
+  // Tìm kiếm mượt mà giống JobManagement
+  const handleApplyFilters = useCallback(
+    async () => {
+      const positionFilter = document.getElementById('positionFilter')?.value;
+      const statusFilter = document.getElementById('statusFilter')?.value;
+      const searchTerm = document.querySelector('.search-bar')?.value.trim().toLowerCase();
+      let candidatesData = await fetchCandidates();
 
-  const debouncedSearch = debounce(() => handleApplyFilters(), 300);
+      if (searchTerm) {
+        const normalizedSearchTerm = normalizeVietnamese(searchTerm);
+        candidatesData = candidatesData.filter(
+          candidate =>
+            normalizeVietnamese(candidate.name).includes(normalizedSearchTerm) ||
+            normalizeVietnamese(candidate.email).includes(normalizedSearchTerm) ||
+            normalizeVietnamese(candidate.id).includes(normalizedSearchTerm) ||
+            (candidate.position && normalizeVietnamese(candidate.position).includes(normalizedSearchTerm))
+        );
+      }
+      if (positionFilter) {
+        candidatesData = candidatesData.filter(c => c.position === positionFilter);
+      }
+      if (statusFilter) {
+        candidatesData = candidatesData.filter(c => c.status === statusFilter);
+      }
 
-  const handleSearchChange = () => {
+      setFilteredCandidates(candidatesData.slice(0, itemsPerPage));
+      setTotalPages(Math.ceil(candidatesData.length / itemsPerPage));
+      setCurrentPage(1);
+      if (candidatesData.length === 0) {
+        showNotification('Không tìm thấy ứng viên phù hợp', 'info');
+      }
+    },
+    [fetchCandidates, normalizeVietnamese, showNotification]
+  );
+
+  const debouncedSearch = useCallback(debounce(() => handleApplyFilters(), 300), [handleApplyFilters]);
+
+  const handleSearchChange = useCallback(() => {
     debouncedSearch();
-  };
+  }, [debouncedSearch]);
 
-  // Reset filters
-  const resetFilters = async () => {
+  const handleResetFilters = useCallback(async () => {
     document.getElementById('positionFilter').value = '';
     document.getElementById('statusFilter').value = '';
     document.querySelector('.search-bar').value = '';
-    setFilteredCandidates(null);
-    const freshData = await fetchCandidates();
-    setCandidates(freshData);
-    displayCandidates(1, freshData);
-  };
+    setFilteredCandidates([]);
+    await displayCandidates(1);
+  }, [displayCandidates]);
 
   useEffect(() => {
     const token = localStorage.getItem('adminToken');
@@ -350,17 +376,13 @@ const CandidateManagement = () => {
       navigate('/admin/login');
       return;
     }
-    const loadCandidates = async () => {
-      const freshData = await fetchCandidates();
-      setCandidates(freshData);
-      displayCandidates(1, freshData);
-    };
-    loadCandidates();
-  }, [navigate]);
+    displayCandidates();
+    return () => debouncedSearch.cancel();
+  }, [navigate, showNotification, debouncedSearch, displayCandidates]);
 
   const uniqueStatuses = [...new Set(candidates.map(candidate => candidate.status))];
 
-  const getStatusClass = (status) => {
+  const getStatusClass = useCallback((status) => {
     const statusMap = {
       'Mới': styles.moi,
       'Đã xem xét': styles.daXemXet,
@@ -369,39 +391,25 @@ const CandidateManagement = () => {
       'Đã từ chối': styles.tuChoi,
     };
     return statusMap[status] || '';
-  };
+  }, []);
 
-  // Create pagination buttons
-  const getPaginationButtons = () => {
+  const getPaginationButtons = useCallback(() => {
     const maxButtons = 5;
     const buttons = [];
     const startPage = Math.max(1, currentPage - Math.floor(maxButtons / 2));
     const endPage = Math.min(totalPages, startPage + maxButtons - 1);
 
     buttons.push(
-      <button
-        key="first"
-        onClick={() => handlePageChange(1)}
-        disabled={currentPage === 1 || isLoading}
-      >
+      <button key="first" onClick={() => handlePageChange(1)} disabled={currentPage === 1 || isLoading}>
         <i className="fa-solid fa-angles-left"></i>
       </button>
     );
-
     buttons.push(
-      <button
-        key="prev"
-        onClick={() => handlePageChange(currentPage - 1)}
-        disabled={currentPage === 1 || isLoading}
-      >
+      <button key="prev" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1 || isLoading}>
         <i className="fa-solid fa-angle-left"></i>
       </button>
     );
-
-    if (startPage > 1) {
-      buttons.push(<span key="start-ellipsis">...</span>);
-    }
-
+    if (startPage > 1) buttons.push(<span key="start-ellipsis">...</span>);
     for (let page = startPage; page <= endPage; page++) {
       buttons.push(
         <button
@@ -414,11 +422,7 @@ const CandidateManagement = () => {
         </button>
       );
     }
-
-    if (endPage < totalPages) {
-      buttons.push(<span key="end-ellipsis">...</span>);
-    }
-
+    if (endPage < totalPages) buttons.push(<span key="end-ellipsis">...</span>);
     buttons.push(
       <button
         key="next"
@@ -428,7 +432,6 @@ const CandidateManagement = () => {
         <i className="fa-solid fa-angle-right"></i>
       </button>
     );
-
     buttons.push(
       <button
         key="last"
@@ -438,24 +441,21 @@ const CandidateManagement = () => {
         <i className="fa-solid fa-angles-right"></i>
       </button>
     );
-
     return buttons;
-  };
+  }, [currentPage, totalPages, isLoading, handlePageChange]);
 
   return (
     <div className={styles.container}>
-      {/* Loading Overlay */}
       {isLoading && (
-        <div className={styles.loadingOverlay}>
+        <div className={`${styles.loadingOverlay} ${isLoading ? styles.active : ''}`}>
           <i className="fa-solid fa-spinner fa-spin"></i>
         </div>
       )}
 
-      {/* Filters */}
       <div className={styles.filters}>
         <input
           type="text"
-          className="search-bar"
+          className={`${styles.searchBar} search-bar`}
           placeholder="Tìm kiếm ứng viên..."
           onChange={handleSearchChange}
           disabled={isLoading}
@@ -475,12 +475,11 @@ const CandidateManagement = () => {
         <button onClick={handleApplyFilters} disabled={isLoading}>
           <i className="fa-solid fa-filter"></i> Áp dụng
         </button>
-        <button onClick={resetFilters} disabled={isLoading}>
+        <button onClick={handleResetFilters} disabled={isLoading}>
           <i className="fa-solid fa-rotate"></i> Đặt lại
         </button>
       </div>
 
-      {/* Candidate list */}
       <div className={styles.applications}>
         <h3>Danh Sách Hồ Sơ Ứng Tuyển</h3>
         <table>
@@ -497,18 +496,28 @@ const CandidateManagement = () => {
             </tr>
           </thead>
           <tbody>
-            {candidates.length === 0 && !isLoading ? (
-              <tr><td colSpan="8" style={{ textAlign: 'center' }}>Không tìm thấy dữ liệu phù hợp</td></tr>
+            {isLoading ? (
+              <tr>
+                <td colSpan="8" style={{ textAlign: 'center' }}>Đang tải...</td>
+              </tr>
+            ) : filteredCandidates.length === 0 ? (
+              <tr>
+                <td colSpan="8" style={{ textAlign: 'center' }}>Không tìm thấy dữ liệu phù hợp</td>
+              </tr>
             ) : (
-              candidates.map((candidate, index) => (
-                <tr key={candidate.id}>
+              filteredCandidates.map((candidate, index) => (
+                <tr key={candidate.id} className={styles.tableRow}>
                   <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
                   <td>{candidate.name}</td>
                   <td>{candidate.email}</td>
                   <td>{candidate.phone}</td>
                   <td>{candidate.position}</td>
                   <td>{candidate.date}</td>
-                  <td><span className={`${styles.status} ${getStatusClass(candidate.status)}`}>{candidate.status}</span></td>
+                  <td>
+                    <span className={`${styles.status} ${getStatusClass(candidate.status)}`}>
+                      {candidate.status}
+                    </span>
+                  </td>
                   <td>
                     <div className={styles.actionButtons}>
                       <button className={styles.view} onClick={() => viewCandidate(candidate.id)} disabled={isLoading}>
@@ -527,14 +536,11 @@ const CandidateManagement = () => {
             )}
           </tbody>
         </table>
-        <div className={styles.pagination}>
-          {getPaginationButtons()}
-        </div>
+        <div className={styles.pagination}>{getPaginationButtons()}</div>
       </div>
 
-      {/* Candidate details modal */}
       {selectedCandidate && (
-        <div className={styles.modal}>
+        <div className={`${styles.modal} ${styles.active}`}>
           <div className={styles.modalContent}>
             <span className={styles.close} onClick={() => setSelectedCandidate(null)}>×</span>
             <h3>Thông tin chi tiết: {selectedCandidate.name}</h3>
@@ -546,7 +552,11 @@ const CandidateManagement = () => {
                 </div>
                 <div className={styles.detailGroup}>
                   <label>Trạng thái:</label>
-                  <p><span className={`${styles.status} ${getStatusClass(selectedCandidate.status)}`}>{selectedCandidate.status}</span></p>
+                  <p>
+                    <span className={`${styles.status} ${getStatusClass(selectedCandidate.status)}`}>
+                      {selectedCandidate.status}
+                    </span>
+                  </p>
                 </div>
               </div>
               <div className={styles.detailRow}>
@@ -646,4 +656,4 @@ const CandidateManagement = () => {
   );
 };
 
-export default CandidateManagement;
+export default React.memo(CandidateManagement);
