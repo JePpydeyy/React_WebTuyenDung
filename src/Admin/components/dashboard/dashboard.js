@@ -34,6 +34,7 @@ const parseDate = (dateStr) => {
   const [day, month, year] = dateStr.split('/');
   return new Date(`${year}-${month}-${day}`);
 };
+
 // Component cho biểu đồ cột (Column Chart)
 const ColumnChart = ({ allProfiles }) => {
   const [chartError, setChartError] = useState(null);
@@ -58,7 +59,7 @@ const ColumnChart = ({ allProfiles }) => {
       try {
         const data = new window.google.visualization.DataTable();
         data.addColumn('string', 'Ngày');
-        data.addColumn('number', 'Tỷ lệ (%)');
+        data.addColumn('number', 'Số lượng');
 
         const totalProfiles = allProfiles.length;
         if (totalProfiles === 0) {
@@ -79,8 +80,6 @@ const ColumnChart = ({ allProfiles }) => {
           profileWeekStart.setDate(profileDate.getDate() - profileDate.getDay() + (profileDate.getDay() === 0 ? -6 : 1));
           return profileWeekStart.toDateString() === currentWeekStart.toDateString();
         });
-
-        const totalProfilesInWeek = profilesInCurrentWeek.length;
 
         // Nhóm hồ sơ theo ngày trong tuần (Thứ Hai đến Chủ Nhật)
         const profilesByDay = profilesInCurrentWeek.reduce((acc, profile) => {
@@ -103,37 +102,24 @@ const ColumnChart = ({ allProfiles }) => {
           return acc;
         }, {});
 
-        // Tạo dữ liệu cho tất cả các ngày trong tuần, bao gồm cả ngày 0%
+        // Tạo dữ liệu cho tất cả các ngày trong tuần, bao gồm cả ngày không có hồ sơ
         const daysOfWeek = ['Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy', 'Chủ Nhật'];
         const chartData = daysOfWeek.map(day => {
           const count = profilesByDay[day] || 0;
-          const percentage = totalProfilesInWeek > 0 ? Number(((count / totalProfilesInWeek) * 100).toFixed(2)) : 0;
-          return [day, percentage]; // Luôn bao gồm tất cả ngày, 0% nếu không có dữ liệu
+          return [day, count];
         });
-
-        // Kiểm tra tổng tỷ lệ và điều chỉnh nếu cần
-        const totalPercentage = chartData.reduce((sum, [, percentage]) => sum + percentage, 0);
-        if (totalPercentage > 100) {
-          const adjustmentFactor = 100 / totalPercentage;
-          chartData.forEach(([day, percentage], index) => {
-            chartData[index] = [day, Number((percentage * adjustmentFactor).toFixed(2))];
-          });
-        }
 
         data.addRows(chartData);
 
         const options = {
-          title: `Tỷ lệ Tổng hồ sơ ứng tuyển theo ngày trong tuần (Tuần bắt đầu ${currentWeekStart.toLocaleDateString('vi-VN')}) (%)`,
+          title: `Số lượng hồ sơ ứng tuyển theo ngày trong tuần (Tuần bắt đầu ${currentWeekStart.toLocaleDateString('vi-VN')})`,
           colors: ['#4A90E2'], // Sử dụng một màu duy nhất
           chartArea: { width: '80%', height: '70%' },
           legend: { position: 'none' }, // Ẩn legend
           vAxis: { 
-            title: 'Tỷ lệ (%)',
+            title: 'Số lượng',
             minValue: 0,
-            maxValue: 100,
-            viewWindow: { min: 0, max: 100 },
-            format: '#.##%',
-            ticks: [0, 20, 40, 60, 80, 100],
+            format: '0', // Định dạng số nguyên
             gridlines: { count: 6 },
             scaleType: 'linear',
             textPosition: 'out'
@@ -162,7 +148,7 @@ const ColumnChart = ({ allProfiles }) => {
     if (allProfiles.length > 0) {
       loadGoogleCharts();
     }
-  }, [allProfiles]); // Dependency array giữ nguyên vì useEffect sẽ chạy lại khi allProfiles thay đổi
+  }, [allProfiles]);
 
   return (
     <div>
@@ -205,7 +191,7 @@ const StatusChart = ({ allProfiles }) => {
           'Đang chờ xét duyệt': 0,
           'Đã phỏng vấn': 0,
           'Đã tuyển dụng': 0,
-          'Đã từ chối': 0, // Loại bỏ "Đã xem xét" để đồng bộ với Column Chart
+          'Đã từ chối': 0,
         };
 
         allProfiles.forEach(profile => {
@@ -221,7 +207,7 @@ const StatusChart = ({ allProfiles }) => {
         const options = {
           title: 'Thống kê trạng thái hồ sơ',
           pieHole: 0,
-          colors: ['#4A90E2', '#F5A623', '#50C878', '#E94E77'], // Cập nhật màu cho 4 cột
+          colors: ['#4A90E2', '#F5A623', '#50C878', '#E94E77'],
           chartArea: { width: '80%', height: '80%' },
           legend: { position: 'bottom' },
         };
