@@ -543,7 +543,7 @@ const NewsManagement = () => {
         <table>
           <thead>
             <tr>
-              <th>ID</th>
+              <th>STT</th>
               <th>Tiêu Đề</th>
               <th>Ngày Đăng</th>
               <th>Lượt Xem</th>
@@ -888,10 +888,6 @@ const NewsManagement = () => {
                   <h3>{selectedNews.title}</h3>
                   <div className={styles.newsDetails}>
                     <div className={styles.detailRow}>
-                      <div className={styles.detailGroup}>
-                        <label>ID:</label>
-                        <p>{selectedNews.id}</p>
-                      </div>
                       <div className={styles.detailGroup}>
                         <label>Trạng thái:</label>
                         <p><span className={`${styles.status} ${getStatusClass(selectedNews.status)}`}>{selectedNews.status}</span></p>

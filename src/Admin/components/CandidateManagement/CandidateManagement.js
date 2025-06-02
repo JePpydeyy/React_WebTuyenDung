@@ -547,10 +547,6 @@ const CandidateManagement = () => {
             <div className={styles.candidateDetails}>
               <div className={styles.detailRow}>
                 <div className={styles.detailGroup}>
-                  <label>ID:</label>
-                  <p>{selectedCandidate.id}</p>
-                </div>
-                <div className={styles.detailGroup}>
                   <label>Trạng thái:</label>
                   <p>
                     <span className={`${styles.status} ${getStatusClass(selectedCandidate.status)}`}>

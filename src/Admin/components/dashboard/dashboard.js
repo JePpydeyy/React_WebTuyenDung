@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 
@@ -38,6 +38,8 @@ const parseDate = (dateStr) => {
 // Component cho biểu đồ cột (Column Chart)
 const ColumnChart = ({ allProfiles }) => {
   const [chartError, setChartError] = useState(null);
+  const [chartInstance, setChartInstance] = useState(null); // Store chart instance
+  const [tooltipData, setTooltipData] = useState(null); // Store tooltip data
 
   useEffect(() => {
     const loadGoogleCharts = () => {
@@ -113,13 +115,13 @@ const ColumnChart = ({ allProfiles }) => {
 
         const options = {
           title: `Số lượng hồ sơ ứng tuyển theo ngày trong tuần (Tuần bắt đầu ${currentWeekStart.toLocaleDateString('vi-VN')})`,
-          colors: ['#4A90E2'], // Sử dụng một màu duy nhất
+          colors: ['#4A90E2'],
           chartArea: { width: '80%', height: '70%' },
-          legend: { position: 'none' }, // Ẩn legend
+          legend: { position: 'none' },
           vAxis: { 
             title: 'Số lượng',
             minValue: 0,
-            format: '0', // Định dạng số nguyên
+            format: '0',
             gridlines: { count: 6 },
             scaleType: 'linear',
             textPosition: 'out'
@@ -127,9 +129,15 @@ const ColumnChart = ({ allProfiles }) => {
           hAxis: { 
             title: 'Ngày trong tuần',
             textStyle: { fontSize: 12 },
-            slantedText: false // Không xoay nhãn vì số ngày cố định
+            slantedText: false
           },
-          bar: { groupWidth: '20%' }, // Giữ độ rộng cột nhỏ
+          bar: { groupWidth: '20%' },
+          tooltip: { trigger: 'none' }, // Disable default tooltip
+          animation: {
+            startup: true,
+            duration: 500,
+            easing: 'out'
+          }
         };
 
         const chartElement = document.getElementById('columnchart');
@@ -138,8 +146,27 @@ const ColumnChart = ({ allProfiles }) => {
           return;
         }
 
+        // Clear any existing chart instance
+        if (chartInstance) {
+          chartInstance.clearChart();
+        }
+
         const chart = new window.google.visualization.ColumnChart(chartElement);
         chart.draw(data, options);
+        setChartInstance(chart);
+
+        // Add event listeners for custom tooltip
+        window.google.visualization.events.addListener(chart, 'onmouseover', (event) => {
+          if (event.row !== null) {
+            const day = data.getValue(event.row, 0);
+            const count = data.getValue(event.row, 1);
+            setTooltipData({ day, count });
+          }
+        });
+
+        window.google.visualization.events.addListener(chart, 'onmouseout', () => {
+          setTooltipData(null);
+        });
       } catch (err) {
         setChartError(`Lỗi khi vẽ biểu đồ cột: ${err.message}`);
       }
@@ -148,14 +175,29 @@ const ColumnChart = ({ allProfiles }) => {
     if (allProfiles.length > 0) {
       loadGoogleCharts();
     }
+
+    // Cleanup on unmount
+    return () => {
+      if (chartInstance) {
+        chartInstance.clearChart();
+      }
+      setTooltipData(null);
+    };
   }, [allProfiles]);
 
   return (
-    <div>
-      {chartError ? (
-        <div style={{ color: 'red', marginTop: '20px' }}>{chartError}</div>
-      ) : (
-        <div id="columnchart" style={{ width: '100%', height: '400px', marginTop: '20px' }}></div>
+    <div className={styles.chartWrapper}>
+      <div className={styles.chartContainer}>
+        {chartError ? (
+          <div style={{ color: 'red', marginTop: '20px' }}>{chartError}</div>
+        ) : (
+          <div id="columnchart" style={{ width: '100%', height: '400px', marginTop: '20px' }}></div>
+        )}
+      </div>
+      {tooltipData && (
+        <div className={styles.customTooltip}>
+          <strong>{tooltipData.day}</strong>: {tooltipData.count} hồ sơ
+        </div>
       )}
     </div>
   );
@@ -164,6 +206,8 @@ const ColumnChart = ({ allProfiles }) => {
 // Component cho biểu đồ tròn (Pie Chart)
 const StatusChart = ({ allProfiles }) => {
   const [chartError, setChartError] = useState(null);
+  const [chartInstance, setChartInstance] = useState(null); // Store chart instance
+  const [tooltipData, setTooltipData] = useState(null); // Store tooltip data
 
   useEffect(() => {
     const loadGoogleCharts = () => {
@@ -201,15 +245,42 @@ const StatusChart = ({ allProfiles }) => {
           }
         });
 
-        const chartData = Object.entries(statusCounts).map(([key, value]) => [key, value]);
+        const chartData = Object.entries(statusCounts)
+          .filter(([_, value]) => value > 0)
+          .map(([key, value]) => [key, value]);
+
+        if (chartData.length === 0) {
+          setChartError('Không có dữ liệu trạng thái để hiển thị biểu đồ.');
+          return;
+        }
+
         data.addRows(chartData);
 
         const options = {
           title: 'Thống kê trạng thái hồ sơ',
           pieHole: 0,
           colors: ['#4A90E2', '#F5A623', '#50C878', '#E94E77'],
-          chartArea: { width: '80%', height: '80%' },
+          chartArea: { 
+            width: '70%', // Reduced width to give more space for title
+            height: '60%', // Reduced height to accommodate title
+            top: 40, // Add top padding to ensure title has space
+            left: 0,
+            right: 0
+          },
           legend: { position: 'bottom' },
+          tooltip: { trigger: 'none' }, // Disable default tooltip
+          animation: {
+            startup: true,
+            duration: 500,
+            easing: 'out'
+          },
+          titleTextStyle: {
+            color: '#333',
+            fontSize: 16,
+            bold: true,
+            italic: false,
+            align: 'center' // Ensure horizontal centering
+          }
         };
 
         const chartElement = document.getElementById('piechart');
@@ -218,8 +289,27 @@ const StatusChart = ({ allProfiles }) => {
           return;
         }
 
+        // Clear any existing chart instance
+        if (chartInstance) {
+          chartInstance.clearChart();
+        }
+
         const chart = new window.google.visualization.PieChart(chartElement);
         chart.draw(data, options);
+        setChartInstance(chart);
+
+        // Add event listeners for custom tooltip
+        window.google.visualization.events.addListener(chart, 'onmouseover', (event) => {
+          if (event.row !== null) {
+            const status = data.getValue(event.row, 0);
+            const count = data.getValue(event.row, 1);
+            setTooltipData({ status, count });
+          }
+        });
+
+        window.google.visualization.events.addListener(chart, 'onmouseout', () => {
+          setTooltipData(null);
+        });
       } catch (err) {
         setChartError(`Lỗi khi vẽ biểu đồ: ${err.message}`);
       }
@@ -228,14 +318,29 @@ const StatusChart = ({ allProfiles }) => {
     if (allProfiles.length > 0) {
       loadGoogleCharts();
     }
+
+    // Cleanup on unmount
+    return () => {
+      if (chartInstance) {
+        chartInstance.clearChart();
+      }
+      setTooltipData(null);
+    };
   }, [allProfiles]);
 
   return (
-    <div>
-      {chartError ? (
-        <div style={{ color: 'red', marginTop: '20px' }}>{chartError}</div>
-      ) : (
-        <div id="piechart" style={{ width: '100%', height: '400px', marginTop: '20px' }}></div>
+    <div className={styles.chartWrapper}>
+      <div className={styles.chartContainer}>
+        {chartError ? (
+          <div style={{ color: 'red', marginTop: '20px' }}>{chartError}</div>
+        ) : (
+          <div id="piechart" style={{ width: '100%', height: '400px', marginTop: '20px' }}></div>
+        )}
+      </div>
+      {tooltipData && (
+        <div className={styles.customTooltip}>
+          <strong>{tooltipData.status}</strong>: {tooltipData.count} hồ sơ
+        </div>
       )}
     </div>
   );
@@ -248,6 +353,9 @@ const MainContent = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+
+  // Memoize allProfiles to prevent unnecessary re-renders
+  const memoizedProfiles = useMemo(() => allProfiles, [allProfiles]);
 
   useEffect(() => {
     const token = localStorage.getItem('adminToken');
@@ -322,7 +430,6 @@ const MainContent = () => {
             {allProfiles.filter(p => getStatusInfo(p.status).text === 'Đã tuyển dụng').length}
           </div>
         </div>
-        {/* Thêm 3 ô mới */}
         <div className={styles.card}>
           <h3>Tổng hồ sơ đang chờ xét duyệt <i className="fa-solid fa-clock"></i></h3>
           <div className={styles.value}>
@@ -387,10 +494,10 @@ const MainContent = () => {
         </table>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
           <div style={{ width: '48%' }}>
-            <ColumnChart allProfiles={allProfiles} />
+            <ColumnChart allProfiles={memoizedProfiles} />
           </div>
           <div style={{ width: '48%' }}>
-            <StatusChart allProfiles={allProfiles} />
+            <StatusChart allProfiles={memoizedProfiles} />
           </div>
         </div>
       </div>

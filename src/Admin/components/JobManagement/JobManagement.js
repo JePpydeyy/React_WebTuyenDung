@@ -77,11 +77,11 @@ const JobManagement = () => {
       const data = await response.json();
       return data.map(job => ({
         id: job._id,
-        title: job.Name,
-        brand: job.Brands || '',
+        title: String(job.Name || ''),
+        brand: String(job.Brands || ''),
         jobType: job.JobType,
         salary: job.Salary,
-        location: job.Workplace,
+        location: String(job.Workplace || ''),
         deadline: formatDate(job['Due date']),
         status: statusDisplayMap[job.status] || job.status,
         description: Array.isArray(job['Job Description']) ? job['Job Description'] : [''],
@@ -127,11 +127,11 @@ const JobManagement = () => {
       const job = await response.json();
       setSelectedJob({
         id: job._id,
-        title: job.Name,
-        brand: job.Brands || '',
+        title: String(job.Name || ''),
+        brand: String(job.Brands || ''),
         jobType: job.JobType,
         salary: job.Salary,
-        location: job.Workplace,
+        location: String(job.Workplace || ''),
         deadline: formatDate(job['Due date']),
         status: statusDisplayMap[job.status] || job.status,
         description: Array.isArray(job['Job Description']) ? job['Job Description'] : [''],
@@ -398,13 +398,13 @@ const JobManagement = () => {
     if (search) {
       filtered = filtered.filter(
         j =>
-          j.title.toLowerCase().includes(search) ||
-          j.brand.toLowerCase().includes(search) ||
-          j.location.toLowerCase().includes(search)
+          (String(j.title || '').toLowerCase().includes(search)) ||
+          (String(j.brand || '').toLowerCase().includes(search)) ||
+          (String(j.location || '').toLowerCase().includes(search))
       );
     }
     if (status) filtered = filtered.filter(j => j.status === status);
-    if (jobType) filtered = filtered.filter(j => j.jobType.toLowerCase() === jobType.toLowerCase());
+    if (jobType) filtered = filtered.filter(j => String(j.jobType || '').toLowerCase() === jobType.toLowerCase());
 
     setFilteredJobs(filtered.slice(0, itemsPerPage));
     setTotalPages(Math.ceil(filtered.length / itemsPerPage));
@@ -431,8 +431,8 @@ const JobManagement = () => {
     }
   }, []);
 
-  const uniqueJobTypes = [...new Set(jobs.map(job => job.jobType))];
-  const uniqueStatuses = [...new Set(jobs.map(job => job.status))];
+  const uniqueJobTypes = [...new Set(jobs.map(job => job.jobType))].filter(type => type);
+  const uniqueStatuses = [...new Set(jobs.map(job => job.status))].filter(status => status);
 
   const getPaginationButtons = () => {
     const maxButtons = 5;
@@ -477,7 +477,7 @@ const JobManagement = () => {
   };
 
   return (
-   <div className={styles.container}>
+    <div className={styles.container}>
       {!token && <p>Vui lòng đăng nhập để quản lý công việc.</p>}
       <div className={styles.filters}>
         <input
@@ -511,32 +511,34 @@ const JobManagement = () => {
       </div>
 
       <div className={styles.jobs}>
-        <h3>Danh Sách Công Việc</h3> {/* Xóa nút "Thêm Công Việc" khỏi đây */}
+        <h3>Danh Sách Công Việc</h3>
         <table>
           <thead>
             <tr>
-              <th>Tên Công Việc</th>
-              <th>Thương Hiệu</th>
-              <th>Loại Công Việc</th>
-              <th>Mức Lương</th>
-              <th>Địa Điểm</th>
-              <th>Hạn Nộp</th>
-              <th>Trạng Thái</th>
-              <th>Thao Tác</th>
+              <th scope="col">STT</th>
+              <th scope="col">Tên Công Việc</th>
+              <th scope="col">Thương Hiệu</th>
+              <th scope="col">Loại Công Việc</th>
+              <th scope="col">Mức Lương</th>
+              <th scope="col">Địa Điểm</th>
+              <th scope="col">Hạn Nộp</th>
+              <th scope="col">Trạng Thái</th>
+              <th scope="col">Thao Tác</th>
             </tr>
           </thead>
           <tbody>
             {isLoading ? (
               <tr>
-                <td colSpan="8" style={{ textAlign: 'center' }}>Đang tải...</td>
+                <td colSpan="9" style={{ textAlign: 'center' }}>Đang tải...</td>
               </tr>
             ) : filteredJobs.length === 0 ? (
               <tr>
-                <td colSpan="8" style={{ textAlign: 'center' }}>Không tìm thấy công việc nào</td>
+                <td colSpan="9" style={{ textAlign: 'center' }}>Không tìm thấy công việc nào</td>
               </tr>
             ) : (
-              filteredJobs.map(job => (
+              filteredJobs.map((job, index) => (
                 <tr key={job.id}>
+                  <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
                   <td>{job.title}</td>
                   <td>{job.brand}</td>
                   <td>{job.jobType}</td>
@@ -552,13 +554,17 @@ const JobManagement = () => {
                   </td>
                   <td>
                     <div className={styles.actionButtons}>
-                      <button className={styles.view} onClick={() => handleViewJob(job.id)}>
+                      <button className={styles.view} onClick={() => handleViewJob(job.id)} aria-label="Xem chi tiết">
                         <i className="fa-solid fa-eye"></i>
                       </button>
-                      <button className={styles.edit} onClick={() => handleOpenEditModal(job.id)}>
+                      <button className={styles.edit} onClick={() => handleOpenEditModal(job.id)} aria-label="Chỉnh sửa">
                         <i className="fa-solid fa-edit"></i>
                       </button>
-                      <button className={styles.delete} onClick={() => handleToggleVisibility(job.id)}>
+                      <button
+                        className={styles.delete}
+                        onClick={() => handleToggleVisibility(job.id)}
+                        aria-label={job.status === 'Đang tuyển' ? 'Tạm dừng' : 'Kích hoạt'}
+                      >
                         <i className={job.status === 'Đang tuyển' ? 'fa-solid fa-pause' : 'fa-solid fa-play'}></i>
                       </button>
                     </div>
