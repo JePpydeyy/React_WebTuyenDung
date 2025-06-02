@@ -77,11 +77,11 @@ const JobManagement = () => {
       const data = await response.json();
       return data.map(job => ({
         id: job._id,
-        title: job.Name,
-        brand: job.Brands || '',
+        title: String(job.Name || ''),
+        brand: String(job.Brands || ''),
         jobType: job.JobType,
         salary: job.Salary,
-        location: job.Workplace,
+        location: String(job.Workplace || ''),
         deadline: formatDate(job['Due date']),
         status: statusDisplayMap[job.status] || job.status,
         description: Array.isArray(job['Job Description']) ? job['Job Description'] : [''],
@@ -127,11 +127,11 @@ const JobManagement = () => {
       const job = await response.json();
       setSelectedJob({
         id: job._id,
-        title: job.Name,
-        brand: job.Brands || '',
+        title: String(job.Name || ''),
+        brand: String(job.Brands || ''),
         jobType: job.JobType,
         salary: job.Salary,
-        location: job.Workplace,
+        location: String(job.Workplace || ''),
         deadline: formatDate(job['Due date']),
         status: statusDisplayMap[job.status] || job.status,
         description: Array.isArray(job['Job Description']) ? job['Job Description'] : [''],
@@ -398,13 +398,13 @@ const JobManagement = () => {
     if (search) {
       filtered = filtered.filter(
         j =>
-          j.title.toLowerCase().includes(search) ||
-          j.brand.toLowerCase().includes(search) ||
-          j.location.toLowerCase().includes(search)
+          (String(j.title || '').toLowerCase().includes(search)) ||
+          (String(j.brand || '').toLowerCase().includes(search)) ||
+          (String(j.location || '').toLowerCase().includes(search))
       );
     }
     if (status) filtered = filtered.filter(j => j.status === status);
-    if (jobType) filtered = filtered.filter(j => j.jobType.toLowerCase() === jobType.toLowerCase());
+    if (jobType) filtered = filtered.filter(j => String(j.jobType || '').toLowerCase() === jobType.toLowerCase());
 
     setFilteredJobs(filtered.slice(0, itemsPerPage));
     setTotalPages(Math.ceil(filtered.length / itemsPerPage));
@@ -431,8 +431,8 @@ const JobManagement = () => {
     }
   }, []);
 
-  const uniqueJobTypes = [...new Set(jobs.map(job => job.jobType))];
-  const uniqueStatuses = [...new Set(jobs.map(job => job.status))];
+  const uniqueJobTypes = [...new Set(jobs.map(job => job.jobType))].filter(type => type);
+  const uniqueStatuses = [...new Set(jobs.map(job => job.status))].filter(status => status);
 
   const getPaginationButtons = () => {
     const maxButtons = 5;
@@ -477,7 +477,7 @@ const JobManagement = () => {
   };
 
   return (
-   <div className={styles.container}>
+    <div className={styles.container}>
       {!token && <p>Vui lòng đăng nhập để quản lý công việc.</p>}
       <div className={styles.filters}>
         <input
@@ -511,7 +511,7 @@ const JobManagement = () => {
       </div>
 
       <div className={styles.jobs}>
-        <h3>Danh Sách Công Việc</h3> {/* Xóa nút "Thêm Công Việc" khỏi đây */}
+        <h3>Danh Sách Công Việc</h3>
         <table>
           <thead>
             <tr>
