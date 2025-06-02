@@ -515,28 +515,30 @@ const JobManagement = () => {
         <table>
           <thead>
             <tr>
-              <th>Tên Công Việc</th>
-              <th>Thương Hiệu</th>
-              <th>Loại Công Việc</th>
-              <th>Mức Lương</th>
-              <th>Địa Điểm</th>
-              <th>Hạn Nộp</th>
-              <th>Trạng Thái</th>
-              <th>Thao Tác</th>
+              <th scope="col">STT</th>
+              <th scope="col">Tên Công Việc</th>
+              <th scope="col">Thương Hiệu</th>
+              <th scope="col">Loại Công Việc</th>
+              <th scope="col">Mức Lương</th>
+              <th scope="col">Địa Điểm</th>
+              <th scope="col">Hạn Nộp</th>
+              <th scope="col">Trạng Thái</th>
+              <th scope="col">Thao Tác</th>
             </tr>
           </thead>
           <tbody>
             {isLoading ? (
               <tr>
-                <td colSpan="8" style={{ textAlign: 'center' }}>Đang tải...</td>
+                <td colSpan="9" style={{ textAlign: 'center' }}>Đang tải...</td>
               </tr>
             ) : filteredJobs.length === 0 ? (
               <tr>
-                <td colSpan="8" style={{ textAlign: 'center' }}>Không tìm thấy công việc nào</td>
+                <td colSpan="9" style={{ textAlign: 'center' }}>Không tìm thấy công việc nào</td>
               </tr>
             ) : (
-              filteredJobs.map(job => (
+              filteredJobs.map((job, index) => (
                 <tr key={job.id}>
+                  <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
                   <td>{job.title}</td>
                   <td>{job.brand}</td>
                   <td>{job.jobType}</td>
@@ -552,13 +554,17 @@ const JobManagement = () => {
                   </td>
                   <td>
                     <div className={styles.actionButtons}>
-                      <button className={styles.view} onClick={() => handleViewJob(job.id)}>
+                      <button className={styles.view} onClick={() => handleViewJob(job.id)} aria-label="Xem chi tiết">
                         <i className="fa-solid fa-eye"></i>
                       </button>
-                      <button className={styles.edit} onClick={() => handleOpenEditModal(job.id)}>
+                      <button className={styles.edit} onClick={() => handleOpenEditModal(job.id)} aria-label="Chỉnh sửa">
                         <i className="fa-solid fa-edit"></i>
                       </button>
-                      <button className={styles.delete} onClick={() => handleToggleVisibility(job.id)}>
+                      <button
+                        className={styles.delete}
+                        onClick={() => handleToggleVisibility(job.id)}
+                        aria-label={job.status === 'Đang tuyển' ? 'Tạm dừng' : 'Kích hoạt'}
+                      >
                         <i className={job.status === 'Đang tuyển' ? 'fa-solid fa-pause' : 'fa-solid fa-play'}></i>
                       </button>
                     </div>

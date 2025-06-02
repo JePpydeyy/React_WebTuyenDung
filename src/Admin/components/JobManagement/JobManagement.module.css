@@ -157,39 +157,40 @@
 /* Thiết lập độ rộng tối thiểu cho các cột */
 .jobs th:nth-child(1),
 .jobs td:nth-child(1) {
-  min-width: 180px;
-} /* Tên Công Việc */
+  min-width: 50px;   /* STT */
+  text-align: center;
+}
 .jobs th:nth-child(2),
 .jobs td:nth-child(2) {
-  min-width: 150px;
-} /* Thương Hiệu */
+  min-width: 180px;  /* Tên Công Việc */
+}
 .jobs th:nth-child(3),
 .jobs td:nth-child(3) {
-  min-width: 100px;
-} /* Loại Công Việc */
+  min-width: 100px;  /* Thương Hiệu */
+}
 .jobs th:nth-child(4),
 .jobs td:nth-child(4) {
-  min-width: 120px;
-} /* Mức Lương */
+  min-width: 90px;   /* Loại Công Việc */
+}
 .jobs th:nth-child(5),
 .jobs td:nth-child(5) {
-  min-width: 150px;
-} /* Địa Điểm */
+  min-width: 120px;  /* Mức Lương */
+}
 .jobs th:nth-child(6),
 .jobs td:nth-child(6) {
-  min-width: 100px;
-} /* Hạn Nộp */
+  min-width: 120px;  /* Địa Điểm */
+}
 .jobs th:nth-child(7),
 .jobs td:nth-child(7) {
-  min-width: 100px;
-} /* Trạng Thái */
+  min-width: 90px;   /* Hạn Nộp */
+}
 .jobs th:nth-child(8),
 .jobs td:nth-child(8) {
-  min-width: 120px;
-} /* Thao Tác */
+  min-width: 90px;   /* Trạng Thái */
+  text-align: center;
+}
 
-/* Ngăn xuống dòng cho các cột ngắn */
-.jobs td:nth-child(3),
+/* Ngăn xuống dòng cho các cột ngắn, trừ cột Thương Hiệu */
 .jobs td:nth-child(4),
 .jobs td:nth-child(6),
 .jobs td:nth-child(7),
@@ -197,11 +198,10 @@
   white-space: nowrap;
 }
 
-/* Cho phép xuống dòng cho cột có nội dung dài */
-.jobs td:nth-child(1),
-.jobs td:nth-child(2) {
+/* Cho phép xuống dòng cho cột Thương Hiệu */
+.jobs td:nth-child(3) {
   white-space: normal;
-  word-wrap: break-word;
+  word-break: break-word;
   line-height: 1.4;
   max-height: 60px;
 }
