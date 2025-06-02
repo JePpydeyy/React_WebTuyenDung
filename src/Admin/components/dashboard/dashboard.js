@@ -322,6 +322,25 @@ const MainContent = () => {
             {allProfiles.filter(p => getStatusInfo(p.status).text === 'Đã tuyển dụng').length}
           </div>
         </div>
+        {/* Thêm 3 ô mới */}
+        <div className={styles.card}>
+          <h3>Tổng hồ sơ đang chờ xét duyệt <i className="fa-solid fa-clock"></i></h3>
+          <div className={styles.value}>
+            {allProfiles.filter(p => getStatusInfo(p.status).text === 'Đang chờ xét duyệt').length}
+          </div>
+        </div>
+        <div className={styles.card}>
+          <h3>Tổng hồ sơ đã phỏng vấn <i className="fa-solid fa-user-check"></i></h3>
+          <div className={styles.value}>
+            {allProfiles.filter(p => getStatusInfo(p.status).text === 'Đã phỏng vấn').length}
+          </div>
+        </div>
+        <div className={styles.card}>
+          <h3>Tổng hồ sơ đã từ chối <i className="fa-solid fa-ban"></i></h3>
+          <div className={styles.value}>
+            {allProfiles.filter(p => getStatusInfo(p.status).text === 'Đã từ chối').length}
+          </div>
+        </div>
       </div>
       <div className={styles.recentOrders}>
         <h3>Hồ sơ ứng tuyển gần đây</h3>
