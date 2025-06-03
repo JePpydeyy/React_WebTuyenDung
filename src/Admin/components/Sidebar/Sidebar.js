@@ -42,7 +42,7 @@ const Sidebar = ({ isAlwaysVisible = false }) => {
         <div className={styles.header}>
           <div className={styles.logo}>
             <Link to="/admin">
-              <img src="https://api-tuyendung-cty.onrender.com/images/Logo.svg" alt="Logo" />
+              <img src="/assets/images/Logo.png" alt="Logo" />
             </Link>
           </div>
           {/* Nút toggle trong sidebar, chỉ hiển thị trên desktop */}
@@ -71,11 +71,7 @@ const Sidebar = ({ isAlwaysVisible = false }) => {
               <i className="fa-solid fa-address-card"></i> Hồ Sơ Ứng Tuyển
             </Link>
           </li>
-          <li>
-            <Link to="/admin/banners">
-              <i className="fa-solid fa-image"></i> Quản Lý Banner
-            </Link>
-          </li>
+         
           <li>
             <button onClick={handleLogout} className={styles.logoutBtn}>
               <i className="fa-solid fa-right-from-bracket"></i> Đăng Xuất
