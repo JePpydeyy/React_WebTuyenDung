@@ -1174,3 +1174,112 @@
     margin-bottom: 8px;
   }
 }
+.container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .service-card {
+            background: #e8e8e8;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: left;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            min-height: 200px;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 0;
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            transition: height 0.4s ease;
+            z-index: 1;
+        }
+
+        .service-card:hover::before {
+            height: 100%;
+        }
+
+        .service-card .content {
+            position: relative;
+            z-index: 2;
+            transition: color 0.3s ease 0.2s;
+        }
+
+        .service-card:hover .content {
+            color: white;
+        }
+
+        .service-icon {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 20px;
+            
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease 0.2s;
+        }
+
+        .service-card:hover .service-icon {
+             
+            transform: scale(1.1);
+        }
+
+        .service-icon svg {
+          
+            stroke: white;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .service-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            transition: color 0.3s ease 0.2s;
+        }
+
+        .service-card:hover .service-title {
+            color: white;
+        }
+
+        .service-description {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #666;
+            transition: color 0.3s ease 0.2s;
+        }
+
+        .service-card:hover .service-description {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 32px;
+        }
+        svg g path {
+            fill: blue;
+        }
+         .service-card:hover .content  svg g path{
+            fill :white;
+         }
