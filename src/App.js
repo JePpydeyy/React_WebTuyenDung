@@ -11,7 +11,7 @@ import Dashboard from './Admin/pages/Dashboard';
 import SubmitProfile from './Admin/pages/SubmitProfile';
 import Job from './Admin/pages/Job';
 import AdminNews from './Admin/pages/News';
-import Banner from './Admin/pages/Banner'; // Thêm import cho Banner
+// import Banner from './Admin/pages/Banner'; // Thêm import cho Banner
 import Login from './Admin/pages/Login';
 import ProtectedRoute from './Admin/components/ProtectedRoute/ProtectedRoute';
 import './App.css';
@@ -68,14 +68,14 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            <Route
+            {/* <Route
               path="/admin/banners"
               element={
                 <ProtectedRoute>
                   <Banner />
                 </ProtectedRoute>
               }
-            />
+            /> */}
           </Routes>
         </div>
       </Router>
