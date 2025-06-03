@@ -11,6 +11,7 @@ import Dashboard from './Admin/pages/Dashboard';
 import SubmitProfile from './Admin/pages/SubmitProfile';
 import Job from './Admin/pages/Job';
 import AdminNews from './Admin/pages/News';
+import Banner from './Admin/pages/Banner'; // Thêm import cho Banner
 import Login from './Admin/pages/Login';
 import ProtectedRoute from './Admin/components/ProtectedRoute/ProtectedRoute';
 import './App.css';
@@ -29,7 +30,7 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/JobContent" element={<Jobcontent />} />
-            <Route path="/DetailJob/:jobId" element={<JobDetail/>} />
+            <Route path="/DetailJob/:jobId" element={<JobDetail />} />
 
             {/* Admin login route */}
             <Route path="/admin/login" element={<Login />} />
@@ -64,6 +65,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <AdminNews />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/banners"
+              element={
+                <ProtectedRoute>
+                  <Banner />
                 </ProtectedRoute>
               }
             />
