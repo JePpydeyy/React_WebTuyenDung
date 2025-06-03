@@ -31,7 +31,7 @@ const Header = () => {
         onClick={() => handleLinkClick('/')}
         aria-label="Go to Home page"
       >
-        <img className={styles.logo} src="/assets/images/Logo.svg" alt="Logo" loading="lazy" />
+        <img className={styles.logo} src="/assets/images/Logo.png" alt="Logo" loading="lazy" />
       </Link>
       <button
         className={`${styles['nav-toggle']} ${isNavOpen ? styles.open : ''}`}

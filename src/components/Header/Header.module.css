@@ -43,12 +43,12 @@
 }
 
 .nav ul li a:hover {
-  color: #a00;
+  color: #205aa7;
 }
 
 /* Active link styling */
 .nav ul li a.active {
-  color: #a00;
+  color: #205aa7;
   font-weight: 600;
 }
 
@@ -61,7 +61,7 @@
 /* Ensure active state overrides hover/focus on touch devices */
 .nav ul li a.active:active,
 .nav ul li a.active:focus {
-  color: #a00;
+  color: #205aa7;
 }
 
 /* Mobile Navigation Toggle */
@@ -192,11 +192,11 @@
   .nav ul li a:hover,
   .nav ul li a:active,
   .nav ul li a:focus {
-    color: #a00;
+    color: #205aa7;
   }
 
   .nav ul li a.active {
-    color: #a00;
+    color: #205aa7;
     font-weight: 600;
   }
 }   
