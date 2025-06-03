@@ -17,8 +17,8 @@ import {
 import styles from './JobDetail.module.css';
 
 const bannerImages = [
-  '/assets/images/BANNER6.jpg',
-  '/assets/images/BANNER7.jpg',
+  '/assets/images/BANNER1.jpg',
+  '/assets/images/BANNER2.jpg',
 ];
 
 const JobDetail = () => {

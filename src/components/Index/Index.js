@@ -7,9 +7,9 @@ import { faAngleLeft, faAngleRight, faSearch, faBriefcase, faMapMarkerAlt, faUse
 
 // Static data (unchanged)
 const bannerImages = [
-  '/assets/images/BANNER2.jpg',
-  '/assets/images/BANNER3.jpg',
-  '/assets/images/BANNER4.jpg',
+  '/assets/images/banner1.jpg',
+  '/assets/images/banner2.jpg',
+  
 ];
 
 const acfcValues = [

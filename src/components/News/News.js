@@ -5,9 +5,9 @@ import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import styles from './News.module.css';
 
 const bannerImages = [
-  '/assets/images/BANNER5.jpg',
-  '/assets/images/BANNER6.jpg',
-  '/assets/images/BANNER7.jpg',
+  '/assets/images/BANNER1.jpg',
+  '/assets/images/BANNER2.jpg',
+  
 ];
 
 function formatDate(dateString) {

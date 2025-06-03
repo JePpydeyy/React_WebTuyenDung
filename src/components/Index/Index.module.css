@@ -15,7 +15,7 @@
   aspect-ratio: 16 / 9; /* Default aspect ratio for larger screens */
   min-height: 20rem;
   max-height: 45rem;
-  background-color: #a00;
+  background-color: #205aa7;
   overflow: hidden;
   touch-action: pan-y pinch-zoom; /* Support pinch-zoom */
   user-select: none;
@@ -283,7 +283,7 @@
 
 .job-search_input:focus,
 .job-search_select:focus {
-  border-color: #a00;
+  border-color: #205aa7;
   outline: none;
 }
 
@@ -302,7 +302,7 @@
 
 .job-search_button {
   padding: 0.75rem 1rem;
-  background-color: #a00;
+  background-color: #205aa7;
   color: #fff;
   border: none;
   border-radius: 5px;
@@ -357,7 +357,7 @@
   min-height: 60px;
   border-radius: 5px;
   padding: 10px 15px;
-  background-color: #a00;
+  background-color: #205aa7;
   color: #fff;
   font-weight: 700;
   display: flex;
@@ -387,8 +387,8 @@
 .job-apply-btn {
   margin-top: 20px;
   padding: 0.5rem 1rem;
-  border: 1px solid #a00;
-  color: #a00;
+  border: 1px solid #205aa7;
+  color: #205aa7;
   background-color: transparent;
   border-radius: 5px;
   font-size: 0.9rem;
@@ -400,7 +400,7 @@
 }
 
 .job-apply-btn:hover {
-  background-color: #a00;
+  background-color: #205aa7;
   color: #fff;
 }
 
@@ -417,7 +417,7 @@
 .watch-more-btn {
   width: 200px;
   padding: 1rem;
-  background-color: #a00;
+  background-color: #205aa7;
   color: #fff;
   border: none;
   border-radius: 5px;
@@ -484,7 +484,7 @@
 }
 
 .value-item a:hover p {
-  color: #a00;
+  color: #205aa7;
 }
 
 /* Services Section */

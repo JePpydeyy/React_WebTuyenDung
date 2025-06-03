@@ -3,7 +3,7 @@ import styles from './About.module.css'; // Import CSS Module
 
 const bannerImages = [
   '/assets/images/BANNER2.jpg',
-  '/assets/images/BANNER4.jpg'
+  '/assets/images/BANNER1.jpg'
 ];
 
 const features = [
