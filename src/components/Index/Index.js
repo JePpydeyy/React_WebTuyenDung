@@ -15,7 +15,7 @@ const ppmvnValues = [
   { img: '/assets/images/01.png', text: 'Lịch sử hình thành', link: '#' },
   { img: '/assets/images/02.png', text: 'Tầm nhìn sứ mệnh - Giá trị cốt lõi', link: '#' },
   { img: '/assets/images/03.png', text: 'Danh hiệu & Giải thưởng', link: '#' },
-  { img: '/assets/images/04.png', text: 'Tinh thần PPM.VN', link: '#' },
+  { img: '/assets/images/04.png', text: 'Tinh thần PPMVN', link: '#' },
 ];
 
 const benefits = [

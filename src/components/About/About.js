@@ -12,18 +12,7 @@ const features = [
   { img: '/assets/images/3.jpg', title: 'MANAGEMENT', desc: 'Chuyên nghiệp, duy trì giá trị bền vững' }
 ];
 
-const testimonials = [
-  {
-    img: '/assets/images/ms-phi-phuong.jpg',
-    quote: 'Trải qua quá trình từng làm việc cho những tập đoàn Đa quốc gia nhưng tôi vẫn có ước mọng tìm được một tập đoàn trong nước có môi trường làm việc chuyên nghiệp để đầu quân, đem sức mình cùng giúp sức xây dựng xã hội, xây dựng đất nước, và IPPG là điểm đến hội tụ đủ tất cả mong muốn đó. Với tầm nhìn xa của Chủ Tịch trong việc tạo dựng một nền tảng kinh doanh rõ ràng, minh bạch, bền vững và đặc biệt hơn là lịch sử của tập đoàn, sự trở về xây dựng đất nước của Chủ Tịch đã truyền cảm hứng cho tôi trong suốt thời gian làm việc vừa qua, luôn nghĩ nhiều hơn cho ACFC cũng như IPPG. Với tôi IPPG không hẳn chỉ là công ty mà còn làm mãi nhà, là điểm đến cuối cùng mà tôi luôn muốn gắn bó.',
-    author: '- Ms. Vũ Thị Phi Phượng - CEO -'
-  },
-  {
-    img: '/assets/images/mr-louis-nguyen.jpg',
-    quote: 'Tôi rất tự hào khi được làm việc tại ACFC, một môi trường chuyên nghiệp và sáng tạo. Chúng tôi luôn nỗ lực mang đến những trải nghiệm thời trang tốt nhất cho khách hàng Việt Nam.',
-    author: '- Mr. Louis Nguyen - Manager -'
-  }
-];
+
 
 const brandLogos = [
   "tienphat-logo-300x200-1.png",
@@ -139,41 +128,7 @@ const About = () => {
     };
   }, []);
 
-  // Testimonial auto slide
-  useEffect(() => {
-    startTestimonialAuto();
-    return stopTestimonialAuto;
-  }, [testimonialIdx]);
 
-  function showTestimonialSlide(idx) {
-    setTestimonialIdx(idx);
-  }
-  function nextTestimonialSlide() {
-    setTestimonialIdx((prev) => (prev + 1) % testimonials.length);
-  }
-  function prevTestimonialSlide() {
-    setTestimonialIdx((prev) => (prev - 1 + testimonials.length) % testimonials.length);
-  }
-  function startTestimonialAuto() {
-    stopTestimonialAuto();
-    testimonialTimer.current = setInterval(nextTestimonialSlide, 5000);
-  }
-  function stopTestimonialAuto() {
-    if (testimonialTimer.current) clearInterval(testimonialTimer.current);
-  }
-
-  // Testimonial hover events
-  const testimonialSliderRef = useRef(null);
-  useEffect(() => {
-    const slider = testimonialSliderRef.current;
-    if (!slider) return;
-    slider.addEventListener('mouseenter', stopTestimonialAuto);
-    slider.addEventListener('mouseleave', startTestimonialAuto);
-    return () => {
-      slider.removeEventListener('mouseenter', stopTestimonialAuto);
-      slider.removeEventListener('mouseleave', startTestimonialAuto);
-    };
-  }, []);
   return (
     <div>
       {/* Banner */}
