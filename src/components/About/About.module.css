@@ -1,5 +1,3 @@
-/* News.module.css */
-
 /* General Styles */
 .banner {
   width: 100%;
@@ -9,7 +7,7 @@
   position: relative;
   width: 100%;
   max-width: 100vw;
-  aspect-ratio: 16 / 9; /* Thay height cố định bằng aspect-ratio */
+  aspect-ratio: 16 / 9;
   min-height: 20rem;
   max-height: 45rem;
   overflow: hidden;
@@ -18,7 +16,7 @@
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
-  background-color: #a00;
+  
 }
 
 .bannerImage {
@@ -32,7 +30,7 @@
   transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 1;
   pointer-events: none;
-  object-fit: cover; /* Thay fill bằng cover */
+  object-fit: cover;
   object-position: center;
   display: block;
   -webkit-user-drag: none;
@@ -106,9 +104,8 @@
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.4);
-  cursor: pointer;
   border: 2px solid #1678f2;
+  cursor: pointer;
   transition: background 0.3s ease, opacity 0.3s ease;
   touch-action: manipulation;
 }
@@ -120,17 +117,19 @@
 
 /* Features Section */
 .features {
+  margin: 0 auto;
+  width: 80%;
   display: flex;
   justify-content: center;
   align-items: stretch;
   gap: 1.5rem;
-  margin: 2rem 1rem;
+  padding: 2rem 1rem;
   flex-wrap: wrap;
 }
 
 .feature {
   flex: 1 1 200px;
-  max-width: 300px;
+  width: 350px;
   border-radius: 8px;
   text-align: center;
   display: flex;
@@ -195,7 +194,7 @@
 
 /* Stats Section */
 .statsSection {
-  background-color: #8a0f2d;
+  background-color:#1678f2;
   background-size: cover;
   background-position: center;
   color: #fff;
@@ -258,11 +257,13 @@
 
 /* Brand Section */
 .brand {
+  background-color: #fff;
   text-align: center;
   padding: 2rem 1rem;
 }
 
 .brand h2 {
+  color:#0f5bb5;
   font-family: 'Montserrat', serif;
   font-size: clamp(2rem, 5vw, 3rem);
   margin: 0.5rem 0 1.5rem 0;
@@ -281,8 +282,8 @@
 }
 
 .brandItem {
-  width: clamp(120px, 25vw, 160px);
-  height: clamp(80px, 15vw, 100px);
+  width: clamp(120px, 25vw, 200px);
+  height: clamp(80px, 15vw, 180px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -295,227 +296,196 @@
   object-fit: contain;
 }
 
-/* Testimonial Section */
-.testimonialSection {
-  background-color: #8a0f2d;
-  position: relative;
-  overflow: hidden;
-  width: 100%;
-  padding: 2rem 0;
+
+
+/* PPMVN Intro Section */
+.ppmvnIntro {
+  background-color: #fff;
+  color: #000;
+  padding: 3rem 1rem;
+  text-align: center;
 }
 
-.testimonialSlider {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  position: relative;
-  min-height: 300px;
+.ppmvnIntro h2 {
+  color: #0f5bb5;
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 5vw, 3rem);
+  margin-bottom: 1.5rem;
+  font-weight: 700;
 }
 
-.testimonialSlide {
-  display: flex;
-  align-items: center;
-  padding: 2rem 5%;
-  color: #fff;
-  opacity: 0;
-  position: absolute;
-  width: 100%;
-  left: 0;
-  top: 0;
-  transform: translateX(100%);
-  transition: opacity 0.7s ease, transform 0.7s ease;
-  box-sizing: border-box;
-}
-
-.testimonialSlide.active {
-  opacity: 1;
-  transform: translateX(0);
-  position: relative;
-}
-
-.testimonialSlide.prev {
-  transform: translateX(-100%);
-  opacity: 0;
-}
-
-.testimonialImage {
-  flex: 0 0 auto;
-  width: clamp(120px, 20vw, 180px);
-  margin-right: 1.5rem;
-}
-
-.testimonialImage img {
-  width: 100%;
-  display: block;
-  border: 3px solid #fff;
-  object-fit: cover;
-}
-
-.testimonialContent {
-  flex: 1;
-  line-height: 1.6;
-  overflow-y: auto;
-}
-
-.testimonialQuote {
-  width: 100%;
+.ppmvnIntro p {
   font-size: clamp(0.9rem, 2.5vw, 1rem);
-  margin-bottom: 1rem;
+  margin: 20px 0;
+  line-height: 1.6;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.ppmvnIntro p strong {
+  font-weight: 700;
+}
+
+.brochureBtn {
+  display: inline-block;
+  margin-top: 1.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #1678f2;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.brochureBtn:hover {
+  background-color: #0f5bb5;
+}
+
+/* Gia Tri Cot Loi Section */
+.Aboutcty {
+  background-color: white;
+}
+.giaTriCotLoi {
+  margin: 0 auto;
+  width: 80%;
+  color: #000;
+  padding: 3rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
   text-align: left;
 }
 
-.testimonialAuthor {
-  font-style: italic;
-  font-size: clamp(0.8rem, 2vw, 0.9rem);
-}
-
-.testimonialBtnLeft,
-.testimonialBtnRight {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(0, 0, 0, 0.4);
-  color: #fff;
-  border: none;
-  font-size: 1rem;
-  padding: 0.5rem;
-  cursor: pointer;
-  border-radius: 50%;
-  z-index: 3;
-  transition: background 0.2s;
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.testimonialBtnLeft {
-  left: 1rem;
-}
-
-.testimonialBtnRight {
-  right: 1rem;
-}
-
-.testimonialBtnLeft:hover,
-.testimonialBtnRight:hover {
-  background: #1678f2;
-}
-
-/* ACFC Love Section (từ mã trước) */
-.acfc-love {
-  width: 100%;
-  max-width: 90rem;
-  margin: 3rem auto;
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.acfc-love h2 {
-  font-size: 2.2rem;
-  font-weight: 700;
-  color: #333;
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
-.acfc-love-container {
-  display: flex;
-  flex-direction: row;
-  overflow-x: auto;
-  padding: 0 1rem;
-  scroll-snap-type: x mandatory;
-  justify-content: center;
-}
-
-.acfc-love-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 280px;
-  flex-shrink: 0;
-  scroll-snap-align: start;
-}
-
-.title-info-box,
-.image-info-box {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-}
-
-.image-info-box.reverse {
-  flex-direction: column-reverse;
-}
-
-.a-l-img {
-  position: relative;
-  width: 280px;
-  height: 280px;
-  aspect-ratio: 1 / 1;
-  flex-shrink: 0;
-  overflow: hidden;
-  touch-action: pan-y pinch-zoom;
-}
-
-.a-l-title,
-.a-l-info,
-.a-l-img,
-.carousel-item {
-  width: 280px;
-  height: 280px;
-  flex-shrink: 0;
-}
-
-.a-l-title {
-  margin: 0;
-  font-size: 1.8rem;
-  font-weight: 700;
-  background-color: #e0f0f5;
-  color: #000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-}
-
-.a-l-info {
-  background-color: #800000;
-  color: #fff;
-  font-size: 1.1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 10px;
-  box-sizing: border-box;
-}
-
-.carousel-item {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  transition: opacity 0.7s ease;
-}
-
-.carousel-item img {
-  width: 100%;
-  height: 100%;
+.giaTriCotLoiImage {
+  max-width: 40%;
+  height: auto;
   object-fit: cover;
-  object-position: center;
-  display: block;
+  border-radius: 8px;
 }
 
-.carousel-item.active {
-  opacity: 1;
+.giaTriCotLoiContent {
+  max-width: 55%;
+}
+
+.giaTriCotLoi h2 {
+  color:#0f5bb5;
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 5vw, 3rem);
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+}
+
+.giaTriCotLoi p {
+  font-size: clamp(0.9rem, 2.5vw, 1rem);
+  margin: 0 0 1rem 0;
+  line-height: 1.6;
+}
+
+.giaTriCotLoi ul {
+  list-style-type: none;
+  padding: 0;
+  max-width: 100%;
+}
+
+.giaTriCotLoi li {
+  font-size: clamp(0.9rem, 2.5vw, 1rem);
+  margin: 0.5rem 0;
   position: relative;
+  padding-left: 1.5rem;
+}
+
+.giaTriCotLoi li:before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #000;
+}
+
+/* Nguyen Tac Hoat Dong Section */
+.nguyenTacHoatDong {
+  margin: 0 auto;
+  width: 80%;
+  color: #000;
+  padding: 3rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  text-align: left;
+}
+
+.nguyenTacHoatDongContent {
+  max-width: 55%;
+}
+
+.nguyenTacHoatDong h2 {
+  color :#0f5bb5;
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 5vw, 3rem);
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+}
+
+.nguyenTacHoatDong p {
+  font-size: clamp(0.9rem, 2.5vw, 1rem);
+  margin: 0 0 1rem 0;
+  line-height: 1.6;
+}
+
+.nguyenTacHoatDong ul {
+  list-style-type: none;
+  padding: 0;
+  max-width: 100%;
+}
+
+.nguyenTacHoatDong li {
+  font-size: clamp(0.9rem, 2.5vw, 1rem);
+  margin: 0.5rem 0;
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.nguyenTacHoatDong li:before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #000;
+}
+
+.nguyenTacHoatDongImage {
+  max-width: 40%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+/* Sơ đồ công ty Section */
+.sodocongty {
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem 1rem;
+}
+
+.maptitle {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 5vw, 3rem);
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+  color:#0f5bb5;
+}
+
+.companyStructureImage {
+  width: 100%;
+  max-width: 1200px;
+  height: auto;
+  object-fit: contain;
 }
 
 /* Responsive CSS */
@@ -561,31 +531,24 @@
   .testimonialSlider {
     max-width: 95%;
   }
-  .acfc-love-container {
-    flex-direction: row;
-    overflow-x: auto;
-    gap: 1rem;
-    padding: 0 0.5rem;
-    justify-content: flex-start;
-    scroll-snap-type: x mandatory;
+  .ppmvnIntro h2 {
+    font-size: 2.5rem;
   }
-  .acfc-love-item {
-    width: 220px;
+  .ppmvnIntro p {
+    font-size: 1rem;
   }
-  .a-l-title,
-  .a-l-info,
-  .a-l-img,
-  .carousel-item {
-    width: 220px;
-    height: 220px;
-  }
-  .a-l-title {
-    font-size: 1.5rem;
-    padding: 8px;
-  }
-  .a-l-info {
+  .brochureBtn {
+    padding: 0.7rem 1.4rem;
     font-size: 0.95rem;
-    padding: 8px;
+  }
+  .giaTriCotLoi, .nguyenTacHoatDong {
+    gap: 1.5rem;
+  }
+  .giaTriCotLoiImage, .nguyenTacHoatDongImage {
+    max-width: 38%;
+  }
+  .maptitle {
+    font-size: 2.5rem;
   }
 }
 
@@ -660,6 +623,9 @@
   .statNumber {
     font-size: 2rem;
   }
+  .route img {
+    max-width: 100%;
+  }
   .brand h2 {
     font-size: 2.2rem;
   }
@@ -684,39 +650,46 @@
     width: 140px;
     margin-right: 1rem;
   }
-  .acfc-love {
-    padding: 1rem;
-    margin: 2rem auto;
+  .ppmvnIntro {
+    padding: 2rem 1rem;
   }
-  .acfc-love h2 {
-    font-size: 1.8rem;
+  .ppmvnIntro h2 {
+    font-size: 2.2rem;
   }
-  .acfc-love-container {
+  .ppmvnIntro p {
+    font-size: 1rem;
+  }
+  .brochureBtn {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+  }
+  .giaTriCotLoi, .nguyenTacHoatDong {
     flex-direction: column;
-    overflow-x: visible;
-    gap: 1rem;
-    padding: 0;
+    padding: 2rem 1rem;
+    text-align: center;
   }
-  .acfc-love-item {
-    width: 100%;
-    max-width: 400px;
-    margin: 0 auto;
+  .giaTriCotLoiImage, .nguyenTacHoatDongImage {
+    max-width: 100%;
+    margin-bottom: 1rem;
   }
-  .a-l-title,
-  .a-l-info,
-  .a-l-img,
-  .carousel-item {
-    width: 100%;
-    max-width: 300px;
-    height: 300px;
+  .giaTriCotLoiContent, .nguyenTacHoatDongContent {
+    max-width: 100%;
   }
-  .a-l-title {
-    font-size: 1.4rem;
-    padding: 8px;
+  .giaTriCotLoi h2, .nguyenTacHoatDong h2 {
+    font-size: 2.2rem;
   }
-  .a-l-info {
-    font-size: 0.95rem;
-    padding: 8px;
+  .giaTriCotLoi p, .nguyenTacHoatDong p,
+  .giaTriCotLoi li, .nguyenTacHoatDong li {
+    font-size: 1rem;
+  }
+  .sodocongty {
+    padding: 1.5rem 1rem;
+  }
+  .maptitle {
+    font-size: 2.2rem;
+  }
+  .companyStructureImage {
+    max-width: 100%;
   }
 }
 
@@ -774,9 +747,6 @@
   .statDescription {
     font-size: 0.9rem;
   }
-  .route img {
-    max-width: 100%;
-  }
   .brand h2 {
     font-size: 2rem;
   }
@@ -806,32 +776,21 @@
   .testimonialAuthor {
     font-size: 0.8rem;
   }
-  .testimonialBtnLeft {
-    left: 0.5rem;
+  .ppmvnIntro h2 {
+    font-size: 2rem;
   }
-  .testimonialBtnRight {
-    right: 0.5rem;
+  .ppmvnIntro p {
+    font-size: 0.95rem;
   }
-  .acfc-love h2 {
-    font-size: 1.5rem;
+  .giaTriCotLoi h2, .nguyenTacHoatDong h2 {
+    font-size: 2rem;
   }
-  .acfc-love-item {
-    max-width: 320px;
+  .giaTriCotLoi p, .nguyenTacHoatDong p,
+  .giaTriCotLoi li, .nguyenTacHoatDong li {
+    font-size: 0.95rem;
   }
-  .a-l-title,
-  .a-l-info,
-  .a-l-img,
-  .carousel-item {
-    max-width: 260px;
-    height: 260px;
-  }
-  .a-l-title {
-    font-size: 1.2rem;
-    padding: 6px;
-  }
-  .a-l-info {
-    font-size: 0.85rem;
-    padding: 6px;
+  .maptitle {
+    font-size: 2rem;
   }
 }
 
@@ -896,47 +855,27 @@
     width: clamp(80px, 25vw, 100px);
     height: clamp(40px, 15vw, 60px);
   }
-  .testimonialSlider {
-    padding: 0 0.5rem;
+  .ppmvnIntro h2 {
+    font-size: 1.8rem;
   }
-  .testimonialImage {
-    width: 100px;
+  .ppmvnIntro p {
+    font-size: 0.9rem;
   }
-  .testimonialQuote {
+  .brochureBtn {
+    padding: 0.5rem 1rem;
     font-size: 0.85rem;
   }
-  .testimonialAuthor {
-    font-size: 0.75rem;
+  .giaTriCotLoi, .nguyenTacHoatDong {
+    padding: 1.5rem 1rem;
   }
-  .testimonialBtnLeft,
-  .testimonialBtnRight {
-    width: 28px;
-    height: 28px;
-    font-size: 0.8rem;
+  .giaTriCotLoi h2, .nguyenTacHoatDong h2 {
+    font-size: 1.8rem;
   }
-  .acfc-love {
-    padding: 0.5rem;
-    margin: 1rem auto;
+  .giaTriCotLoi p, .nguyenTacHoatDong p,
+  .giaTriCotLoi li, .nguyenTacHoatDong li {
+    font-size: 0.9rem;
   }
-  .acfc-love h2 {
-    font-size: 1.4rem;
-  }
-  .acfc-love-item {
-    max-width: 280px;
-  }
-  .a-l-title,
-  .a-l-info,
-  .a-l-img,
-  .carousel-item {
-    max-width: 200px;
-    height: 200px;
-  }
-  .a-l-title {
-    font-size: 1rem;
-    padding: 4px;
-  }
-  .a-l-info {
-    font-size: 0.8rem;
-    padding: 4px;
+  .maptitle {
+    font-size: 1.8rem;
   }
 }

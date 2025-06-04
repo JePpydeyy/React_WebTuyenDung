@@ -321,7 +321,7 @@
 }
 
 .job-search_button:hover:not(:disabled) {
-  background-color: #800;
+  background-color: #205aa7;
 }
 
 /* Hot Jobs Section */
@@ -428,7 +428,7 @@
 }
 
 .watch-more-btn:hover {
-  background-color: rgb(0, 79, 136);
+  background-color: #205aa7;
 }
 
 /* ACFC Values Section */
@@ -669,7 +669,7 @@
 
 .icon-title h3 {
   font-size: 1.25rem;
-  color: #b00020;
+  color: #205aa7;
   margin: 0;
   font-weight: 600;
 }
