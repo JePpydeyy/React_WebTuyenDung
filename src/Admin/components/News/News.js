@@ -602,352 +602,365 @@ const NewsManagement = () => {
       </div>
 
       {/* Modal for viewing, editing, or creating news */}
-      {(selectedNews || isCreating) && (
-        <div className={styles.modal}>
-          <div className={styles.modalContent}>
-            <span className={styles.close} onClick={() => { setSelectedNews(null); setIsEditing(false); setIsCreating(false); }}>×</span>
-            {isCreating ? (
-              <>
-                <h3>Thêm Tin Tức Mới</h3>
-                <div className={styles.editForm}>
-                  <div className={styles.detailGroup}>
-                    <label>Tiêu đề:</label>
-                    <input
-                      type="text"
-                      name="title"
-                      value={createForm.title}
-                      onChange={(e) => handleFormChange(e, null, null, 'create')}
+     {(selectedNews || isCreating) && (
+  <div className={styles.modal} onClick={(e) => {
+    // Kiểm tra nếu nhấp chuột xảy ra bên ngoài modalContent
+    if (e.target.className === styles.modal) {
+      setSelectedNews(null);
+      setIsEditing(false);
+      setIsCreating(false);
+    }
+  }}>
+    <div className={styles.modalContent}>
+      <span className={styles.close} onClick={() => { setSelectedNews(null); setIsEditing(false); setIsCreating(false); }}>×</span>
+      {isCreating ? (
+        <>
+          <h3>Thêm Tin Tức Mới</h3>
+          <div className={styles.editForm}>
+            {/* Nội dung form tạo mới giữ nguyên */}
+            <div className={styles.detailGroup}>
+              <label>Tiêu đề:</label>
+              <input
+                type="text"
+                name="title"
+                value={createForm.title}
+                onChange={(e) => handleFormChange(e, null, null, 'create')}
+              />
+            </div>
+            <div className={styles.detailGroup}>
+              <label>Slug:</label>
+              <input
+                type="text"
+                name="slug"
+                value={createForm.slug}
+                onChange={(e) => handleFormChange(e, null, null, 'create')}
+              />
+            </div>
+            <div className={styles.detailGroup}>
+              <label>Thumbnail:</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => handleFileChange(e, null, 'create')}
+              />
+              {createForm.thumbnailUrl && (
+                <div className={styles.thumbnailPreview}>
+                  <p>Xem trước:</p>
+                  <img
+                    src={createForm.thumbnailUrl}
+                    alt="Thumbnail Preview"
+                    className={styles.imagePreview}
+                    onError={(e) => (e.target.style.display = 'none')}
+                  />
+                </div>
+              )}
+            </div>
+            <div className={styles.detailGroup}>
+              <label>Thumbnail Caption:</label>
+              <input
+                type="text"
+                name="thumbnailCaption"
+                value={createForm.thumbnailCaption}
+                onChange={(e) => handleFormChange(e, null, null, 'create')}
+              />
+            </div>
+            <div className={styles.detailGroup}>
+              <label>Ngày đăng:</label>
+              <input
+                type="date"
+                name="publishedAt"
+                value={createForm.publishedAt}
+                onChange={(e) => handleFormChange(e, null, null, 'create')}
+              />
+            </div>
+            <div className={styles.detailGroup}>
+              <label>Lượt xem:</label>
+              <input
+                type="number"
+                name="views"
+                value={createForm.views}
+                onChange={(e) => handleFormChange(e, null, null, 'create')}
+              />
+            </div>
+            <div className={styles.detailGroup}>
+              <label>Trạng thái:</label>
+              <select
+                name="status"
+                value={createForm.status}
+                onChange={(e) => handleFormChange(e, null, null, 'create')}
+              >
+                <option value="Hiển thị">Hiển thị</option>
+                <option value="Đã ẩn">Đã ẩn</option>
+              </select>
+            </div>
+            <div className={`${styles.detailGroup} ${styles.full}`}>
+              <label>Nội dung:</label>
+              {createForm.contentBlocks.map((block, index) => (
+                <div key={index} className={styles.contentBlock}>
+                  <select
+                    value={block.type}
+                    onChange={(e) => handleFormChange({ target: { value: e.target.value } }, index, 'type', 'create')}
+                  >
+                    <option value="text">Văn bản</option>
+                    <option value="image">Hình ảnh</option>
+                  </select>
+                  {block.type === 'text' ? (
+                    <textarea
+                      value={block.content}
+                      onChange={(e) => handleFormChange(e, index, 'content', 'create')}
+                      placeholder="Nội dung văn bản"
                     />
-                  </div>
-                  <div className={styles.detailGroup}>
-                    <label>Slug:</label>
-                    <input
-                      type="text"
-                      name="slug"
-                      value={createForm.slug}
-                      onChange={(e) => handleFormChange(e, null, null, 'create')}
-                    />
-                  </div>
-                  <div className={styles.detailGroup}>
-                    <label>Thumbnail:</label>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => handleFileChange(e, null, 'create')}
-                    />
-                    {createForm.thumbnailUrl && (
-                      <div className={styles.thumbnailPreview}>
-                        <p>Xem trước:</p>
+                  ) : (
+                    <>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleFileChange(e, index, 'create')}
+                      />
+                      {(block.url || block.file) && (
                         <img
-                          src={createForm.thumbnailUrl}
-                          alt="Thumbnail Preview"
+                          src={block.url || (block.file && URL.createObjectURL(block.file))}
+                          alt="Image Preview"
                           className={styles.imagePreview}
                           onError={(e) => (e.target.style.display = 'none')}
                         />
-                      </div>
-                    )}
-                  </div>
-                  <div className={styles.detailGroup}>
-                    <label>Thumbnail Caption:</label>
-                    <input
-                      type="text"
-                      name="thumbnailCaption"
-                      value={createForm.thumbnailCaption}
-                      onChange={(e) => handleFormChange(e, null, null, 'create')}
-                    />
-                  </div>
-                  <div className={styles.detailGroup}>
-                    <label>Ngày đăng:</label>
-                    <input
-                      type="date"
-                      name="publishedAt"
-                      value={createForm.publishedAt}
-                      onChange={(e) => handleFormChange(e, null, null, 'create')}
-                    />
-                  </div>
-                  <div className={styles.detailGroup}>
-                    <label>Lượt xem:</label>
-                    <input
-                      type="number"
-                      name="views"
-                      value={createForm.views}
-                      onChange={(e) => handleFormChange(e, null, null, 'create')}
-                    />
-                  </div>
-                  <div className={styles.detailGroup}>
-                    <label>Trạng thái:</label>
-                    <select
-                      name="status"
-                      value={createForm.status}
-                      onChange={(e) => handleFormChange(e, null, null, 'create')}
-                    >
-                      <option value="Hiển thị">Hiển thị</option>
-                      <option value="Đã ẩn">Đã ẩn</option>
-                    </select>
-                  </div>
-                  <div className={`${styles.detailGroup} ${styles.full}`}>
-                    <label>Nội dung:</label>
-                    {createForm.contentBlocks.map((block, index) => (
-                      <div key={index} className={styles.contentBlock}>
-                        <select
-                          value={block.type}
-                          onChange={(e) => handleFormChange({ target: { value: e.target.value } }, index, 'type', 'create')}
-                        >
-                          <option value="text">Văn bản</option>
-                          <option value="image">Hình ảnh</option>
-                        </select>
-                        {block.type === 'text' ? (
-                          <textarea
-                            value={block.content}
-                            onChange={(e) => handleFormChange(e, index, 'content', 'create')}
-                            placeholder="Nội dung văn bản"
-                          />
-                        ) : (
-                          <>
-                            <input
-                              type="file"
-                              accept="image/*"
-                              onChange={(e) => handleFileChange(e, index, 'create')}
-                            />
-                            {(block.url || block.file) && (
-                              <img
-                                src={block.url || (block.file && URL.createObjectURL(block.file))}
-                                alt="Image Preview"
-                                className={styles.imagePreview}
-                                onError={(e) => (e.target.style.display = 'none')}
-                              />
-                            )}
-                            <input
-                              type="text"
-                              value={block.caption}
-                              onChange={(e) => handleFormChange(e, index, 'caption', 'create')}
-                              placeholder="Chú thích hình ảnh"
-                            />
-                          </>
-                        )}
-                        <button
-                          className={styles.removeBlock}
-                          onClick={() => removeContentBlock(index, 'create')}
-                        >
-                          Xóa khối
-                        </button>
-                      </div>
-                    ))}
-                    <div className={styles.addBlockButtons}>
-                      <button onClick={() => addContentBlock('text', 'create')}>Thêm khối văn bản</button>
-                      <button onClick={() => addContentBlock('image', 'create')}>Thêm khối hình ảnh</button>
-                    </div>
-                  </div>
-                  <div className={styles.detailAction}>
-                    <button className={styles.save} onClick={createNews}>Tạo mới</button>
-                    <button className={styles.cancel} onClick={() => setIsCreating(false)}>Hủy</button>
-                  </div>
+                      )}
+                      <input
+                        type="text"
+                        value={block.caption}
+                        onChange={(e) => handleFormChange(e, index, 'caption', 'create')}
+                        placeholder="Chú thích hình ảnh"
+                      />
+                    </>
+                  )}
+                  <button
+                    className={styles.removeBlock}
+                    onClick={() => removeContentBlock(index, 'create')}
+                  >
+                    Xóa khối
+                  </button>
                 </div>
-              </>
-            ) : isEditing && editForm ? (
-              <>
-                <h3>Chỉnh Sửa Tin Tức: {editForm.title}</h3>
-                <div className={styles.editForm}>
-                  <div className={styles.detailGroup}>
-                    <label>Tiêu đề:</label>
-                    <input
-                      type="text"
-                      name="title"
-                      value={editForm.title}
-                      onChange={handleFormChange}
+              ))}
+              <div className={styles.addBlockButtons}>
+                <button onClick={() => addContentBlock('text', 'create')}>Thêm khối văn bản</button>
+                <button onClick={() => addContentBlock('image', 'create')}>Thêm khối hình ảnh</button>
+              </div>
+            </div>
+            <div className={styles.detailAction}>
+              <button className={styles.save} onClick={createNews}>Tạo mới</button>
+              <button className={styles.cancel} onClick={() => setIsCreating(false)}>Hủy</button>
+            </div>
+          </div>
+        </>
+      ) : isEditing && editForm ? (
+        <>
+          <h3>Chỉnh Sửa Tin Tức: {editForm.title}</h3>
+          <div className={styles.editForm}>
+            {/* Nội dung form chỉnh sửa giữ nguyên */}
+            <div className={styles.detailGroup}>
+              <label>Tiêu đề:</label>
+              <input
+                type="text"
+                name="title"
+                value={editForm.title}
+                onChange={handleFormChange}
+              />
+            </div>
+            <div className={styles.detailGroup}>
+              <label>Slug:</label>
+              <input
+                type="text"
+                name="slug"
+                value={editForm.slug}
+                onChange={handleFormChange}
+              />
+            </div>
+            <div className={styles.detailGroup}>
+              <label>Thumbnail:</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => handleFileChange(e)}
+              />
+              {editForm.thumbnailUrl && (
+                <div className={styles.thumbnailPreview}>
+                  <p>Xem trước:</p>
+                  <img
+                    src={editForm.thumbnailUrl}
+                    alt="Thumbnail Preview"
+                    className={styles.imagePreview}
+                    onError={(e) => (e.target.style.display = 'none')}
+                  />
+                </div>
+              )}
+            </div>
+            <div className={styles.detailGroup}>
+              <label>Thumbnail Caption:</label>
+              <input
+                type="text"
+                name="thumbnailCaption"
+                value={editForm.thumbnailCaption}
+                onChange={handleFormChange}
+              />
+            </div>
+            <div className={styles.detailGroup}>
+              <label>Ngày đăng:</label>
+              <input
+                type="date"
+                name="publishedAt"
+                value={editForm.publishedAt}
+                onChange={handleFormChange}
+              />
+            </div>
+            <div className={styles.detailGroup}>
+              <label>Lượt xem:</label>
+              <input
+                type="number"
+                name="views"
+                value={editForm.views}
+                onChange={handleFormChange}
+              />
+            </div>
+            <div className={styles.detailGroup}>
+              <label>Trạng thái:</label>
+              <select
+                name="status"
+                value={editForm.status}
+                onChange={handleFormChange}
+              >
+                <option value="Hiển thị">Hiển thị</option>
+                <option value="Đã ẩn">Đã ẩn</option>
+              </select>
+            </div>
+            <div className={`${styles.detailGroup} ${styles.full}`}>
+              <label>Nội dung:</label>
+              {editForm.contentBlocks.map((block, index) => (
+                <div key={index} className={styles.contentBlock}>
+                  <select
+                    value={block.type}
+                    onChange={(e) => handleFormChange({ target: { value: e.target.value } }, index, 'type')}
+                  >
+                    <option value="text">Văn bản</option>
+                    <option value="image">Hình ảnh</option>
+                  </select>
+                  {block.type === 'text' ? (
+                    <textarea
+                      value={block.content}
+                      onChange={(e) => handleFormChange(e, index, 'content')}
+                      placeholder="Nội dung văn bản"
                     />
-                  </div>
-                  <div className={styles.detailGroup}>
-                    <label>Slug:</label>
-                    <input
-                      type="text"
-                      name="slug"
-                      value={editForm.slug}
-                      onChange={handleFormChange}
-                    />
-                  </div>
-                  <div className={styles.detailGroup}>
-                    <label>Thumbnail:</label>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => handleFileChange(e)}
-                    />
-                    {editForm.thumbnailUrl && (
-                      <div className={styles.thumbnailPreview}>
-                        <p>Xem trước:</p>
+                  ) : (
+                    <>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleFileChange(e, index)}
+                      />
+                      {(block.url || block.file) && (
                         <img
-                          src={editForm.thumbnailUrl}
-                          alt="Thumbnail Preview"
+                          src={block.url || (block.file && URL.createObjectURL(block.file))}
+                          alt="Image Preview"
                           className={styles.imagePreview}
                           onError={(e) => (e.target.style.display = 'none')}
                         />
-                      </div>
-                    )}
-                  </div>
-                  <div className={styles.detailGroup}>
-                    <label>Thumbnail Caption:</label>
-                    <input
-                      type="text"
-                      name="thumbnailCaption"
-                      value={editForm.thumbnailCaption}
-                      onChange={handleFormChange}
-                    />
-                  </div>
-                  <div className={styles.detailGroup}>
-                    <label>Ngày đăng:</label>
-                    <input
-                      type="date"
-                      name="publishedAt"
-                      value={editForm.publishedAt}
-                      onChange={handleFormChange}
-                    />
-                  </div>
-                  <div className={styles.detailGroup}>
-                    <label>Lượt xem:</label>
-                    <input
-                      type="number"
-                      name="views"
-                      value={editForm.views}
-                      onChange={handleFormChange}
-                    />
-                  </div>
-                  <div className={styles.detailGroup}>
-                    <label>Trạng thái:</label>
-                    <select
-                      name="status"
-                      value={editForm.status}
-                      onChange={handleFormChange}
-                    >
-                      <option value="Hiển thị">Hiển thị</option>
-                      <option value="Đã ẩn">Đã ẩn</option>
-                    </select>
-                  </div>
-                  <div className={`${styles.detailGroup} ${styles.full}`}>
-                    <label>Nội dung:</label>
-                    {editForm.contentBlocks.map((block, index) => (
-                      <div key={index} className={styles.contentBlock}>
-                        <select
-                          value={block.type}
-                          onChange={(e) => handleFormChange({ target: { value: e.target.value } }, index, 'type')}
-                        >
-                          <option value="text">Văn bản</option>
-                          <option value="image">Hình ảnh</option>
-                        </select>
-                        {block.type === 'text' ? (
-                          <textarea
-                            value={block.content}
-                            onChange={(e) => handleFormChange(e, index, 'content')}
-                            placeholder="Nội dung văn bản"
-                          />
-                        ) : (
-                          <>
-                            <input
-                              type="file"
-                              accept="image/*"
-                              onChange={(e) => handleFileChange(e, index)}
-                            />
-                            {(block.url || block.file) && (
-                              <img
-                                src={block.url || (block.file && URL.createObjectURL(block.file))}
-                                alt="Image Preview"
-                                className={styles.imagePreview}
-                                onError={(e) => (e.target.style.display = 'none')}
-                              />
-                            )}
-                            <input
-                              type="text"
-                              value={block.caption}
-                              onChange={(e) => handleFormChange(e, index, 'caption')}
-                              placeholder="Chú thích hình ảnh"
-                            />
-                          </>
-                        )}
-                        <button
-                          className={styles.removeBlock}
-                          onClick={() => removeContentBlock(index)}
-                        >
-                          Xóa khối
-                        </button>
-                      </div>
-                    ))}
-                    <div className={styles.addBlockButtons}>
-                      <button onClick={() => addContentBlock('text')}>Thêm khối văn bản</button>
-                      <button onClick={() => addContentBlock('image')}>Thêm khối hình ảnh</button>
-                    </div>
-                  </div>
-                  <div className={styles.detailAction}>
-                    <button className={styles.save} onClick={saveNews}>Lưu</button>
-                    <button className={styles.cancel} onClick={() => setIsEditing(false)}>Hủy</button>
-                  </div>
+                      )}
+                      <input
+                        type="text"
+                        value={block.caption}
+                        onChange={(e) => handleFormChange(e, index, 'caption')}
+                        placeholder="Chú thích hình ảnh"
+                      />
+                    </>
+                  )}
+                  <button
+                    className={styles.removeBlock}
+                    onClick={() => removeContentBlock(index)}
+                  >
+                    Xóa khối
+                  </button>
                 </div>
-              </>
-            ) : (
-              selectedNews && (
-                <>
-                  <h3>{selectedNews.title}</h3>
-                  <div className={styles.newsDetails}>
-                    <div className={styles.detailRow}>
-                      <div className={styles.detailGroup}>
-                        <label>Trạng thái:</label>
-                        <p><span className={`${styles.status} ${getStatusClass(selectedNews.status)}`}>{selectedNews.status}</span></p>
-                      </div>
-                    </div>
-                    <div className={styles.detailRow}>
-                      <div className={styles.detailGroup}>
-                        <label>Ngày đăng:</label>
-                        <p>{selectedNews.publishedAt}</p>
-                      </div>
-                      <div className={styles.detailGroup}>
-                        <label>Lượt xem:</label>
-                        <p>{selectedNews.views}</p>
-                      </div>
-                    </div>
-                    <div className={styles.detailRow}>
-                      <div className={styles.detailGroup}>
-                        <label>Slug:</label>
-                        <p>{selectedNews.slug}</p>
-                      </div>
-                    </div>
-                    <div className={`${styles.detailGroup} ${styles.full}`}>
-                      <label>Thumbnail:</label>
+              ))}
+              <div className={styles.addBlockButtons}>
+                <button onClick={() => addContentBlock('text')}>Thêm khối văn bản</button>
+                <button onClick={() => addContentBlock('image')}>Thêm khối hình ảnh</button>
+              </div>
+            </div>
+            <div className={styles.detailAction}>
+              <button className={styles.save} onClick={saveNews}>Lưu</button>
+              <button className={styles.cancel} onClick={() => setIsEditing(false)}>Hủy</button>
+            </div>
+          </div>
+        </>
+      ) : (
+        selectedNews && (
+          <>
+            <h3>{selectedNews.title}</h3>
+            <div className={styles.newsDetails}>
+              <div className={styles.detailRow}>
+                <div className={styles.detailGroup}>
+                  <label>Trạng thái:</label>
+                  <p>
+                    <span className={`${styles.status} ${getStatusClass(selectedNews.status)}`}>
+                      {selectedNews.status}
+                    </span>
+                  </p>
+                </div>
+              </div>
+              <div className={styles.detailRow}>
+                <div className={styles.detailGroup}>
+                  <label>Ngày đăng:</label>
+                  <p>{selectedNews.publishedAt}</p>
+                </div>
+                <div className={styles.detailGroup}>
+                  <label>Lượt xem:</label>
+                  <p>{selectedNews.views}</p>
+                </div>
+              </div>
+              <div className={styles.detailRow}>
+                <div className={styles.detailGroup}>
+                  <label>Slug:</label>
+                  <p>{selectedNews.slug}</p>
+                </div>
+              </div>
+              <div className={`${styles.detailGroup} ${styles.full}`}>
+                <label>Thumbnail:</label>
+                <p>
+                  <img
+                    src={selectedNews.thumbnailUrl}
+                    alt={selectedNews.thumbnailCaption}
+                    style={{ maxWidth: '100%' }}
+                    onError={(e) => (e.target.style.display = 'none')}
+                  />
+                  <span>{selectedNews.thumbnailCaption}</span>
+                </p>
+              </div>
+              <div className={`${styles.detailGroup} ${styles.full}`}>
+                <label>Nội dung:</label>
+                {selectedNews.contentBlocks.map((block, index) => (
+                  <div key={index} style={{ marginBottom: '10px' }}>
+                    {block.type === 'text' ? (
+                      <p>{block.content}</p>
+                    ) : (
                       <p>
                         <img
-                          src={selectedNews.thumbnailUrl}
-                          alt={selectedNews.thumbnailCaption}
+                          src={block.url}
+                          alt={block.caption}
                           style={{ maxWidth: '100%' }}
                           onError={(e) => (e.target.style.display = 'none')}
                         />
-                        <span>{selectedNews.thumbnailCaption}</span>
+                        <span>{block.caption}</span>
                       </p>
-                    </div>
-                    <div className={`${styles.detailGroup} ${styles.full}`}>
-                      <label>Nội dung:</label>
-                      {selectedNews.contentBlocks.map((block, index) => (
-                        <div key={index} style={{ marginBottom: '10px' }}>
-                          {block.type === 'text' ? (
-                            <p>{block.content}</p>
-                          ) : (
-                            <p>
-                              <img
-                                src={block.url}
-                                alt={block.caption}
-                                style={{ maxWidth: '100%' }}
-                                onError={(e) => (e.target.style.display = 'none')}
-                              />
-                              <span>{block.caption}</span>
-                            </p>
-                          )}
-                        </div>
-                      ))}
-                    </div>
+                    )}
                   </div>
-                </>
-              )
-            )}
-          </div>
-        </div>
+                ))}
+              </div>
+            </div>
+          </>
+        )
       )}
+    </div>
+  </div>
+)}
     </div>
   );
 };

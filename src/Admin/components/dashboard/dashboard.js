@@ -417,37 +417,37 @@ const MainContent = () => {
       <h1 className={styles.heading}>Chào mừng quản trị viên<br /></h1>
       <div className={styles.metrics}>
         <div className={styles.card}>
-          <h3>Tổng bài đăng tin tức <i className="fa-solid fa-newspaper"></i></h3>
-          <div className={styles.value}>{allJobs.length}</div>
+        <h3>Tổng bài đăng tin tức <i className="fa-solid fa-newspaper" ></i></h3>
+        <div className={styles.value}>{allJobs.length}</div>
+      </div>
+      <div className={styles.card}>
+        <h3>Tổng hồ sơ ứng tuyển <i className="fa-solid fa-file-pen" style={{color: '#FFFF00'}}></i></h3>
+        <div className={styles.value}>{allProfiles.length}</div>
+      </div>
+      <div className={styles.card}>
+        <h3>Tổng hồ sơ đã tuyển dụng <i className="fa-regular fa-paste" style={{color: '#008000'}}></i></h3>
+        <div className={styles.value}>
+          {allProfiles.filter(p => getStatusInfo(p.status).text === 'Đã tuyển dụng').length}
         </div>
-        <div className={styles.card}>
-          <h3>Tổng hồ sơ ứng tuyển <i className="fa-solid fa-file-pen"></i></h3>
-          <div className={styles.value}>{allProfiles.length}</div>
+      </div>
+      <div className={styles.card}>
+        <h3>Tổng hồ sơ đang chờ xét duyệt <i className="fa-solid fa-clock" style={{color: '#3895ff'}}></i></h3>
+        <div className={styles.value}>
+          {allProfiles.filter(p => getStatusInfo(p.status).text === 'Đang chờ xét duyệt').length}
         </div>
-        <div className={styles.card}>
-          <h3>Tổng hồ sơ tiếp nhận <i className="fa-regular fa-paste"></i></h3>
-          <div className={styles.value}>
-            {allProfiles.filter(p => getStatusInfo(p.status).text === 'Đã tuyển dụng').length}
-          </div>
+      </div>
+      <div className={styles.card}>
+        <h3>Tổng hồ sơ đã phỏng vấn <i className="fa-solid fa-user-check" style={{color: '#FFA500'}}></i></h3>
+        <div className={styles.value}>
+          {allProfiles.filter(p => getStatusInfo(p.status).text === 'Đã phỏng vấn').length}
         </div>
-        <div className={styles.card}>
-          <h3>Tổng hồ sơ đang chờ xét duyệt <i className="fa-solid fa-clock"></i></h3>
-          <div className={styles.value}>
-            {allProfiles.filter(p => getStatusInfo(p.status).text === 'Đang chờ xét duyệt').length}
-          </div>
+      </div>
+      <div className={styles.card}>
+        <h3>Tổng hồ sơ đã từ chối <i className="fa-solid fa-ban" style={{color: '#FF0000'}}></i></h3>
+        <div className={styles.value}>
+          {allProfiles.filter(p => getStatusInfo(p.status).text === 'Đã từ chối').length}
         </div>
-        <div className={styles.card}>
-          <h3>Tổng hồ sơ đã phỏng vấn <i className="fa-solid fa-user-check"></i></h3>
-          <div className={styles.value}>
-            {allProfiles.filter(p => getStatusInfo(p.status).text === 'Đã phỏng vấn').length}
-          </div>
-        </div>
-        <div className={styles.card}>
-          <h3>Tổng hồ sơ đã từ chối <i className="fa-solid fa-ban"></i></h3>
-          <div className={styles.value}>
-            {allProfiles.filter(p => getStatusInfo(p.status).text === 'Đã từ chối').length}
-          </div>
-        </div>
+      </div>
       </div>
       <div className={styles.recentOrders}>
         <h3>Hồ sơ ứng tuyển gần đây</h3>

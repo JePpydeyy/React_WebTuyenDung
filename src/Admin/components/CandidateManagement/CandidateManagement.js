@@ -34,16 +34,8 @@ const CandidateManagement = () => {
   };
 
   const showNotification = useCallback((message, type = 'success') => {
-    const notification = document.createElement('div');
-    notification.className = `notification ${type} ${styles.notification}`;
-    notification.textContent = message;
-    document.body.appendChild(notification);
-    notification.style.opacity = '0';
-    setTimeout(() => (notification.style.opacity = '1'), 10); // Fade-in
-    setTimeout(() => {
-      notification.style.opacity = '0';
-      setTimeout(() => notification.remove(), 300);
-    }, 3000); // Fade-out
+    // Sử dụng window.alert thay vì tạo div nổi
+    window.alert(`${type === 'error' ? 'Lỗi: ' : 'Thông báo: '} ${message}`);
   }, []);
 
   const normalizeVietnamese = useCallback((str) => {
@@ -193,7 +185,7 @@ const CandidateManagement = () => {
         setTimeout(() => window.URL.revokeObjectURL(url), 60000);
       } catch (error) {
         console.error('Lỗi khi xem CV:', error);
-        showNotification('Không tìm thấy CV của ứng viên hoặc lỗi server', 'error');
+        showNotification('CV đã bị xóa khỏi sever', 'error');
       } finally {
         setIsLoading(false);
       }
@@ -540,7 +532,11 @@ const CandidateManagement = () => {
       </div>
 
       {selectedCandidate && (
-        <div className={`${styles.modal} ${styles.active}`}>
+        <div className={`${styles.modal} ${styles.active}`} onClick={(e) => {
+          if (e.target.className === `${styles.modal} ${styles.active}`) {
+            setSelectedCandidate(null);
+          }
+        }}>
           <div className={styles.modalContent}>
             <span className={styles.close} onClick={() => setSelectedCandidate(null)}>×</span>
             <h3>Thông tin chi tiết: {selectedCandidate.name}</h3>

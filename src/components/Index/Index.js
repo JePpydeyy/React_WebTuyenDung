@@ -9,17 +9,14 @@ import { faAngleLeft, faAngleRight, faSearch, faBriefcase, faMapMarkerAlt, faUse
 const bannerImages = [
   '/assets/images/banner1.jpg',
   '/assets/images/banner2.jpg',
-  
 ];
 
-const acfcValues = [
+const ppmvnValues = [
   { img: '/assets/images/01.png', text: 'Lịch sử hình thành', link: '#' },
   { img: '/assets/images/02.png', text: 'Tầm nhìn sứ mệnh - Giá trị cốt lõi', link: '#' },
   { img: '/assets/images/03.png', text: 'Danh hiệu & Giải thưởng', link: '#' },
   { img: '/assets/images/04.png', text: 'Tinh thần PPM.VN', link: '#' },
 ];
-
-
 
 const benefits = [
   {
@@ -28,26 +25,27 @@ const benefits = [
     items: [
       'Mức lương cạnh tranh, chế độ thưởng KPI theo quý, năm.',
       'Tham gia bảo hiểm full lương (BHYT, BHXH, BHTN).',
-      'Mua hàng hiệu giá ưu đãi với chính sách giảm giá nội bộ 30 – 50%, được tham gia mua hàng tại nhiều sự kiện Internal Sale với mức ưu đãi lên đến 80%.',
+      'Hưởng các chính sách phúc lợi đặc biệt dành cho nhân viên như hỗ trợ chi phí đào tạo, nghỉ phép dài ngày.',
       'Tham gia các chương trình gắn kết nội bộ: Happy Friday, Year End Party, Team Building, ...',
     ],
   },
   {
     icon: '/assets/images/pl-02.png',
-    title: 'Môi trường làm việc thân thiện, trẻ trung, năng động',
+    title: 'Môi trường làm việc chuyên nghiệp, hiện đại',
     items: [
-      'ACFC – Happy place to work, nơi hội tụ những cá nhân tài năng, cá tính và đầy năng lượng trong công việc.',
-      'Không gian làm việc hiện đại, được trang bị đầy đủ trang thiết bị hỗ trợ công việc như: Laptop, điện thoại, phần mềm nghe gọi miễn phí 3CX, ...',
-      'Môi trường làm việc trẻ trung, chuyên nghiệp.',
-      'Cơ hội làm việc với các anh chị cấp quản lý nổi tiếng trong ngành thời trang.',
+      'PPMVN nơi hội tụ những cá nhân tài năng và tận tâm trong lĩnh vực quản lý bất động sản.',
+      'Không gian làm việc hiện đại, được trang bị đầy đủ trang thiết bị hỗ trợ công việc như: Laptop, điện thoại, phần mềm quản lý tòa nhà chuyên dụng, ...',
+      'Môi trường làm việc chuyên nghiệp, khuyến khích sáng tạo và đổi mới.',
+      'Cơ hội làm việc với đội ngũ quản lý giàu kinh nghiệm trong ngành quản lý và vận hành bất động sản.',
     ],
   },
   {
     icon: '/assets/images/pl-03.png',
-    title: 'Chương trình đào tạo bài bản, cơ hội học tập và phát triển',
+    title: 'Chương trình đào tạo bài bản, cơ hội phát triển nghề nghiệp',
     items: [
-      'Học hỏi và phát triển cùng đội ngũ những người có kinh nghiệm dẫn đầu trong ngành thời trang bán lẻ.',
-      'Tham gia khóa học đào tạo định kỳ và phát sinh của công ty để liên tục nâng cấp kiến thức, kỹ năng.',
+      'Học hỏi và phát triển cùng đội ngũ chuyên gia hàng đầu trong lĩnh vực quản lý bất động sản và dịch vụ vận hành.',
+      'Tham gia các khóa đào tạo định kỳ về kỹ năng quản lý tòa nhà, bảo trì kỹ thuật, và dịch vụ vệ sinh, cảnh quan.',
+      'Cơ hội thăng tiến rõ ràng với lộ trình phát triển nghề nghiệp chuyên sâu.',
     ],
   },
 ];
@@ -550,11 +548,15 @@ const Index = () => {
         </div>
       </section>
 
-      {/* ACFC Values Section */}
+      {/* PPMVN Values Section */}
       <section className={styles['acfc-values-section']}>
+<<<<<<< HEAD
         <h2 className={styles['section-title']}>PPM VN  </h2>
+=======
+        <h2 className={styles['section-title']}>PPMVN Việt Nam</h2>
+>>>>>>> 686853b2ae8aa4f4d853730ee38f28f1ea163e5f
         <div className={styles['values-grid']}>
-          {acfcValues.map((value, idx) => (
+          {ppmvnValues.map((value, idx) => (
             <div key={idx} className={styles['value-item']}>
               <img src={value.img} alt={value.text} loading="lazy" />
               <Link to={value.link}>
@@ -565,97 +567,96 @@ const Index = () => {
         </div>
       </section>
 
- <div className={styles.container}>
-  <h1>Dịch vụ của chúng tôi</h1>
-  
-  <div className={styles.servicesGrid}>
-    {/* Service Card 1: Quản lý vận hành */}
-    <div className={styles.serviceCard}>
-      <div className={styles.content}>
-        <div className={styles.serviceIcon}>
-          <img src="/assets/images/service1.svg" alt="Quản lý vận hành icon" loading="lazy" />
-        </div>
-        <h3 className={styles.serviceTitle}>Quản lý vận hành</h3>
-        <p className={styles.serviceDescription}>
-          Dịch vụ trọn gói quản lý khai thác vận hành cho mọi loại hình bất động sản nhằm mang đến môi trường làm việc, sinh sống an toàn hiệu quả cho khách hàng.
-        </p>
-      </div>
-    </div>
+      <div className={styles.container}>
+        <h1>Dịch vụ của chúng tôi</h1>
+        <div className={styles.servicesGrid}>
+          {/* Service Card 1: Quản lý vận hành */}
+          <div className={styles.serviceCard}>
+            <div className={styles.content}>
+              <div className={styles.serviceIcon}>
+                <img src="/assets/images/service1.svg" alt="Quản lý vận hành icon" loading="lazy" />
+              </div>
+              <h3 className={styles.serviceTitle}>Quản lý vận hành</h3>
+              <p className={styles.serviceDescription}>
+                Dịch vụ trọn gói quản lý khai thác vận hành cho mọi loại hình bất động sản nhằm mang đến môi trường làm việc, sinh sống an toàn hiệu quả cho khách hàng.
+              </p>
+            </div>
+          </div>
 
-    {/* Service Card 2: Cung cấp nhân sự */}
-    <div className={styles.serviceCard}>
-      <div className={styles.content}>
-        <div className={styles.serviceIcon}>
-          <img src="/assets/images/service2.svg" alt="Cung cấp nhân sự icon" loading="lazy" />
-        </div>
-        <h3 className={styles.serviceTitle}>Cung cấp nhân sự</h3>
-        <p className={styles.serviceDescription}>
-          Cung cấp đội ngũ Nhân sự, dịch vụ chất lượng cao từ Lễ tân, Bảo vệ, Quản lý đến vận hành các Tòa nhà chung cư, Tòa nhà văn phòng, Trung tâm thương mại, Khu đô thị, Khu nghỉ dưỡng.
-        </p>
-      </div>
-    </div>
+          {/* Service Card 2: Cung cấp nhân sự */}
+          <div className={styles.serviceCard}>
+            <div className={styles.content}>
+              <div className={styles.serviceIcon}>
+                <img src="/assets/images/service2.svg" alt="Cung cấp nhân sự icon" loading="lazy" />
+              </div>
+              <h3 className={styles.serviceTitle}>Cung cấp nhân sự</h3>
+              <p className={styles.serviceDescription}>
+                Cung cấp đội ngũ Nhân sự, dịch vụ chất lượng cao từ Lễ tân, Bảo vệ, Quản lý đến vận hành các Tòa nhà chung cư, Tòa nhà văn phòng, Trung tâm thương mại, Khu đô thị, Khu nghỉ dưỡng.
+              </p>
+            </div>
+          </div>
 
-    {/* Service Card 3: Tư vấn vận hành */}
-    <div className={styles.serviceCard}>
-      <div className={styles.content}>
-        <div className={styles.serviceIcon}>
-          <img src="/assets/images/service3.svg" alt="Tư vấn vận hành icon" loading="lazy" />
-        </div>
-        <h3 className={styles.serviceTitle}>Tư vấn vận hành</h3>
-        <p className={styles.serviceDescription}>
-          Tư vấn & cung cấp các giải pháp quản lý hiệu quả nhằm tối ưu hóa, quản lý và khai thác vận hành tòa nhà. Tư vấn kỹ thuật, hệ thống quy trình tác nghiệp cũng như an ninh trật tự.
-        </p>
-      </div>
-    </div>
+          {/* Service Card 3: Tư vấn vận hành */}
+          <div className={styles.serviceCard}>
+            <div className={styles.content}>
+              <div className={styles.serviceIcon}>
+                <img src="/assets/images/service3.svg" alt="Tư vấn vận hành icon" loading="lazy" />
+              </div>
+              <h3 className={styles.serviceTitle}>Tư vấn vận hành</h3>
+              <p className={styles.serviceDescription}>
+                Tư vấn & cung cấp các giải pháp quản lý hiệu quả nhằm tối ưu hóa, quản lý và khai thác vận hành tòa nhà. Tư vấn kỹ thuật, hệ thống quy trình tác nghiệp cũng như an ninh trật tự.
+              </p>
+            </div>
+          </div>
 
-    {/* Service Card 4: Bảo trì, Bảo dưỡng */}
-    <div className={styles.serviceCard}>
-      <div className={styles.content}>
-        <div className={styles.serviceIcon}>
-          <img src="/assets/images/service4.svg" alt="Bảo trì, Bảo dưỡng icon" loading="lazy" />
-        </div>
-        <h3 className={styles.serviceTitle}>Bảo trì, Bảo dưỡng</h3>
-        <p className={styles.serviceDescription}>
-          Cung cấp dịch vụ vận hành, bảo trì bảo dưỡng giúp nâng cao năng suất, chất lượng tổng thể của hệ thống thiết bị, kỹ thuật tòa nhà thông qua các chương trình kiểm tra định kỳ.
-        </p>
-      </div>
-    </div>
+          {/* Service Card 4: Bảo trì, Bảo dưỡng */}
+          <div className={styles.serviceCard}>
+            <div className={styles.content}>
+              <div className={styles.serviceIcon}>
+                <img src="/assets/images/service4.svg" alt="Bảo trì, Bảo dưỡng icon" loading="lazy" />
+              </div>
+              <h3 className={styles.serviceTitle}>Bảo trì, Bảo dưỡng</h3>
+              <p className={styles.serviceDescription}>
+                Cung cấp dịch vụ vận hành, bảo trì bảo dưỡng giúp nâng cao năng suất, chất lượng tổng thể của hệ thống thiết bị, kỹ thuật tòa nhà thông qua các chương trình kiểm tra định kỳ.
+              </p>
+            </div>
+          </div>
 
-    {/* Service Card 5: Dịch vụ Vệ sinh */}
-    <div className={styles.serviceCard}>
-      <div className={styles.content}>
-        <div className={styles.serviceIcon}>
-          <img src="/assets/images/service5.svg" alt="Dịch vụ Vệ sinh icon" loading="lazy" />
-        </div>
-        <h3 className={styles.serviceTitle}>Dịch vụ Vệ sinh</h3>
-        <p className={styles.serviceDescription}>
-          Cung cấp dịch vụ Vệ sinh, Xử lý côn trùng, Khử khuẩn cho toàn bộ Tòa nhà với Đội ngũ Vệ sinh nhiệt huyết và giám sát giàu kinh nghiệm.
-        </p>
-      </div>
-    </div>
+          {/* Service Card 5: Dịch vụ Vệ sinh */}
+          <div className={styles.serviceCard}>
+            <div className={styles.content}>
+              <div className={styles.serviceIcon}>
+                <img src="/assets/images/service5.svg" alt="Dịch vụ Vệ sinh icon" loading="lazy" />
+              </div>
+              <h3 className={styles.serviceTitle}>Dịch vụ Vệ sinh</h3>
+              <p className={styles.serviceDescription}>
+                Cung cấp dịch vụ Vệ sinh, Xử lý côn trùng, Khử khuẩn cho toàn bộ Tòa nhà với Đội ngũ Vệ sinh nhiệt huyết và giám sát giàu kinh nghiệm.
+              </p>
+            </div>
+          </div>
 
-    {/* Service Card 6: Cảnh quan môi trường */}
-    <div className={styles.serviceCard}>
-      <div className={styles.content}>
-        <div className={styles.serviceIcon}>
-          <img src="/assets/images/service6.svg" alt="Cảnh quan môi trường icon" loading="lazy" />
+          {/* Service Card 6: Cảnh quan môi trường */}
+          <div className={styles.serviceCard}>
+            <div className={styles.content}>
+              <div className={styles.serviceIcon}>
+                <img src="/assets/images/service6.svg" alt="Cảnh quan môi trường icon" loading="lazy" />
+              </div>
+              <h3 className={styles.serviceTitle}>Cảnh quan môi trường</h3>
+              <p className={styles.serviceDescription}>
+                Dịch vụ chăm sóc cảnh quan, tạo môi trường làm việc ngập tràn cây xanh được chăm sóc cắt tỉa cẩn thận. Định kỳ phòng trừ các loại vật gây hại như mối, côn trùng, sâu bọ...
+              </p>
+            </div>
+          </div>
         </div>
-        <h3 className={styles.serviceTitle}>Cảnh quan môi trường</h3>
-        <p className={styles.serviceDescription}>
-          Dịch vụ chăm sóc cảnh quan, tạo môi trường làm việc ngập tràn cây xanh được chăm sóc cắt tỉa cẩn thận. Định kỳ phòng trừ các loại vật gây hại như mối, côn trùng, sâu bọ...
-        </p>
       </div>
-    </div>
-  </div>
-</div>
 
       {/* Video Section */}
       <section className={styles['video-section']}>
         <h2>Video Giới Thiệu</h2>
-        <div className={styles['video-container']}>
+         <div className={styles['video-container']}>
           <iframe
-            src="https://www.youtube.com/embed/rKaqO1Lnmnc?loop=1&playlist=rKaqO1Lnmnc"
-            title="Giới thiệu công ty ACFC"
+            src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2FPPM.VN.Ltd%2Fvideos%2F9490759834354567%2F"
+            title="Giới thiệu công ty PPMVN"
             frameBorder="0"
             allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowFullScreen

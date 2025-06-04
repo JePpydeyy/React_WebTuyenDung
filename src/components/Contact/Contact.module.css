@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* Main Layout Container */
 .mainContainer {
     max-width: 1320px;
@@ -384,67 +385,82 @@
 .testimonialBtnLeft:hover,
 .testimonialBtnRight:hover {
     background: #1678f2;
+=======
+/* Container */
+.container {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+>>>>>>> 686853b2ae8aa4f4d853730ee38f28f1ea163e5f
 }
 
 /* Contact Section */
 .contactSection {
-    display: flex;
-    justify-content: space-between;
-    border: 2px solid #ccc;
-    border-radius: 10px;
-    padding: 30px;
-    gap: 20px;
-    flex-wrap: wrap;
+  padding: 2rem 0;
+  background-color: #ffffff;
 }
 
-.contactInfo {
-    flex: 1;
-    min-width: 300px; /* Minimum width before wrapping */
-    display: flex;
-    align-items: center;
-    flex-direction: column;
+.contactContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
 }
 
-.contactInfoBlock {
-    width: 100%;
+.contactGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: start;
 }
 
+<<<<<<< HEAD
 .contactInfoBlock h2 {
     color: #1678f2;
     font-size: 22px;
     margin-bottom: 10px;
     font-weight: 600;
     text-align: center;
+=======
+@media (max-width: 1024px) {
+  .contactGrid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+>>>>>>> 686853b2ae8aa4f4d853730ee38f28f1ea163e5f
 }
 
-.region {
-    margin-top: 20px;
+/* Company Information */
+.companyInfo {
+  padding-right: 2rem;
 }
 
-.region h3 {
-    margin-bottom: 5px;
-    font-weight: bold;
-    color: #000;
+@media (max-width: 1024px) {
+  .companyInfo {
+    padding-right: 0;
+  }
 }
 
-.region p {
-    margin: 4px 0;
-    font-size: 15px;
+.companyHeader {
+  margin-bottom: 2rem;
 }
 
-.region strong {
-    color: #000;
+.companyTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
 }
 
-.socialIcons {
-    display: flex;
-    gap: 30px;
-    margin-top: 30px;
-    justify-content: start;
+.companySubtitle {
+  color: #6b7280;
+  font-size: 0.875rem;
+  margin: 0;
 }
 
-.icon {
-    text-align: center;
+.contactDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .icon i {
@@ -460,12 +476,15 @@
     justify-content: center;
 }
 
-.icon a {
-    display: block;
-    margin-top: 8px;
-    font-size: 14px;
-    text-decoration: none;
-    color: #000;
+.contactIcon {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
 }
 
 .icon a:hover {
@@ -473,276 +492,136 @@
 }
 
 .mapContainer {
-    flex: 1;
-    min-width: 300px; /* Minimum width before wrapping */
-    height: 350px;
-    border-radius: 10px;
-    overflow: hidden;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
 }
 
-/* --- Media Queries for Responsiveness --- */
-
-/* For screens up to 780px wide (e.g., Tablets) */
-@media (max-width: 780px) {
-    .bannerWrapper {
-        height: 300px; /* Adjust banner height */
-    }
-
-    .bannerBtn {
-        font-size: 0.9rem;
-        width: 32px;
-        height: 32px;
-    }
-
-    .bannerBtnLeft {
-        left: 0.5rem;
-    }
-
-    .bannerBtnRight {
-        right: 0.5rem;
-    }
-
-    .bannerIndicators {
-        bottom: 0.8rem;
-        gap: 0.4rem;
-    }
-
-    .indicator {
-        width: 8px;
-        height: 8px;
-    }
-
-    .features {
-        flex-direction: column; /* Stack features vertically */
-        align-items: center;
-        gap: 1rem;
-    }
-
-    .feature {
-        width: 100%;
-        max-width: 400px;
-    }
-
-    .feature img {
-        width: 80px;
-        height: 80px;
-    }
-
-    .feature h2 {
-        font-size: 1.5rem;
-    }
-
-    .feature p {
-        font-size: 0.85rem;
-    }
-
-    .about {
-        padding: 1.5rem 1rem;
-    }
-
-    .about h1 {
-        font-size: 2rem;
-    }
-
-    .about p {
-        font-size: 1rem;
-        max-width: 95%;
-    }
-
-    .statsSection {
-        padding: 2rem 1rem;
-    }
-
-    .statsTitle {
-        font-size: 1.5rem;
-    }
-
-    .statsContainer {
-        flex-direction: column; /* Stack stats vertically */
-        gap: 1.5rem;
-    }
-
-    .statItem {
-        min-width: 100%;
-    }
-
-    .statNumber {
-        font-size: 2rem;
-    }
-
-    .statDescription {
-        font-size: 0.9rem;
-    }
-
-    .route img {
-        max-width: 100%;
-    }
-
-    .brand h2 {
-        font-size: 2rem;
-    }
-
-    .brandLogos {
-        gap: 0.5rem;
-        padding: 0.5rem;
-    }
-
-    .brandItem {
-        width: clamp(100px, 30vw, 140px);
-        height: clamp(60px, 20vw, 80px);
-    }
-
-    .testimonialSection {
-        height: auto; /* Allow height to adjust based on content */
-    }
-
-    .testimonialSlider {
-        max-width: 100%;
-        padding: 0 2rem;
-    }
-
-    .testimonialSlide {
-        flex-direction: column; /* Stack testimonial image and content vertically */
-        padding: 1.5rem 5%;
-        align-items: flex-start; /* Align stacked content to the start */
-    }
-
-    .testimonialImage {
-        width: 120px;
-        margin-right: 0;
-        margin-bottom: 1rem; /* Add margin below image */
-    }
-
-    .testimonialQuote {
-        font-size: 0.9rem;
-    }
-
-    .testimonialAuthor {
-        font-size: 0.8rem;
-    }
-
-    .testimonialBtnLeft {
-        left: 0.5rem;
-    }
-
-    .testimonialBtnRight {
-        right: 0.5rem;
-    }
-
-    /* Contact Section adjustments for tablets */
-    .contactSection {
-        flex-direction: column; /* Stack contact info and map vertically */
-        padding: 20px;
-    }
-
-    .contactInfo,
-    .mapContainer {
-        width: 100%; /* Make them take full width */
-    }
-
-    .mapContainer {
-        margin-top: 20px; /* Add space between stacked elements */
-        height: 300px; /* Adjust map height */
-    }
-
-    .socialIcons {
-        justify-content: center; /* Center social icons when stacked */
-        flex-wrap: wrap;
-        gap: 20px;
-    }
+.mapWrapper {
+  background-color: #ffffff;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
 }
 
-/* For screens up to 480px wide (e.g., Mobile Phones) */
-@media (max-width: 480px) {
-    .bannerWrapper {
-        height: 150px; /* Further reduce banner height */
-    }
+.mapPlaceholder {
+  height: 24rem;
+  background-color: #e5e7eb;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-    .bannerBtn {
-        font-size: 0.8rem;
-        width: 28px;
-        height: 28px;
-    }
+.mapContent {
+  text-align: center;
+  z-index: 1;
+}
 
-    .bannerIndicators {
-        bottom: 0.5rem;
-    }
+.mapIconWrapper {
+  margin-bottom: 0.5rem;
+}
 
-    .indicator {
-        width: 6px;
-        height: 6px;
-    }
+.mapIcon {
+  font-size: 3rem;
+  color: #6b7280;
+}
 
-    .feature img {
-        width: 60px;
-        height: 60px;
-    }
+.mapText {
+  color: #4b5563;
+  font-size: 0.875rem;
+  margin: 0 0 0.25rem 0;
+}
 
-    .feature h2 {
-        font-size: 1.2rem;
-    }
+.mapAddress {
+  color: #6b7280;
+  font-size: 0.75rem;
+  margin: 0;
+}
 
-    .feature p {
-        font-size: 0.8rem;
-    }
+.mapControls {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
 
-    .about h1 {
-        font-size: 1.8rem;
-    }
+.mapControl {
+  background-color: #ffffff;
+  border: none;
+  border-radius: 0.25rem;
+  padding: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
 
-    .about p {
-        font-size: 0.9rem;
-    }
+.mapControl:hover {
+  background-color: #f9fafb;
+}
 
-    .statsTitle {
-        font-size: 1.2rem;
-    }
+.mapControl i {
+  font-size: 0.875rem;
+  color: #4b5563;
+}
 
-    .statNumber {
-        font-size: 1.8rem;
-    }
+.mapMarker {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 
-    .statDescription {
-        font-size: 0.8rem;
-    }
+.markerIcon {
+  width: 2rem;
+  height: 2rem;
+  background-color: #dc2626;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
 
-    .brand h2 {
-        font-size: 1.8rem;
-    }
+.markerIcon i {
+  color: white;
+  font-size: 1rem;
+}
+.errorText {
+  color: red;
+  font-size: 0.85rem;
+  margin-top: 4px;
+}
 
-    .brandItem {
-        width: clamp(80px, 25vw, 100px);
-        height: clamp(50px, 15vw, 60px);
-    }
+.formInput {
+  width: 100%;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  outline: none;
+}
 
-    .testimonialSlider {
-        padding: 0 1.5rem;
-    }
+.formInput:focus {
+  border-color: #007bff;
+}
 
-    .testimonialImage {
-        width: 100px;
-    }
+.formGroup,
+.formRow {
+  margin-bottom: 16px;
+}
 
-    .testimonialQuote {
-        font-size: 0.85rem;
-    }
-
-    .testimonialAuthor {
-        font-size: 0.75rem;
-    }
-
-    .testimonialBtnLeft,
-    .testimonialBtnRight {
-        font-size: 0.8rem;
-        width: 28px;
-        height: 28px;
-    }
-
-    .testimonialBtnLeft {
-        left: 0.5rem;
-    }
-
-    .testimonialBtnRight {
-        right: 0.5rem;
-    }
+.submitButton {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 24px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }

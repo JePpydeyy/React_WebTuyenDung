@@ -204,19 +204,23 @@ th {
   max-width: 900px;
   max-height: 80vh;
   overflow-y: auto;
+  position: relative;
+  z-index: 1001; /* Ensure content is above the modal overlay but below the close button */
 }
 
 .close {
-  color: #aaa;
-  float: right;
-  font-size: 1.75rem;
+  color: #fd0000;
+  font-size: 2rem;
   font-weight: bold;
   cursor: pointer;
   transition: color 0.2s ease;
+  float: right;
+  margin-right: 10px
 }
 
 .close:hover {
-  color: var(--text-color);
+    color: #530000;
+
 }
 
 .newsDetails,

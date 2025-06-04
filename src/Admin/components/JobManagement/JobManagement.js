@@ -578,7 +578,11 @@ const JobManagement = () => {
       </div>
 
       {selectedJob && (
-        <div className={styles.modal}>
+        <div className={styles.modal} onClick={(e) => {
+          if (e.target.className === styles.modal) {
+            setSelectedJob(null);
+          }
+        }}>
           <div className={styles.modalContent}>
             <span className={styles.close} onClick={() => setSelectedJob(null)}>×</span>
             <h3>Chi Tiết Công Việc: {selectedJob.title}</h3>
@@ -657,7 +661,11 @@ const JobManagement = () => {
       )}
 
       {showModal && (
-        <div className={styles.modal}>
+        <div className={styles.modal} onClick={(e) => {
+          if (e.target.className === styles.modal) {
+            setShowModal(false);
+          }
+        }}>
           <div className={styles.modalContent}>
             <span className={styles.close} onClick={() => setShowModal(false)}>×</span>
             <h3>{modalMode === 'add' ? 'Thêm Công Việc Mới' : 'Chỉnh Sửa Công Việc'}</h3>
