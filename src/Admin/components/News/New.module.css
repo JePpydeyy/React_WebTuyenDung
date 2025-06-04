@@ -204,15 +204,20 @@ th {
   max-width: 900px;
   max-height: 80vh;
   overflow-y: auto;
+  position: relative;
+  z-index: 1001; /* Ensure content is above the modal overlay but below the close button */
 }
 
 .close {
   color: #aaa;
-  float: right;
   font-size: 1.75rem;
   font-weight: bold;
   cursor: pointer;
   transition: color 0.2s ease;
+  position: fixed; /* Remains fixed to viewport */
+  top: calc(5% + var(--spacing-sm, 10px)); /* Offset from top, matching modal margin */
+  right: calc(5% + var(--spacing-sm, 10px)); /* Offset from right, matching modal margin */
+  z-index: 1002; /* Higher than modal and modalContent to stay on top */
 }
 
 .close:hover {

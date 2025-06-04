@@ -425,7 +425,7 @@ const MainContent = () => {
           <div className={styles.value}>{allProfiles.length}</div>
         </div>
         <div className={styles.card}>
-          <h3>Tổng hồ sơ tiếp nhận <i className="fa-regular fa-paste"></i></h3>
+          <h3>Tổng hồ sơ đã tuyển dụng <i className="fa-regular fa-paste"></i></h3>
           <div className={styles.value}>
             {allProfiles.filter(p => getStatusInfo(p.status).text === 'Đã tuyển dụng').length}
           </div>
