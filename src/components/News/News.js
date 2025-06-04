@@ -224,7 +224,7 @@ const News = () => {
             <img
               key={src}
               className={`${styles.bannerImage} ${idx === current ? styles.active : ''} ${
-                idx === (current - 1 + bannerImages.length) % bannerImages.length ? styles.prev : ''
+                idx === (current - 1 + bannerImages.length) % bannerImages.length ? styles.prev: ''
               }`}
               src={src}
               alt={`Banner ${idx + 1}`}
@@ -250,7 +250,7 @@ const News = () => {
             {bannerImages.map((_, idx) => (
               <span
                 key={idx}
-                className={`${styles.indicator} ${idx === current ? styles.active : ''}`}
+                className={`${styles.indicator} ${idx === current ? styles.active: ''}`}
                 onClick={() => showSlide(idx)}
                 aria-label={`Chuyển đến banner ${idx + 1}`}
               ></span>
