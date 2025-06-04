@@ -71,7 +71,7 @@ const Header = () => {
               onClick={() => handleLinkClick('/news')}
               aria-label="Go to News page"
             >
-              <i className="fas fa-newspaper"></i> Nhịp sống ACFC
+              <i className="fas fa-newspaper"></i> Tin tức sự kiện
             </Link>
           </li>
           <li>

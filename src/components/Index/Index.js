@@ -15,7 +15,7 @@ const ppmvnValues = [
   { img: '/assets/images/01.png', text: 'Lịch sử hình thành', link: '#' },
   { img: '/assets/images/02.png', text: 'Tầm nhìn sứ mệnh - Giá trị cốt lõi', link: '#' },
   { img: '/assets/images/03.png', text: 'Danh hiệu & Giải thưởng', link: '#' },
-  { img: '/assets/images/04.png', text: 'Tinh thần PPM.VN', link: '#' },
+  { img: '/assets/images/04.png', text: 'Tinh thần PPMVN', link: '#' },
 ];
 
 const benefits = [
@@ -550,11 +550,7 @@ const Index = () => {
 
       {/* PPMVN Values Section */}
       <section className={styles['acfc-values-section']}>
-<<<<<<< HEAD
-        <h2 className={styles['section-title']}>PPM VN  </h2>
-=======
         <h2 className={styles['section-title']}>PPMVN Việt Nam</h2>
->>>>>>> 686853b2ae8aa4f4d853730ee38f28f1ea163e5f
         <div className={styles['values-grid']}>
           {ppmvnValues.map((value, idx) => (
             <div key={idx} className={styles['value-item']}>
