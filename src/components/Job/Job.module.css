@@ -12,9 +12,8 @@
   max-width: 100vw;
   overflow: hidden;
   aspect-ratio: 16 / 9;
-  
   height: 40rem;
-  background-color: #a00;
+  background-color: #1678f2; /* Đổi từ đỏ sang xanh */
   cursor: grab;
   user-select: none;
   -webkit-user-select: none;
@@ -23,10 +22,7 @@
   touch-action: pan-y pinch-zoom;
 }
 
-.bannerWrapper:active {
-  cursor: grabbing;
-}
-
+.bannerWrapper:active,
 .bannerWrapper.dragging {
   cursor: grabbing;
 }
@@ -37,12 +33,11 @@
   height: 100%;
   left: 0;
   top: 0;
-  
   transform: translateX(100%);
   transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 1;
   pointer-events: none;
-  object-fit: fill; /* Sử dụng object-fit: fill theo yêu cầu */
+  object-fit: fill;
   user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -74,16 +69,13 @@
   background: rgba(0, 0, 0, 0.4);
   color: #fff;
   border: none;
-  font-size: 1rem; /* Điều chỉnh theo mẫu CSS */
+  font-size: 1rem;
   padding: 0.5rem;
   cursor: pointer;
   border-radius: 50%;
   z-index: 3;
   transition: background 0.2s ease;
   user-select: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   width: 36px;
   height: 36px;
   display: flex;
@@ -92,11 +84,11 @@
 }
 
 .bannerBtnLeft {
-  left: 1rem; /* Điều chỉnh theo mẫu CSS */
+  left: 1rem;
 }
 
 .bannerBtnRight {
-  right: 1rem; /* Điều chỉnh theo mẫu CSS */
+  right: 1rem;
 }
 
 .bannerBtn:hover {
@@ -110,25 +102,22 @@
 
 .bannerIndicators {
   position: absolute;
-  bottom: 1rem; /* Điều chỉnh theo mẫu CSS */
+  bottom: 1rem;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 0.5rem; /* Điều chỉnh theo mẫu CSS */
+  gap: 0.5rem;
   z-index: 3;
 }
 
 .indicator {
-  width: 10px; /* Điều chỉnh theo mẫu CSS */
+  width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.4); /* Điều chỉnh theo mẫu CSS */
+  background: rgba(255, 255, 255, 0.4);
   cursor: pointer;
   transition: background 0.3s ease, transform 0.2s ease;
   user-select: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
 }
 
 .indicator:hover {
@@ -136,7 +125,7 @@
 }
 
 .indicator.active {
-  background: #fff; /* Điều chỉnh theo mẫu CSS */
+  background: #fff;
 }
 
 /* Job Search Section */
@@ -399,12 +388,12 @@
 
 @media (max-width: 780px) {
   .bannerWrapper {
-    height: 350px; /* Chiều cao cố định 350px tại 780px */
-    min-height: unset; /* Loại bỏ min-height để sử dụng chiều cao cố định */
-    aspect-ratio: unset; /* Loại bỏ aspect-ratio để ưu tiên chiều cao cố định */
+    height: 350px;
+    min-height: unset;
+    aspect-ratio: unset;
   }
   .bannerImage {
-    object-fit: fill; /* Giữ object-fit: fill */
+    object-fit: fill;
   }
   .bannerBtn {
     font-size: 0.9rem;
@@ -485,12 +474,12 @@
 
 @media (max-width: 380px) {
   .bannerWrapper {
-    height: 200px; /* Chiều cao tại 380px */
-    min-height: unset; /* Loại bỏ min-height */
-    aspect-ratio: unset; /* Loại bỏ aspect-ratio */
+    height: 200px;
+    min-height: unset;
+    aspect-ratio: unset;
   }
   .bannerImage {
-    object-fit: fill; /* Giữ object-fit: fill */
+    object-fit: fill;
   }
   .bannerBtn {
     font-size: 0.8rem;
@@ -511,7 +500,7 @@
     width: 6px;
     height: 6px;
     border-width: 1px;
-    padding: 0.3rem; /* Tăng vùng chạm cho thiết bị cảm ứng */
+    padding: 0.3rem;
   }
   .jobSearch {
     padding: 0 10px;
