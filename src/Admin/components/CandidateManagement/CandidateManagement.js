@@ -18,19 +18,17 @@ const CandidateManagement = () => {
 
   // Status mappings
   const statusDisplayMap = {
-    pending: 'Mới',
-    reviewed: 'Đã xem xét',
-    interview: 'Đang phỏng vấn',
+    pending: 'Đang chờ xét duyệt',
+    interview: 'Đã phỏng vấn',
     accepted: 'Đã tuyển dụng',
     rejected: 'Đã từ chối',
   };
 
   const statusBackendMap = {
-    'Mới': 'pending',
-    'Đã xem xét': 'reviewed',
-    'Đang phỏng vấn': 'interview',
+    'Đang chờ xét duyệt': 'pending',
+    'Đã phỏng vấn': 'interview',
     'Đã tuyển dụng': 'accepted',
-    'Đã từ chối': 'rejected',
+    'Đã từ chối': 'rejected', 
   };
 
   const showNotification = useCallback((message, type = 'success') => {
@@ -613,31 +611,31 @@ const CandidateManagement = () => {
               <div className={styles.detailAction}>
                 <button
                   className={`${styles.statusBtn} ${styles.moi}`}
-                  onClick={() => changeStatus(selectedCandidate.id, 'Mới')}
+                  onClick={() => changeStatus(selectedCandidate.id, 'Đang chờ xét duyệt')}
                   disabled={isLoading}
                 >
-                  Đánh dấu Mới
+                  Đang chờ xét duyệt
                 </button>
                 <button
                   className={`${styles.statusBtn} ${styles.phongVan}`}
-                  onClick={() => changeStatus(selectedCandidate.id, 'Đang phỏng vấn')}
+                  onClick={() => changeStatus(selectedCandidate.id, 'Đã phỏng vấn')}
                   disabled={isLoading}
                 >
-                  Đánh dấu Phỏng vấn
+                  Đã phỏng vấn
                 </button>
                 <button
                   className={`${styles.statusBtn} ${styles.duocNhan}`}
                   onClick={() => changeStatus(selectedCandidate.id, 'Đã tuyển dụng')}
                   disabled={isLoading}
                 >
-                  Đánh dấu Tuyển dụng
+                  Đã tuyển dụng
                 </button>
                 <button
                   className={`${styles.statusBtn} ${styles.tuChoi}`}
                   onClick={() => changeStatus(selectedCandidate.id, 'Đã từ chối')}
                   disabled={isLoading}
                 >
-                  Đánh dấu Từ chối
+                  Đã Từ chối
                 </button>
               </div>
             </div>
