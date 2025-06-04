@@ -209,19 +209,18 @@ th {
 }
 
 .close {
-  color: #aaa;
-  font-size: 1.75rem;
+  color: #fd0000;
+  font-size: 2rem;
   font-weight: bold;
   cursor: pointer;
   transition: color 0.2s ease;
-  position: fixed; /* Remains fixed to viewport */
-  top: calc(5% + var(--spacing-sm, 10px)); /* Offset from top, matching modal margin */
-  right: calc(5% + var(--spacing-sm, 10px)); /* Offset from right, matching modal margin */
-  z-index: 1002; /* Higher than modal and modalContent to stay on top */
+  float: right;
+  margin-right: 10px
 }
 
 .close:hover {
-  color: var(--text-color);
+    color: #530000;
+
 }
 
 .newsDetails,

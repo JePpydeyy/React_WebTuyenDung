@@ -299,18 +299,18 @@
 }
 
 .close {
-  color: #aaa;
-  position: absolute;
-  right: 20px;
-  top: 15px;
-  font-size: 1.75rem;
+  color: #fd0000;
+  font-size: 2rem;
   font-weight: bold;
   cursor: pointer;
   transition: color 0.2s ease;
+  float: right;
+  margin-right: 10px
 }
 
 .close:hover {
-  color: var(--text-muted);
+    color: #530000;
+
 }
 
 .modalContent h3 {
