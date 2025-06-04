@@ -374,9 +374,9 @@ const CandidateManagement = () => {
 
   const getStatusClass = useCallback((status) => {
     const statusMap = {
-      'Mới': styles.moi,
+      'Đang chờ xét duyệt': styles.moi,
       'Đã xem xét': styles.daXemXet,
-      'Đang phỏng vấn': styles.phongVan,
+      'Đã phỏng vấn': styles.phongVan,
       'Đã tuyển dụng': styles.duocNhan,
       'Đã từ chối': styles.tuChoi,
     };

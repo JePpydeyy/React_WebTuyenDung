@@ -217,6 +217,7 @@ const JobManagement = () => {
         });
         if (!response.ok) throw new Error(`HTTP error ${response.status}`);
         await displayJobs(currentPage);
+        window.location.reload();
       } catch (error) {
         console.error('Lỗi khi tạm dừng công việc:', error);
         alert('Có lỗi xảy ra khi tạm dừng công việc.');
