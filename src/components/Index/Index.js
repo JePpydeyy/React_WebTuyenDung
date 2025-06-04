@@ -5,7 +5,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleLeft, faAngleRight, faSearch, faBriefcase, faMapMarkerAlt, faUserTie } from '@fortawesome/free-solid-svg-icons';
 
-// Static data (unchanged)
+// Static data
 const bannerImages = [
   '/assets/images/banner1.jpg',
   '/assets/images/banner2.jpg',
@@ -50,121 +50,8 @@ const benefits = [
   },
 ];
 
-// Carousel component (unchanged)
-const Carousel = ({ images }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [translateX, setTranslateX] = useState(0);
-  const timerRef = useRef(null);
-  const carouselRef = useRef(null);
-
-  const nextSlide = useCallback(() => {
-    setCurrentIndex((prev) => (prev + 1) % images.length);
-    setTranslateX(0);
-  }, [images.length]);
-
-  const prevSlide = useCallback(() => {
-    setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
-    setTranslateX(0);
-  }, [images.length]);
-
-  const stopAutoSlide = useCallback(() => {
-    if (timerRef.current) clearInterval(timerRef.current);
-  }, []);
-
-  const startAutoSlide = useCallback(() => {
-    stopAutoSlide();
-    timerRef.current = setInterval(nextSlide, 5000);
-  }, [nextSlide, stopAutoSlide]);
-
-  useEffect(() => {
-    startAutoSlide();
-    return stopAutoSlide;
-  }, [startAutoSlide, stopAutoSlide]);
-
-  const handleDragStart = useCallback((clientX) => {
-    setIsDragging(true);
-    setStartX(clientX);
-    stopAutoSlide();
-  }, [stopAutoSlide]);
-
-  const handleDragMove = useCallback((clientX) => {
-    if (!isDragging) return;
-    const diffX = clientX - startX;
-    setTranslateX(diffX);
-  }, [isDragging, startX]);
-
-  const handleDragEnd = useCallback(() => {
-    if (!isDragging) return;
-    setIsDragging(false);
-    const threshold = 100;
-    if (translateX < -threshold) {
-      nextSlide();
-    } else if (translateX > threshold) {
-      prevSlide();
-    }
-    setTranslateX(0);
-    startAutoSlide();
-  }, [isDragging, translateX, nextSlide, prevSlide, startAutoSlide]);
-
-  const handleMouseDown = (e) => {
-    e.preventDefault();
-    handleDragStart(e.clientX);
-  };
-
-  const handleMouseMove = (e) => {
-    handleDragMove(e.clientX);
-  };
-
-  const handleMouseUp = () => {
-    handleDragEnd();
-  };
-
-  const handleTouchStart = (e) => {
-    handleDragStart(e.touches[0].clientX);
-  };
-
-  const handleTouchMove = (e) => {
-    handleDragMove(e.touches[0].clientX);
-  };
-
-  const handleTouchEnd = () => {
-    handleDragEnd();
-  };
-
-  return (
-    <div
-      className={styles['a-l-img']}
-      ref={carouselRef}
-      onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseUp}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-    >
-      <div className={styles.carousel}>
-        {images.map((img, idx) => (
-          <div
-            key={idx}
-            className={`${styles['carousel-item']} ${idx === currentIndex ? styles.active : ''}`}
-            style={{
-              transform: `translateX(${translateX}px)`,
-              transition: isDragging ? 'none' : 'opacity 0.7s ease, transform 0.7s ease',
-            }}
-          >
-            <img src={img} alt={`Slide ${idx + 1}`} loading="lazy" />
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
-
 const Index = () => {
-  // Banner slider state (unchanged)
+  // Banner slider state
   const [bannerIdx, setBannerIdx] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
@@ -550,11 +437,7 @@ const Index = () => {
 
       {/* PPMVN Values Section */}
       <section className={styles['acfc-values-section']}>
-<<<<<<< HEAD
-        <h2 className={styles['section-title']}>PPM VN  </h2>
-=======
         <h2 className={styles['section-title']}>PPMVN Việt Nam</h2>
->>>>>>> 686853b2ae8aa4f4d853730ee38f28f1ea163e5f
         <div className={styles['values-grid']}>
           {ppmvnValues.map((value, idx) => (
             <div key={idx} className={styles['value-item']}>
@@ -567,10 +450,11 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Services Section */}
       <div className={styles.container}>
         <h1>Dịch vụ của chúng tôi</h1>
         <div className={styles.servicesGrid}>
-          {/* Service Card 1: Quản lý vận hành */}
+          {/* Service Card 1 */}
           <div className={styles.serviceCard}>
             <div className={styles.content}>
               <div className={styles.serviceIcon}>
@@ -582,8 +466,7 @@ const Index = () => {
               </p>
             </div>
           </div>
-
-          {/* Service Card 2: Cung cấp nhân sự */}
+          {/* Service Card 2 */}
           <div className={styles.serviceCard}>
             <div className={styles.content}>
               <div className={styles.serviceIcon}>
@@ -595,8 +478,7 @@ const Index = () => {
               </p>
             </div>
           </div>
-
-          {/* Service Card 3: Tư vấn vận hành */}
+          {/* Service Card 3 */}
           <div className={styles.serviceCard}>
             <div className={styles.content}>
               <div className={styles.serviceIcon}>
@@ -608,8 +490,7 @@ const Index = () => {
               </p>
             </div>
           </div>
-
-          {/* Service Card 4: Bảo trì, Bảo dưỡng */}
+          {/* Service Card 4 */}
           <div className={styles.serviceCard}>
             <div className={styles.content}>
               <div className={styles.serviceIcon}>
@@ -621,8 +502,7 @@ const Index = () => {
               </p>
             </div>
           </div>
-
-          {/* Service Card 5: Dịch vụ Vệ sinh */}
+          {/* Service Card 5 */}
           <div className={styles.serviceCard}>
             <div className={styles.content}>
               <div className={styles.serviceIcon}>
@@ -634,8 +514,7 @@ const Index = () => {
               </p>
             </div>
           </div>
-
-          {/* Service Card 6: Cảnh quan môi trường */}
+          {/* Service Card 6 */}
           <div className={styles.serviceCard}>
             <div className={styles.content}>
               <div className={styles.serviceIcon}>
@@ -653,7 +532,7 @@ const Index = () => {
       {/* Video Section */}
       <section className={styles['video-section']}>
         <h2>Video Giới Thiệu</h2>
-         <div className={styles['video-container']}>
+        <div className={styles['video-container']}>
           <iframe
             src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2FPPM.VN.Ltd%2Fvideos%2F9490759834354567%2F"
             title="Giới thiệu công ty PPMVN"
