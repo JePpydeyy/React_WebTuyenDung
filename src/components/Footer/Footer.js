@@ -10,9 +10,13 @@ const Footer = () => {
           <div className={styles['footer-column']}>
             <h5>Thông tin liên lạc</h5>
             <div className={styles['footer-info']}>
+               <p>
+                <strong>Công ty TNHH Quản lý tài sản Premier Việt Nam (PPM.VN) </strong>
+              </p>
               <p>
                 <strong>Địa chỉ: </strong>110 Cao Thắng, Phường 4, Quận 3, Tp. Hồ Chí Minh, Việt Nam
               </p>
+             
               <p>
                 <strong>MST: </strong>0316402442
               </p>

@@ -7,10 +7,9 @@ const bannerImages = [
 ];
 
 const features = [
-  { img: '/assets/images/acfc-a.png', title: 'Authentic', desc: '100% sản phẩm chính hãng' },
-  { img: '/assets/images/acfc-c.png', title: 'Convenient', desc: 'Mua sắm thời trang hàng hiệu chỉ trong 1 cú click' },
-  { img: '/assets/images/acfc-f.png', title: 'Family', desc: 'Đa dạng hóa sản phẩm cho mọi thành viên trong gia đình' },
-  { img: '/assets/images/acfc-c.png', title: 'Catch the trends', desc: 'Bắt nhịp những xu hướng thời trang mới nhất thế giới' }
+  { img: '/assets/images/4.jpg', title: 'PREMIER', desc: 'Chất lượng cao cấp, dẫn đầu ngành' },
+  { img: '/assets/images/4.jpg', title: 'PROPERTY', desc: 'Quản lý bất động sản, phát triển tài sản' },
+  { img: '/assets/images/3.jpg', title: 'MANAGEMENT', desc: 'Chuyên nghiệp, duy trì giá trị bền vững' }
 ];
 
 const testimonials = [
@@ -27,10 +26,21 @@ const testimonials = [
 ];
 
 const brandLogos = [
-  'ax.svg', 'banana_republic.svg', 'ck_1.svg', 'cottonon_hover.svg', 'dockers.svg', 'fcuk_hover.svg',
-  'gap.svg', 'guess.svg', 'karl.svg', 'levis_hover.svg', 'mango.svg', 'mothercare.svg', 'nike.svg',
-  'old_navy.svg', 'ovs.svg', 'owndays.svg', 'parfois.svg', 'polo.svg', 'sisley.svg', 'sunnies_face.svg',
-  'sunnies_studios.svg', 'swarovski.svg', 'tommy_hilfiger.svg', 'typo.svg'
+  "tienphat-logo-300x200-1.png",
+  "hoabinh-house-300x200-1.jpg",
+  "Tien-Thinh-300x200-1.jpg",
+  "Paxsky-logo-300x200-1.jpg",
+  "Suntec-logo-300x200-1.jpg",
+  "longhoang-logo-1-300x200-1.jpg",
+  "namlong-logo-1-300x200-1.jpg",
+  "thanhbinhphu-logo-300x200-1.jpg",
+  "Logo-SW-300x200-1.jpg",
+  "HOANG-PHUC-LAND-300x72.png",
+  "RIVERA-PARK-SG.png",
+  "CENTRAL-PREMIUM.png",
+  "dockland.jpg",
+  "logo-the-western-capital.png",
+  "Logo-Gia-Loc.png"
 ];
 
 const About = () => {
@@ -107,7 +117,7 @@ const About = () => {
     if (!wrapper) return;
 
     wrapper.addEventListener('touchstart', handleDragStart, { passive: false });
-    wrapper.addEventListener('touchmove', handleDragMove, { passive: false });
+    wrapper.addEventListener('touchmove', handleDragMove, { passivemissable: true, passive: false });
     wrapper.addEventListener('touchend', handleDragEnd);
     wrapper.addEventListener('mousedown', handleDragStart);
     wrapper.addEventListener('mousemove', handleDragMove);
@@ -164,7 +174,6 @@ const About = () => {
       slider.removeEventListener('mouseleave', startTestimonialAuto);
     };
   }, []);
-
   return (
     <div>
       {/* Banner */}
@@ -215,7 +224,27 @@ const About = () => {
           </div>
         </div>
       </section>
-
+      
+     <div className={styles.ppmvnIntro}>
+  <h2>GIỚI THIỆU VỀ PPM.VN</h2>
+  <p>
+    PPM.VN là công ty chuyên cung cấp dịch vụ quản lý, tư vấn quản lý bất động sản toàn diện với mục tiêu mang lại giá trị cao nhất cho khách hàng sử dụng và vận hành các dự án lớn trên cả nước. Chúng tôi cam kết mang lại cho khách hàng sự hài lòng với chất lượng dịch vụ hàng đầu, chuyên nghiệp và minh bạch. Đội ngũ của chúng tôi có kinh nghiệm phong phú trong lĩnh vực tư vấn giải pháp, cung cấp các dịch vụ cao cấp và có sự kết nối mạnh mẽ với các đối tác trong nước và quốc tế.
+  </p>
+  <p><strong>Tên tiếng Việt:</strong> Công ty TNHH Quản lý tài sản Premier Việt Nam (PPM.VN)</p>
+  <p><strong>Tên tiếng Anh:</strong> Premier Property Management Vietnam Company Limited</p>
+  <p><strong>Trụ sở chính:</strong> 110 Cao Thắng, Phường 4, Quận 3, Tp. Hồ Chí Minh, Việt Nam</p>
+  <p><strong>Hotline:</strong> 0898 514 239</p>
+  <p><strong>Email:</strong> vanhanh@ppmvn.vn</p> {/* Sửa lỗi email */}
+  <p><strong>Số tài khoản:</strong> 189 100000 386 533</p>
+  <a
+    href="https://ppmvn.vn/wp-content/uploads/2023/04/PROFILE-2023.04.12-da-nen.pdf"
+    target="_blank"
+    rel="noopener noreferrer"
+    className={styles.brochureBtn}
+  >
+    TẢI BROCHURE
+  </a>
+</div>
       {/* Features */}
       <div className={styles.features}>
         {features.map((f, idx) => (
@@ -226,46 +255,69 @@ const About = () => {
           </div>
         ))}
       </div>
+      <div className={styles.Aboutcty}>
+<div className={styles.giaTriCotLoi}>
+  <img src="/assets/images/hand2.webp" alt="Handshake representing core values" className={styles.giaTriCotLoiImage} />
+  <div className={styles.giaTriCotLoiContent}>
+    <h2>GIÁ TRỊ CỐT LÕI</h2>
+    <p>
+     Chúng tôi là những chiến binh với nhiệt huyết và khát vọng dẫn đầu luôn sẵn sàng đón nhận thử thách, linh hoạt thích nghi với mọi hoàn cảnh, tận tâm trách nhiệm trong công việc và chân thành tử tế trong các mối quan hệ.
+    </p>
+    <ul>
+      <li>Khát vọng dẫn đầu</li>
+      <li>Linh hoạt thích nghi</li>
+      <li>Tân tâm trách nhiệm</li>
+      <li>Chân thành và uy tín</li>
+    </ul>
+  </div>
+</div>
+<div className={styles.nguyenTacHoatDong}>
+  <div className={styles.nguyenTacHoatDongContent}>
+    <h2>NGUYÊN TẮC HOẠT ĐỘNG</h2>
+    <p>
+      Chúng tôi tuân thủ 6 Quy chế cốt lõi quan trọng trong hoạt động:
+    </p>
+    <ul>
+      <li>Lấy uy tín làm nền tảng cốt lõi trong hoạt động</li>
+      <li>Cung cấp dịch vụ với chất lượng cao nhất</li>
+      <li>Mang đến môi trường làm việc chuyên nghiệp, minh bạch</li>
+      <li>Giai quyết vấn đề nhanh chóng và hiệu quả</li>
+      <li>Nâng cao năng lực hợp tác, cùng phát triển</li>
+      <li>Kiểm soát chặt chẽ chi phí hoạt động và hiệu quả</li>
+    </ul>
+  </div>
+  <img src="/assets/images/hand1.webp" alt="Handshake representing operating principles" className={styles.nguyenTacHoatDongImage} />
+</div>
+    </div>
+<div className={styles.statsSection}>
+  <h2 className={styles.statsTitle}>NHỮNG CON SỐ ẤN TƯỢNG</h2>
+  <div className={styles.statsContainer}>
+    <div className={styles.statItem}>
+      <div className={styles.statNumber}>3+</div>
+      <div className={styles.statDescription}>Năm hoạt động</div>
+    </div>
+    <div className={styles.statItem}>
+      <div className={styles.statNumber}>200+</div>
+      <div className={styles.statDescription}>Số khách hàng đã phục vụ</div>
+    </div>
+    <div className={styles.statItem}>
+      <div className={styles.statNumber}>200+</div>
+      <div className={styles.statDescription}>Số nhân viên công ty</div>
+    </div>
+    <div className={styles.statItem}>
+      <div className={styles.statNumber}>12+</div>
+      <div className={styles.statDescription}>Số đối tác tin tưởng</div>
+    </div>
+  </div>
+</div>
 
-      {/* About */}
-      <div className={styles.about}>
-        <h1>ACFC Việt Nam</h1>
-        <p>
-          ACFC - Thành viên thuộc tập đoàn Imex Pan Pacific Group (IPPG), là nhà phân phối và quản lý các thương hiệu thời trang quốc tế hàng đầu Việt Nam. Với hệ thống hơn 300 cửa hàng tại các trung tâm thành phố lớn trên toàn quốc, ACFC mang sứ mệnh đưa người Việt đến gần hơn với kinh đô thời trang hàng hiệu. Đến với ACFC, chúng tôi mang đến các dịch vụ mua sắm hàng hiệu chính hãng, đẳng cấp; kèm theo đó là các đặc quyền ưu đãi dành cho khách hàng thành viên, khách hàng VIP với sự quy tụ của hơn 25 thương hiệu thời trang quốc tế. ACFC định hướng mang đến làn gió mới cho những người yêu thời trang, thích cái đẹp và muốn lan tỏa đam mê thời trang đến với cộng đồng.
-        </p>
-        <p>
-          Các thương hiệu ACFC phân phối độc quyền tại thị trường Việt Nam như NIKE, Mango, Levi's, Gap, Old Navy, Calvin Klein, Tommy Hilfiger, Mothercare, OVS, Banana Republic, Owndays, French Connection, Parfois, Cotton:on, Typo, Polo Ralph Lauren, Dockers, Sunnies Studios, Sunnies Face, Swarovski, Guess, Sisley, United Colors Of Benetton, ...
-        </p>
-        <img src="/assets/images/about.png" alt="About ACFC Image" loading="lazy" />
-      </div>
-
-      {/* Stats */}
-      <div className={styles.statsSection}>
-        <h2 className={styles.statsTitle}>NHỮNG CON SỐ ẤN TƯỢNG</h2>
-        <div className={styles.statsContainer}>
-          <div className={styles.statItem}>
-            <div className={styles.statNumber}>25+</div>
-            <div className={styles.statDescription}>THƯƠNG HIỆU QUỐC TẾ<br />CHUYÊN PHÂN PHỐI ĐỘC QUYỀN</div>
-          </div>
-          <div className={styles.statItem}>
-            <div className={styles.statNumber}>300+</div>
-            <div className={styles.statDescription}>CỬA HÀNG<br />THỜI TRANG - MỸ PHẨM</div>
-          </div>
-          <div className={styles.statItem}>
-            <div className={styles.statNumber}>3700+</div>
-            <div className={styles.statDescription}>NHÂN VIÊN</div>
-          </div>
-        </div>
-      </div>
-
-      {/* Route */}
-      <div className={styles.route}>
-        <img src="/assets/images/lo_trinh_phat_trien_2024.jpg" alt="Development Roadmap 2024" loading="lazy" />
-      </div>
-
+  <div className={styles.sodocongty}>
+  <h2 className={styles.maptitle}>Sơ đồ công ty</h2>
+  <img src="/assets/images/PPMvn-SO-DO-TO-CHUC-Nen-trang.png" alt="Company Structure" className={styles.companyStructureImage} loading="lazy" />
+</div>
       {/* Brand */}
       <div className={styles.brand}>
-        <h2>Thương hiệu phân phối</h2>
+        <h2>Đối Tác</h2>
         <div className={styles.brandLogos}>
           {brandLogos.map((logo, idx) => (
             <div className={styles.brandItem} key={idx}>
@@ -275,59 +327,7 @@ const About = () => {
         </div>
       </div>
 
-      {/* Testimonial */}
-      <div className={styles.testimonialSection}>
-        <div className={styles.testimonialSlider} ref={testimonialSliderRef}>
-          {testimonials.map((item, idx) => (
-            <div
-              className={`${styles.testimonialSlide} ${idx === testimonialIdx ? styles.active : ''} ${
-                idx === (testimonialIdx - 1 + testimonials.length) % testimonials.length ? styles.prev : ''
-              }`}
-              key={idx}
-            >
-              <div className={styles.testimonialImage}>
-                <img src={item.img} alt={item.author} loading="lazy" />
-              </div>
-              <div className={styles.testimonialContent}>
-                <div className={styles.testimonialQuote}>{`"${item.quote}"`}</div>
-                <div className={styles.testimonialAuthor}>{item.author}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-        <button
-          className={`${styles.bannerBtn} ${styles.testimonialBtnLeft}`}
-          aria-label="Previous Testimonial"
-          onClick={() => {
-            prevTestimonialSlide();
-            stopTestimonialAuto();
-          }}
-        >
-          <i className="fa-solid fa-angle-left"></i>
-        </button>
-        <button
-          className={`${styles.bannerBtn} ${styles.testimonialBtnRight}`}
-          aria-label="Next Testimonial"
-          onClick={() => {
-            nextTestimonialSlide();
-            stopTestimonialAuto();
-          }}
-        >
-          <i className="fa-solid fa-angle-right"></i>
-        </button>
-        <div className={styles.bannerIndicators}>
-          {testimonials.map((_, idx) => (
-            <span
-              key={idx}
-              className={`${styles.indicator} ${idx === testimonialIdx ? styles.active : ''}`}
-              onClick={() => {
-                showTestimonialSlide(idx);
-                stopTestimonialAuto();
-              }}
-            ></span>
-          ))}
-        </div>
-      </div>
+     
     </div>
   );
 };
