@@ -7,8 +7,8 @@ import { faAngleLeft, faAngleRight, faSearch, faBriefcase, faMapMarkerAlt, faUse
 
 // Static data
 const bannerImages = [
-  '/assets/images/banner1.jpg',
-  '/assets/images/banner2.jpg',
+  '/assets/images/Banner1.jpg',
+  '/assets/images/Banner2.jpg',
 ];
 
 const ppmvnValues = [
