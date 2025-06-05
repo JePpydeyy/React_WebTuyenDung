@@ -42,7 +42,7 @@ const Sidebar = ({ isAlwaysVisible = false }) => {
         <div className={styles.header}>
           <div className={styles.logo}>
             <Link to="/admin">
-              <img src="/assets/images/Logo.png" alt="Logo" />
+              <img src="/assets/images/logo.png" alt="Logo" />
             </Link>
           </div>
           {/* Nút toggle trong sidebar, chỉ hiển thị trên desktop */}
