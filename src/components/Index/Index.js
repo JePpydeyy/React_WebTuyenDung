@@ -33,7 +33,7 @@ const benefits = [
     icon: '/assets/images/pl-02.png',
     title: 'Môi trường làm việc chuyên nghiệp, hiện đại',
     items: [
-      'PPMVN nơi hội tụ những cá nhân tài năng và tận tâm trong lĩnh vực quản lý bất động sản.',
+      'PPM nơi hội tụ những cá nhân tài năng và tận tâm trong lĩnh vực quản lý bất động sản.',
       'Không gian làm việc hiện đại, được trang bị đầy đủ trang thiết bị hỗ trợ công việc như: Laptop, điện thoại, phần mềm quản lý tòa nhà chuyên dụng, ...',
       'Môi trường làm việc chuyên nghiệp, khuyến khích sáng tạo và đổi mới.',
       'Cơ hội làm việc với đội ngũ quản lý giàu kinh nghiệm trong ngành quản lý và vận hành bất động sản.',

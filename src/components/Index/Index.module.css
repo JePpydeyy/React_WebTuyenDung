@@ -570,7 +570,7 @@
 
 .icon-title h3 {
   font-size: 1.25rem;
-  color: #b00020;
+  color:#1678f2 ;
   margin: 0;
   font-weight: 600;
 }
@@ -582,7 +582,7 @@
 
 .benefit-card li {
   margin-bottom: 10px;
-  font-size: 1rem;
+    font-size: 1rem;
   line-height: 1.5;
   color: #444;
 }
