@@ -4,9 +4,9 @@ import styles from './Job.module.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const bannerImages = [
-  '/assets/images/banner1.jpg',
-  '/assets/images/banner2.jpg',
-  '/assets/images/banner3.jpg',
+  '/assets/images/BANNER1.jpg',
+  '/assets/images/BANNER2.jpg',
+  '/assets/images/BANNER3.jpg',
 
   
 ];
