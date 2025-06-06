@@ -95,11 +95,12 @@ const NewsManagement = () => {
           slug: sanitizeHTML(item.slug || ''),
           thumbnailUrl: getImageUrl(item.thumbnailUrl),
           thumbnailCaption: sanitizeHTML(item.thumbnailCaption || ''),
-          publishedAt: formatDate(item.publishedAt),
+          publishedAt: item.publishedAt, // Giữ nguyên định dạng gốc để sắp xếp
           status: statusDisplayMap[item.status] || item.status || 'Hiển thị',
           views: item.views || 0,
           contentBlocks: Array.isArray(item.contentBlocks) ? item.contentBlocks : [],
-        }));
+        }))
+        .sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt)); // Sắp xếp theo ngày mới nhất
       return sanitizedData;
     } catch (error) {
       console.error('Lỗi fetchNews:', error);
@@ -121,7 +122,12 @@ const NewsManagement = () => {
       const startIndex = (page - 1) * itemsPerPage;
       const endIndex = Math.min(startIndex + itemsPerPage, displayData.length);
       const paginatedData = displayData.slice(startIndex, endIndex);
-      setNews(paginatedData);
+      // Định dạng lại publishedAt để hiển thị
+      const formattedNews = paginatedData.map(item => ({
+        ...item,
+        publishedAt: formatDate(item.publishedAt),
+      }));
+      setNews(formattedNews);
       setTotalPages(Math.ceil(displayData.length / itemsPerPage) || 1);
       setCurrentPage(page);
     } catch (error) {
@@ -563,12 +569,9 @@ const NewsManagement = () => {
                       </button>
                       <button className={styles.delete} onClick={() => toggleNewsVisibility(item.id)}>
                         {item.status === 'Đã ẩn' ? (
-                                                    <i className="fa-solid fa-play"></i>
-
-
+                          <i className="fa-solid fa-play"></i>
                         ) : (
-                                                    <i className="fa-solid fa-pause"></i>
-
+                          <i className="fa-solid fa-pause"></i>
                         )}
                       </button>
                     </div>

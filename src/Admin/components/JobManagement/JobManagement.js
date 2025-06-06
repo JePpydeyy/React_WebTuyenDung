@@ -88,7 +88,7 @@ const JobManagement = () => {
       });
       if (!response.ok) throw new Error(`HTTP error ${response.status}`);
       const data = await response.json();
-      return data.map(job => ({
+      const jobsData = data.map(job => ({
         id: job._id,
         title: String(job.Name || ''),
         brand: String(job.Brands || ''),
@@ -101,11 +101,13 @@ const JobManagement = () => {
         workExperience: job['Work Experience'],
         benefits: Array.isArray(job.Welfare) ? job.Welfare : [''],
         slot: job.Slot,
-        postDate: formatDate(job['Post-date']),
+        postDate: job['Post-date'], // Giữ nguyên giá trị gốc để sắp xếp
         degree: job.Degree,
         requirements: Array.isArray(job['Job Requirements']) ? job['Job Requirements'] : [''],
         position: job.Position,
       }));
+      // Sắp xếp theo postDate từ mới nhất đến cũ nhất
+      return jobsData.sort((a, b) => new Date(b.postDate) - new Date(a.postDate));
     } catch (error) {
       console.error('Lỗi khi lấy danh sách công việc:', error);
       return [];
@@ -118,9 +120,14 @@ const JobManagement = () => {
     const data = jobsToShow || (await fetchJobs());
     const startIndex = (page - 1) * itemsPerPage;
     const endIndex = Math.min(startIndex + itemsPerPage, data.length);
-    setJobs(data);
-    setFilteredJobs(data.slice(startIndex, endIndex));
-    setTotalPages(Math.ceil(data.length / itemsPerPage));
+    // Định dạng lại postDate để hiển thị
+    const formattedData = data.map(job => ({
+      ...job,
+      postDate: formatDate(job.postDate),
+    }));
+    setJobs(formattedData);
+    setFilteredJobs(formattedData.slice(startIndex, endIndex));
+    setTotalPages(Math.ceil(formattedData.length / itemsPerPage));
     setCurrentPage(page);
   };
 
@@ -788,13 +795,14 @@ const JobManagement = () => {
               <div className={styles.detailRow}>
                 <div className={styles.detailGroup}>
                   <label>Hạn nộp: <span style={{ color: 'red' }}>*</span></label>
-                  <input
+                 <input
                     type="date"
                     name="Due date"
                     value={formData['Due date']}
                     onChange={handleInputChange}
                     required
                   />
+                  
                   {formErrors['Due date'] && <p style={{ color: 'red' }}>{formErrors['Due date']}</p>}
                 </div>
                 <div className={styles.detailGroup}>

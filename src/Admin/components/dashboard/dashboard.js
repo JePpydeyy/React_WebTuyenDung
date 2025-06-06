@@ -30,16 +30,22 @@ const getStatusInfo = (status) => {
 
 // Hàm chuyển đổi chuỗi ngày thành đối tượng Date
 const parseDate = (dateStr) => {
-  if (!dateStr) return new Date(0);
+  if (!dateStr) return null;
+  // Thử parse định dạng ISO (YYYY-MM-DDTHH:mm:ssZ)
+  const isoDate = new Date(dateStr);
+  if (!isNaN(isoDate.getTime())) return isoDate;
+  // Thử parse định dạng DD/MM/YYYY
   const [day, month, year] = dateStr.split('/');
-  return new Date(`${year}-${month}-${day}`);
+  if (!day || !month || !year) return null;
+  const customDate = new Date(`${year}-${month}-${day}`);
+  return isNaN(customDate.getTime()) ? null : customDate;
 };
 
 // Component cho biểu đồ cột (Column Chart)
 const ColumnChart = ({ allProfiles }) => {
   const [chartError, setChartError] = useState(null);
-  const [chartInstance, setChartInstance] = useState(null); // Store chart instance
-  const [tooltipData, setTooltipData] = useState(null); // Store tooltip data
+  const [chartInstance, setChartInstance] = useState(null);
+  const [tooltipData, setTooltipData] = useState(null);
 
   useEffect(() => {
     const loadGoogleCharts = () => {
@@ -69,21 +75,18 @@ const ColumnChart = ({ allProfiles }) => {
           return;
         }
 
-        // Lấy ngày hiện tại
         const now = new Date();
         const currentWeekStart = new Date(now);
-        currentWeekStart.setDate(now.getDate() - now.getDay() + (now.getDay() === 0 ? -6 : 1)); // Thứ Hai của tuần hiện tại
+        currentWeekStart.setDate(now.getDate() - now.getDay() + (now.getDay() === 0 ? -6 : 1));
 
-        // Lọc hồ sơ trong tuần hiện tại
         const profilesInCurrentWeek = allProfiles.filter(profile => {
           const profileDate = new Date(profile.appliedAt);
-          if (isNaN(profileDate.getTime())) return false; // Bỏ qua nếu ngày không hợp lệ
+          if (isNaN(profileDate.getTime())) return false;
           const profileWeekStart = new Date(profileDate);
           profileWeekStart.setDate(profileDate.getDate() - profileDate.getDay() + (profileDate.getDay() === 0 ? -6 : 1));
           return profileWeekStart.toDateString() === currentWeekStart.toDateString();
         });
 
-        // Nhóm hồ sơ theo ngày trong tuần (Thứ Hai đến Chủ Nhật)
         const profilesByDay = profilesInCurrentWeek.reduce((acc, profile) => {
           const date = new Date(profile.appliedAt);
           if (isNaN(date.getTime())) return acc;
@@ -104,7 +107,6 @@ const ColumnChart = ({ allProfiles }) => {
           return acc;
         }, {});
 
-        // Tạo dữ liệu cho tất cả các ngày trong tuần, bao gồm cả ngày không có hồ sơ
         const daysOfWeek = ['Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy', 'Chủ Nhật'];
         const chartData = daysOfWeek.map(day => {
           const count = profilesByDay[day] || 0;
@@ -132,7 +134,7 @@ const ColumnChart = ({ allProfiles }) => {
             slantedText: false
           },
           bar: { groupWidth: '20%' },
-          tooltip: { trigger: 'none' }, // Disable default tooltip
+          tooltip: { trigger: 'none' },
           animation: {
             startup: true,
             duration: 500,
@@ -146,7 +148,6 @@ const ColumnChart = ({ allProfiles }) => {
           return;
         }
 
-        // Clear any existing chart instance
         if (chartInstance) {
           chartInstance.clearChart();
         }
@@ -155,7 +156,6 @@ const ColumnChart = ({ allProfiles }) => {
         chart.draw(data, options);
         setChartInstance(chart);
 
-        // Add event listeners for custom tooltip
         window.google.visualization.events.addListener(chart, 'onmouseover', (event) => {
           if (event.row !== null) {
             const day = data.getValue(event.row, 0);
@@ -176,7 +176,6 @@ const ColumnChart = ({ allProfiles }) => {
       loadGoogleCharts();
     }
 
-    // Cleanup on unmount
     return () => {
       if (chartInstance) {
         chartInstance.clearChart();
@@ -206,8 +205,8 @@ const ColumnChart = ({ allProfiles }) => {
 // Component cho biểu đồ tròn (Pie Chart)
 const StatusChart = ({ allProfiles }) => {
   const [chartError, setChartError] = useState(null);
-  const [chartInstance, setChartInstance] = useState(null); // Store chart instance
-  const [tooltipData, setTooltipData] = useState(null); // Store tooltip data
+  const [chartInstance, setChartInstance] = useState(null);
+  const [tooltipData, setTooltipData] = useState(null);
 
   useEffect(() => {
     const loadGoogleCharts = () => {
@@ -261,14 +260,14 @@ const StatusChart = ({ allProfiles }) => {
           pieHole: 0,
           colors: ['#4A90E2', '#F5A623', '#50C878', '#E94E77'],
           chartArea: { 
-            width: '70%', // Reduced width to give more space for title
-            height: '60%', // Reduced height to accommodate title
-            top: 40, // Add top padding to ensure title has space
+            width: '70%',
+            height: '60%',
+            top: 40,
             left: 0,
             right: 0
           },
           legend: { position: 'bottom' },
-          tooltip: { trigger: 'none' }, // Disable default tooltip
+          tooltip: { trigger: 'none' },
           animation: {
             startup: true,
             duration: 500,
@@ -279,7 +278,7 @@ const StatusChart = ({ allProfiles }) => {
             fontSize: 16,
             bold: true,
             italic: false,
-            align: 'center' // Ensure horizontal centering
+            align: 'center'
           }
         };
 
@@ -289,7 +288,6 @@ const StatusChart = ({ allProfiles }) => {
           return;
         }
 
-        // Clear any existing chart instance
         if (chartInstance) {
           chartInstance.clearChart();
         }
@@ -298,7 +296,6 @@ const StatusChart = ({ allProfiles }) => {
         chart.draw(data, options);
         setChartInstance(chart);
 
-        // Add event listeners for custom tooltip
         window.google.visualization.events.addListener(chart, 'onmouseover', (event) => {
           if (event.row !== null) {
             const status = data.getValue(event.row, 0);
@@ -319,7 +316,6 @@ const StatusChart = ({ allProfiles }) => {
       loadGoogleCharts();
     }
 
-    // Cleanup on unmount
     return () => {
       if (chartInstance) {
         chartInstance.clearChart();
@@ -354,7 +350,6 @@ const MainContent = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  // Memoize allProfiles to prevent unnecessary re-renders
   const memoizedProfiles = useMemo(() => allProfiles, [allProfiles]);
 
   useEffect(() => {
@@ -366,7 +361,6 @@ const MainContent = () => {
 
     try {
       const decodedToken = jwtDecode(token);
-
       if (decodedToken.role !== 'admin' || decodedToken.exp * 1000 < Date.now()) {
         navigate('/login');
         return;
@@ -387,9 +381,21 @@ const MainContent = () => {
           throw new Error(`Lỗi API: ${profileResponse.status} - ${await profileResponse.text()}`);
         }
         const profileData = await profileResponse.json();
-        console.log('Profile Data:', profileData);
-        setAllProfiles(profileData);
-        const sortedProfiles = profileData.sort((a, b) => parseDate(b.appliedAt) - parseDate(a.appliedAt)).slice(0, 5);
+        console.log('Profile Data:', profileData); // Kiểm tra định dạng appliedAt
+
+        // Lọc và sắp xếp hồ sơ
+        const validProfiles = profileData.filter(profile => {
+          const date = new Date(profile.appliedAt); // Thử parse trực tiếp
+          return !isNaN(date.getTime()); // Chỉ giữ các hồ sơ có ngày hợp lệ
+        });
+
+        setAllProfiles(validProfiles);
+
+        // Sắp xếp theo ngày và giờ mới nhất, lấy 5 hồ sơ đầu
+        const sortedProfiles = [...validProfiles]
+          .sort((a, b) => new Date(b.appliedAt) - new Date(a.appliedAt)) // Sử dụng Date trực tiếp
+          .slice(0, 5);
+
         setDisplayProfiles(sortedProfiles);
 
         const jobResponse = await fetch(`${process.env.REACT_APP_API_URL}/job`, { headers });
@@ -417,81 +423,85 @@ const MainContent = () => {
       <h1 className={styles.heading}>Chào mừng quản trị viên<br /></h1>
       <div className={styles.metrics}>
         <div className={styles.card}>
-        <h3>Tổng bài đăng tin tức <i className="fa-solid fa-newspaper" ></i></h3>
-        <div className={styles.value}>{allJobs.length}</div>
-      </div>
-      <div className={styles.card}>
-        <h3>Tổng hồ sơ ứng tuyển <i className="fa-solid fa-file-pen" style={{color: '#FFFF00'}}></i></h3>
-        <div className={styles.value}>{allProfiles.length}</div>
-      </div>
-      <div className={styles.card}>
-        <h3>Tổng hồ sơ đã tuyển dụng <i className="fa-regular fa-paste" style={{color: '#008000'}}></i></h3>
-        <div className={styles.value}>
-          {allProfiles.filter(p => getStatusInfo(p.status).text === 'Đã tuyển dụng').length}
+          <h3>Tổng bài đăng tin tức <i className="fa-solid fa-newspaper"></i></h3>
+          <div className={styles.value}>{allJobs.length}</div>
         </div>
-      </div>
-      <div className={styles.card}>
-        <h3>Tổng hồ sơ đang chờ xét duyệt <i className="fa-solid fa-clock" style={{color: '#3895ff'}}></i></h3>
-        <div className={styles.value}>
-          {allProfiles.filter(p => getStatusInfo(p.status).text === 'Đang chờ xét duyệt').length}
+        <div className={styles.card}>
+          <h3>Tổng hồ sơ ứng tuyển <i className="fa-solid fa-file-pen" style={{ color: '#FFFF00' }}></i></h3>
+          <div className={styles.value}>{allProfiles.length}</div>
         </div>
-      </div>
-      <div className={styles.card}>
-        <h3>Tổng hồ sơ đã phỏng vấn <i className="fa-solid fa-user-check" style={{color: '#FFA500'}}></i></h3>
-        <div className={styles.value}>
-          {allProfiles.filter(p => getStatusInfo(p.status).text === 'Đã phỏng vấn').length}
+        <div className={styles.card}>
+          <h3>Tổng hồ sơ đã tuyển dụng <i className="fa-regular fa-paste" style={{ color: '#008000' }}></i></h3>
+          <div className={styles.value}>
+            {allProfiles.filter(p => getStatusInfo(p.status).text === 'Đã tuyển dụng').length}
+          </div>
         </div>
-      </div>
-      <div className={styles.card}>
-        <h3>Tổng hồ sơ đã từ chối <i className="fa-solid fa-ban" style={{color: '#FF0000'}}></i></h3>
-        <div className={styles.value}>
-          {allProfiles.filter(p => getStatusInfo(p.status).text === 'Đã từ chối').length}
+        <div className={styles.card}>
+          <h3>Tổng hồ sơ đang chờ xét duyệt <i className="fa-solid fa-clock" style={{ color: '#3895ff' }}></i></h3>
+          <div className={styles.value}>
+            {allProfiles.filter(p => getStatusInfo(p.status).text === 'Đang chờ xét duyệt').length}
+          </div>
         </div>
-      </div>
+        <div className={styles.card}>
+          <h3>Tổng hồ sơ đã phỏng vấn <i className="fa-solid fa-user-check" style={{ color: '#FFA500' }}></i></h3>
+          <div className={styles.value}>
+            {allProfiles.filter(p => getStatusInfo(p.status).text === 'Đã phỏng vấn').length}
+          </div>
+        </div>
+        <div className={styles.card}>
+          <h3>Tổng hồ sơ đã từ chối <i className="fa-solid fa-ban" style={{ color: '#FF0000' }}></i></h3>
+          <div className={styles.value}>
+            {allProfiles.filter(p => getStatusInfo(p.status).text === 'Đã từ chối').length}
+          </div>
+        </div>
       </div>
       <div className={styles.recentOrders}>
         <h3>Hồ sơ ứng tuyển gần đây</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Họ Và Tên</th>
-              <th>Email</th>
-              <th>Số Điện Thoại</th>
-              <th>Vị Trí Ứng Tuyển</th>
-              <th>Ngày Nộp</th>
-              <th>Trạng Thái</th>
-            </tr>
-          </thead>
-          <tbody>
-            {displayProfiles.map((profile, index) => {
-              const statusInfo = getStatusInfo(profile.status);
-              return (
-                <tr key={profile._id}>
-                  <td>{index + 1}</td>
-                  <td>{profile.form?.fullName || 'Không có dữ liệu'}</td>
-                  <td>{profile.form?.email || 'Không có dữ liệu'}</td>
-                  <td>{profile.form?.phone || 'Không có dữ liệu'}</td>
-                  <td>{profile.jobName || 'Không có dữ liệu'}</td>
-                  <td>
-                    {profile.appliedAt
-                      ? new Date(profile.appliedAt).toLocaleDateString('vi-VN', {
-                          day: '2-digit',
-                          month: '2-digit',
-                          year: 'numeric',
-                        })
-                      : 'Không có dữ liệu'}
-                  </td>
-                  <td>
-                    <span className={`${styles.status} ${statusInfo.class}`}>
-                      {statusInfo.text}
-                    </span>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+        {displayProfiles.length === 0 ? (
+          <p>Không có hồ sơ nào để hiển thị.</p>
+        ) : (
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Họ Và Tên</th>
+                <th>Email</th>
+                <th>Số Điện Thoại</th>
+                <th>Vị Trí Ứng Tuyển</th>
+                <th>Ngày Nộp</th>
+                <th>Trạng Thái</th>
+              </tr>
+            </thead>
+            <tbody>
+              {displayProfiles.map((profile, index) => {
+                const statusInfo = getStatusInfo(profile.status);
+                return (
+                  <tr key={profile._id}>
+                    <td>{index + 1}</td>
+                    <td>{profile.form?.fullName || 'Không có dữ liệu'}</td>
+                    <td>{profile.form?.email || 'Không có dữ liệu'}</td>
+                    <td>{profile.form?.phone || 'Không có dữ liệu'}</td>
+                    <td>{profile.jobName || 'Không có dữ liệu'}</td>
+                    <td>
+                      {profile.appliedAt
+                        ? new Date(profile.appliedAt).toLocaleDateString('vi-VN', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric',
+                          })
+                        : 'Không có dữ liệu'}
+                    </td>
+                    <td>
+                      <span className={`${styles.status} ${statusInfo.class}`}>
+                        {statusInfo.text}
+                      </span>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        )}
         <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
           <div style={{ width: '48%' }}>
             <ColumnChart allProfiles={memoizedProfiles} />
