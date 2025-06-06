@@ -295,7 +295,7 @@ const JobDetail = () => {
       console.log('Form object:', form);
       console.log('FormData entries:', Object.fromEntries(applicationData));
 
-      const res = await fetch('https://api-tuyendung-cty.onrender.com/api/profile', {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/profile`, {
         method: 'POST',
         body: applicationData,
       });

@@ -1,11 +1,10 @@
-<<<<<<< HEAD
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { debounce } from 'lodash';
 import styles from './CandidateManagement.module.css';
 
-const API_URL = 'https://api-tuyendung-cty.onrender.com/api/applications'; // Updated endpoint
-const BASE_URL = 'https://api-tuyendung-cty.onrender.com';
+const API_URL = `${process.env.REACT_APP_API_URL}/applications`; // Updated endpoint
+const BASE_URL = `${process.env.BASE_URL}`;
 
 const CandidateManagement = () => {
   const [candidates, setCandidates] = useState([]);
@@ -600,5 +599,3 @@ const CandidateManagement = () => {
 };
 
 export default CandidateManagement;
-=======
->>>>>>> d48131eaafaba5811c1aa646110559d4fbbce8f5

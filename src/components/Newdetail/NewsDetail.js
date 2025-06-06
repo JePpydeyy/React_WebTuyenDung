@@ -14,7 +14,9 @@ function formatDate(dateString) {
 function getImageUrl(url) {
   if (!url) return '';
   if (url.startsWith('http')) return url;
-  return `https://api-tuyendung-cty.onrender.com/${url.replace(/^\/+/, '')}`;
+  // Loại bỏ '/api' nếu có ở cuối biến môi trường để tránh lặp '/api/api'
+  const baseUrl = process.env.REACT_APP_API_URL?.replace(/\/api\/?$/, '');
+  return `${baseUrl}/${url.replace(/^\/+/, '')}`;
 }
 
 const NewsDetail = () => {
@@ -32,7 +34,7 @@ const NewsDetail = () => {
     setError(null);
 
     // Fetch specific news article
-    fetch(`https://api-tuyendung-cty.onrender.com/api/new/${id}`)
+    fetch(`${process.env.REACT_APP_API_URL}/new/${id}`)
       .then((res) => {
         if (!res.ok) {
           throw new Error('Không tìm thấy bài viết');
@@ -49,7 +51,7 @@ const NewsDetail = () => {
       });
 
     // Fetch other news for sidebar
-    fetch('https://api-tuyendung-cty.onrender.com/api/new')
+    fetch(`${process.env.REACT_APP_API_URL}/new`)
       .then((res) => res.json())
       .then((data) => {
         const filteredNews = Array.isArray(data)
@@ -66,7 +68,7 @@ const NewsDetail = () => {
       });
 
     // Fetch jobs for sidebar
-    fetch('https://api-tuyendung-cty.onrender.com/api/job')
+    fetch(`${process.env.REACT_APP_API_URL}/job`)
       .then((res) => res.json())
       .then((data) => {
         const currentDate = new Date();

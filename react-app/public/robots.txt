@@ -1,6 +1,0 @@
-User has requested the contents of the file: /react-app/react-app/public/robots.txt
-
-User's request has been noted. Here are the contents for the robots.txt file:
-
-User-agent: *
-Disallow:

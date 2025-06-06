@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { debounce } from 'lodash';
 import styles from './CandidateManagement.module.css';
 
-const API_URL = 'https://api-tuyendung-cty.onrender.com/api/profile';
+const API_URL = `${process.env.REACT_APP_API_URL}/profile`;
 
 const CandidateManagement = () => {
   const [candidates, setCandidates] = useState([]);
@@ -32,7 +32,6 @@ const CandidateManagement = () => {
   };
 
   const showNotification = useCallback((message, type = 'success') => {
-    // Sử dụng window.alert thay vì tạo div nổi
     window.alert(`${type === 'error' ? 'Lỗi: ' : 'Thông báo: '} ${message}`);
   }, []);
 
@@ -256,7 +255,7 @@ const CandidateManagement = () => {
     [getAuthHeaders, showNotification, navigate, selectedCandidate, candidates, filteredCandidates]
   );
 
-  // Delete Candidate với cập nhật lạc quan
+  // Delete Candidate với reload mượt mà
   const hideCandidate = useCallback(
     async (id) => {
       if (!window.confirm('Bạn có chắc chắn muốn xóa ứng viên này?')) return;
@@ -264,8 +263,8 @@ const CandidateManagement = () => {
       // Cập nhật lạc quan
       const previousCandidates = [...candidates];
       const previousFiltered = [...filteredCandidates];
-      setCandidates(prev => prev.map(c => (c.id === id ? { ...c, status: 'Đã từ chối' } : c)));
-      setFilteredCandidates(prev => prev.map(c => (c.id === id ? { ...c, status: 'Đã từ chối' } : c)));
+      setCandidates(prev => prev.filter(c => c.id !== id));
+      setFilteredCandidates(prev => prev.filter(c => c.id !== id));
       if (selectedCandidate?.id === id) {
         setSelectedCandidate(null);
       }
@@ -295,6 +294,8 @@ const CandidateManagement = () => {
           throw new Error(errorData.message || `Không thể ẩn ứng viên: ${response.status}`);
         }
         showNotification('Đã xóa ứng viên thành công', 'success');
+        // Reload danh sách ứng viên từ server
+        await displayCandidates(currentPage);
       } catch (error) {
         console.error('Lỗi khi xóa ứng viên:', error);
         showNotification(`Lỗi khi ẩn ứng viên: ${error.message}`, 'error');
@@ -307,7 +308,7 @@ const CandidateManagement = () => {
         setIsLoading(false);
       }
     },
-    [getAuthHeaders, showNotification, navigate, selectedCandidate, candidates, filteredCandidates]
+    [getAuthHeaders, showNotification, navigate, selectedCandidate, candidates, filteredCandidates, displayCandidates, currentPage]
   );
 
   // Tìm kiếm mượt mà giống JobManagement

@@ -15,7 +15,7 @@ const LoginForm = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('https://api-tuyendung-cty.onrender.com/api/admin/login', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

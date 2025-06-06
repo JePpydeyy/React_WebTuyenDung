@@ -7,8 +7,8 @@ import { faAngleLeft, faAngleRight, faSearch, faBriefcase, faMapMarkerAlt, faUse
 
 // Static data
 const bannerImages = [
-  '/assets/images/banner1.jpg',
-  '/assets/images/banner2.jpg',
+  '/assets/images/BANNER1.jpg',
+  '/assets/images/BANNER2.jpg',
 ];
 
 const ppmvnValues = [
@@ -172,7 +172,7 @@ const Index = () => {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const res = await fetch('https://api-tuyendung-cty.onrender.com/api/job');
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/job`);
         if (!res.ok) throw new Error('Không thể tải dữ liệu công việc');
         const data = await res.json();
         setJobs(Array.isArray(data) ? data : []);

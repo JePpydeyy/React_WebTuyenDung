@@ -3,7 +3,7 @@ import { debounce } from 'lodash';
 import styles from './JobManagement.module.css';
 
 const JobManagement = () => {
-  const API_JOBS_URL = 'https://api-tuyendung-cty.onrender.com/api/job';
+  const API_JOBS_URL = `${process.env.REACT_APP_API_URL}/job`;
   const [jobs, setJobs] = useState([]);
   const [filteredJobs, setFilteredJobs] = useState([]);
   const [selectedJob, setSelectedJob] = useState(null);

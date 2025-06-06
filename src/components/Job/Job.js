@@ -4,9 +4,9 @@ import styles from './Job.module.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const bannerImages = [
-  '/assets/images/banner1.jpg',
-  '/assets/images/banner2.jpg',
-  '/assets/images/banner3.jpg',
+  '/assets/images/BANNER1.jpg',
+  '/assets/images/BANNER2.jpg',
+  '/assets/images/BANNER3.jpg',
 
   
 ];
@@ -188,8 +188,8 @@ const Jobcontent = () => {
     for (let attempt = 1; attempt <= retries; attempt++) {
       try {
         const timeoutId = setTimeout(() => controller.abort(), 10000);
-        const res = await fetch('https://api-tuyendung-cty.onrender.com/api/job', {
-          method: 'GET',
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/job`, {
+          method: 'GET',  
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',

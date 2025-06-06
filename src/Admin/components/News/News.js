@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import styles from './New.module.css';
 import { v4 as uuidv4 } from 'uuid';
 
-const API_URL = 'https://api-tuyendung-cty.onrender.com/api/new';
-const BASE_URL = 'https://api-tuyendung-cty.onrender.com';
+const API_URL = `${process.env.REACT_APP_API_URL}/new`;
+const BASE_URL = `${process.env.BASE_URL}`;
 
 const NewsManagement = () => {
   const [news, setNews] = useState([]);
@@ -70,7 +70,7 @@ const NewsManagement = () => {
     if (url.startsWith('http://') || url.startsWith('https://')) {
       return url;
     }
-    return `${BASE_URL}/${url}`;
+    return `${process.env.BASE_URL}/${url}`;
   };
 
   const fetchNews = async () => {

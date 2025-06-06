@@ -90,7 +90,7 @@ const News = () => {
   // Fetch news
   useEffect(() => {
     setLoading(true);
-    fetch('https://api-tuyendung-cty.onrender.com/api/new')
+    fetch(`${process.env.REACT_APP_API_URL}/new`)
       .then((res) => res.json())
       .then((data) => {
         const sortedData = Array.isArray(data)

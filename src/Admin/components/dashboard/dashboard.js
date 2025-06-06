@@ -382,7 +382,7 @@ const MainContent = () => {
           'Authorization': `Bearer ${token}`,
         };
 
-        const profileResponse = await fetch('https://api-tuyendung-cty.onrender.com/api/profile', { headers });
+        const profileResponse = await fetch(`${process.env.REACT_APP_API_URL}/profile`, { headers });
         if (!profileResponse.ok) {
           throw new Error(`Lỗi API: ${profileResponse.status} - ${await profileResponse.text()}`);
         }
@@ -392,7 +392,7 @@ const MainContent = () => {
         const sortedProfiles = profileData.sort((a, b) => parseDate(b.appliedAt) - parseDate(a.appliedAt)).slice(0, 5);
         setDisplayProfiles(sortedProfiles);
 
-        const jobResponse = await fetch('https://api-tuyendung-cty.onrender.com/api/job', { headers });
+        const jobResponse = await fetch(`${process.env.REACT_APP_API_URL}/job`, { headers });
         if (!jobResponse.ok) {
           throw new Error(`Lỗi API: ${jobResponse.status} - ${await jobResponse.text()}`);
         }
