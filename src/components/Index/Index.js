@@ -531,17 +531,18 @@ const Index = () => {
 
       {/* Video Section */}
       <section className={styles['video-section']}>
-        <h2>Video Giới Thiệu</h2>
-        <div className={styles['video-container']}>
-          <iframe
-            src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2FPPM.VN.Ltd%2Fvideos%2F9490759834354567%2F"
-            title="Giới thiệu công ty PPMVN"
-            frameBorder="0"
-            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowFullScreen
-          ></iframe>
-        </div>
-      </section>
+          <h2>Video Giới Thiệu</h2>
+          <div className={styles['video-container']}>
+            <video
+              controls
+              preload="metadata"
+              poster="../assets/images/video-thumbnail.jpg" // Optional: thêm thumbnail
+            >
+              <source src="../assets/videos/PPMVN_Introduction.mp4" type="video/mp4" />
+              Trình duyệt của bạn không hỗ trợ phát video.
+            </video>
+          </div>
+        </section>
 
       {/* Benefits Section */}
       <h2 className={styles['benefits-title']}>Phúc lợi công ty</h2>
