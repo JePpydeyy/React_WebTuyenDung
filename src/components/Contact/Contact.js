@@ -1,25 +1,51 @@
 import React, { useState } from 'react';
-import styles from './Contact.module.css'; // CSS module
+import styles from './Contact.module.css';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
-    message: ''
+    message: '',
   });
 
   const [formErrors, setFormErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const showNotification = (message, type = 'success') => {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`; // Sử dụng class CSS động
+    notification.textContent = message;
+    document.body.appendChild(notification);
+
+    // Đặt vị trí thông báo nổi
+    notification.style.position = 'fixed';
+    notification.style.top = '20px';
+    notification.style.right = '20px';
+    notification.style.padding = '10px 20px';
+    notification.style.borderRadius = '5px';
+    notification.style.zIndex = '1000';
+    notification.style.color = '#fff';
+    notification.style.backgroundColor = type === 'success' ? '#4caf50' : '#f44336';
+    notification.style.boxShadow = '0 2px 5px rgba(0, 0, 0, 0.2)';
+    notification.style.transition = 'opacity 0.5s ease';
+
+    // Tự động xóa sau 3 giây
+    setTimeout(() => {
+      notification.style.opacity = '0';
+      setTimeout(() => notification.remove(), 500);
+    }, 3000);
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const errors = {};
 
@@ -46,8 +72,42 @@ const Contact = () => {
     setFormErrors(errors);
 
     if (Object.keys(errors).length === 0) {
-      console.log('Form submitted:', formData);
-      // Xử lý submit ở đây
+      setIsSubmitting(true);
+
+      try {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/contact`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            fullName: formData.name,
+            email: formData.email,
+            phone: formData.phone,
+            message: formData.message,
+          }),
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.message || 'Không thể gửi liên hệ');
+        }
+
+        // Gửi thành công
+        showNotification('Gửi liên hệ thành công! Chúng tôi sẽ phản hồi sớm.', 'success');
+        // Reset form
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          message: '',
+        });
+      } catch (err) {
+        console.error('Lỗi khi gửi liên hệ:', err);
+        showNotification(err.message || 'Đã có lỗi khi gửi liên hệ. Vui lòng thử lại sau.', 'error');
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 
@@ -93,14 +153,14 @@ const Contact = () => {
                     <i className="fa-brands fa-facebook"></i>
                   </div>
                   <span className={styles.socialLinks}>
-                 <a
-                    href="https://www.facebook.com/PPM.VN.Ltd"
-                    className={styles.socialLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Facebook
-                  </a>
+                    <a
+                      href="https://www.facebook.com/PPM.VN.Ltd"
+                      className={styles.socialLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Facebook
+                    </a>
                   </span>
                 </div>
               </div>
@@ -162,8 +222,12 @@ const Contact = () => {
                   />
                 </div>
                 <div className={styles.formSubmit}>
-                  <button type="submit" className={styles.submitButton}>
-                    GỬI YÊU CẦU
+                  <button
+                    type="submit"
+                    className={styles.submitButton}
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? 'Đang gửi...' : 'GỬI YÊU CẦU'}
                   </button>
                 </div>
               </form>
@@ -181,7 +245,7 @@ const Contact = () => {
               src="https://www.google.com/maps?q=110%20Cao%20Th%E1%BA%AFng%2C%20Ph%C6%B0%E1%BB%9Dng%204%2C%20Qu%E1%BA%ADn%203%2C%20TP.HCM&z=16&output=embed"
               width="100%"
               height="450"
-              style={{ border: 0, borderRadius: "12px" }}
+              style={{ border: 0, borderRadius: '12px' }}
               allowFullScreen
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"

@@ -7,14 +7,20 @@
   --border-color: #ddd;
   --background-light: #fff;
   --background-gray: #f4f5f7;
-  --status-new-bg: #e3f2fd;
-  --status-new-text: #0d47a1;
-  --status-interview-bg: #fff8e1;
-  --status-interview-text: #ff6f00;
-  --status-hired-bg: #e8f5e9;
-  --status-hired-text: #1b5e20;
-  --status-rejected-bg: #ffebee;
-  --status-rejected-text: #b71c1c;
+  --status-show-bg: #e8f5e9; /* Chưa xử lý */
+  --status-show-text: #1b5e20;
+  --status-hidden-bg: #ffebee; /* Đã xử lý */
+  --status-hidden-text: #b71c1c;
+  --edit-bg: #fff8e1;
+  --edit-text: #ff6f00;
+  --save-bg: #e3f2fd;
+  --save-text: #0d47a1;
+  --cancel-bg: #f5f5f5;
+  --cancel-text: #333;
+  --remove-bg: #dc3545;
+  --remove-text: #fff;
+  --add-bg: #28a745;
+  --add-text: #fff;
   --spacing-sm: 8px;
   --spacing-md: 15px;
   --spacing-lg: 20px;
@@ -44,7 +50,7 @@
 .filters input {
   padding: var(--spacing-sm);
   border: 1px solid var(--border-color);
-  border-radius: var(--border-radius);
+  border-radius: 4px;
   font-size: 0.875rem;
 }
 
@@ -66,11 +72,11 @@
 }
 
 .filters button:hover {
-  background: #1a1a3b;
+  background: #1a2a3b;
 }
 
-/* Danh sách hồ sơ */
-.applications {
+/* Danh sách liên hệ */
+.contactList {
   background: var(--background-light);
   padding: var(--spacing-lg);
   border-radius: var(--border-radius);
@@ -78,7 +84,7 @@
   margin-bottom: var(--spacing-lg);
 }
 
-.applications h3 {
+.contactList h3 {
   font-size: 1.125rem;
   margin-bottom: var(--spacing-md);
 }
@@ -92,39 +98,32 @@ th,
 td {
   padding: 12px;
   text-align: left;
-  font-size: 0.875rem;
-  border-bottom: 1px solid #eee;
+  font-size: 15px;
+  border-bottom: 1px solid #d3d3d3;
 }
 
 th {
   background: #f8f9fa;
-  color: var(--text-muted);
+  color: var(--text-color);
 }
 
-.status {
+/* Sửa trạng thái với specificity tăng */
+.contactList .status {
+  display: inline-block;
   padding: 5px 10px;
   border-radius: var(--border-radius);
-  font-size: 14px;
+  font-size: 0.875rem;
+  line-height: 1.2;
 }
 
-.moi {
-  background: var(--status-new-bg);
-  color: var(--status-new-text);
+.contactList .chuaXuLy {
+  background: var(--status-show-bg);
+  color: var(--status-show-text);
 }
 
-.phongVan {
-  background: var(--status-interview-bg);
-  color: var(--status-interview-text);
-}
-
-.duocNhan {
-  background: var(--status-hired-bg);
-  color: var(--status-hired-text);
-}
-
-.tuChoi {
-  background: var(--status-rejected-bg);
-  color: var(--status-rejected-text);
+.contactList .daXuLy {
+  background: var(--status-hidden-bg);
+  color: var(--status-hidden-text);
 }
 
 .actionButtons {
@@ -142,18 +141,18 @@ th {
 }
 
 .actionButtons .view {
-  background: var(--status-new-bg);
-  color: var(--status-new-text);
+  background: var(--status-show-bg);
+  color: var(--status-show-text);
 }
 
-.actionButtons .viewCV {
-  background: var(--status-interview-bg);
-  color: var(--status-interview-text);
+.actionButtons .edit {
+  background: var(--edit-bg);
+  color: var(--edit-text);
 }
 
 .actionButtons .delete {
-  background: var(--status-rejected-bg);
-  color: var(--status-rejected-text);
+  background: var(--status-hidden-bg);
+  color: var(--status-hidden-text);
 }
 
 .actionButtons button:hover {
@@ -201,10 +200,12 @@ th {
   margin: 5% auto;
   padding: var(--spacing-lg);
   border-radius: var(--border-radius);
-  width: 80%;
-  max-width: 800px;
+  width: 90%;
+  max-width: 900px;
   max-height: 80vh;
   overflow-y: auto;
+  position: relative;
+  z-index: 1001;
 }
 
 .close {
@@ -214,21 +215,21 @@ th {
   cursor: pointer;
   transition: color 0.2s ease;
   float: right;
-  margin-right: 10px
+  margin-right: 10px;
 }
 
 .close:hover {
-    color: #530000;
-
+  color: #530000;
 }
 
-.candidateDetails {
+.contactDetails,
+.editForm {
   margin-top: var(--spacing-lg);
 }
 
 .detailRow {
   display: flex;
-  gap: var(--spacing-lg);
+  gap: var(--spacing-md);
   margin-bottom: var(--spacing-md);
 }
 
@@ -237,7 +238,8 @@ th {
 }
 
 .detailGroup.full {
-  flex: 100%;
+  flex: none;
+  width: 100%;
   margin-bottom: var(--spacing-md);
 }
 
@@ -252,6 +254,45 @@ th {
   margin: 0;
 }
 
+.detailGroup span {
+  display: block;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.detailGroup input,
+.detailGroup textarea {
+  width: 100%;
+  padding: var(--spacing-sm);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  font-size: 0.9rem;
+  box-sizing: border-box;
+  margin-bottom: 8px;
+}
+
+.detailGroup textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.detailGroup select {
+  width: 100%;
+  padding: var(--spacing-sm);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+  box-sizing: border-box;
+}
+
+.detailGroup input:focus,
+.detailGroup textarea:focus,
+.detailGroup select:focus {
+  border-color: var(--primary-color);
+  outline: none;
+}
+
 .detailAction {
   display: flex;
   flex-wrap: wrap;
@@ -260,7 +301,7 @@ th {
   justify-content: center;
 }
 
-.statusBtn {
+.detailAction button {
   padding: var(--spacing-sm) var(--spacing-md);
   border: none;
   border-radius: var(--border-radius);
@@ -270,66 +311,28 @@ th {
   transition: background-color 0.2s ease;
 }
 
-.moi {
-  background: var(--status-new-bg);
-  color: var(--status-new-text);
+.detailAction .edit {
+  background: var(--edit-bg);
+  color: var(--edit-text);
 }
 
-.phongVan {
-  background: var(--status-interview-bg);
-  color: var(--status-interview-text);
+.detailAction .delete {
+  background: var(--status-hidden-bg);
+  color: var(--status-hidden-text);
 }
 
-.duocNhan {
-  background: var(--status-hired-bg);
-  color: var(--status-hired-text);
+.detailAction .save {
+  background: var(--save-bg);
+  color: var(--save-text);
 }
 
-.tuChoi {
-  background: var(--status-rejected-bg);
-  color: var(--status-rejected-text);
+.detailAction .cancel {
+  background: var(--cancel-bg);
+  color: var(--cancel-text);
 }
 
-.statusBtn:hover {
+.detailAction button:hover {
   opacity: 0.9;
-}
-
-/* Thiết lập độ rộng cho các cột */
-.applications th:nth-child(1), .applications td:nth-child(1) { min-width: 60px; } /* STT */
-.applications th:nth-child(2), .applications td:nth-child(2) { min-width: 150px; } /* Họ và Tên */
-.applications th:nth-child(3), .applications td:nth-child(3) { min-width: 180px; } /* Email */
-.applications th:nth-child(4), .applications td:nth-child(4) { min-width: 120px; } /* SĐT */
-.applications th:nth-child(5), .applications td:nth-child(5) { min-width: 150px; } /* Vị trí */
-.applications th:nth-child(6), .applications td:nth-child(6) { min-width: 100px; } /* Ngày */
-.applications th:nth-child(7), .applications td:nth-child(7) { min-width: 120px; } /* Trạng thái */
-.applications th:nth-child(8), .applications td:nth-child(8) { min-width: 120px; } /* Thao tác */
-
-/* Ngăn xuống dòng cho các cột ngắn */
-.applications td:nth-child(1),
-.applications td:nth-child(4),
-.applications td:nth-child(6),
-.applications td:nth-child(7),
-.applications td:nth-child(8) {
-  white-space: nowrap;
-}
-
-/* Cho phép xuống dòng cho cột có nội dung dài */
-.applications td:nth-child(2),
-.applications td:nth-child(3),
-.applications td:nth-child(5) {
-  white-space: normal;
-  word-wrap: break-word;
-  line-height: 1.4;
-  max-height: 60px;
-}
-
-/* Trạng thái styling */
-.status {
-  padding: 4px 8px;
-  border-radius: var(--border-radius);
-  font-size: 0.875rem;
-  display: inline-block;
-  font-weight: 500;
 }
 :global(.notification) {
   position: fixed;

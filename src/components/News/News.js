@@ -7,7 +7,6 @@ import styles from './News.module.css';
 const bannerImages = [
   '/assets/images/BANNER1.jpg',
   '/assets/images/BANNER2.jpg',
-  
 ];
 
 function formatDate(dateString) {
@@ -22,7 +21,9 @@ function formatDate(dateString) {
 function getImageUrl(url) {
   if (!url) return '';
   if (url.startsWith('http')) return url;
-  return `https://api-tuyendung-cty.onrender.com/${url.replace(/^\/+/, '')}`;
+  // Loại bỏ '/api' nếu có ở cuối biến môi trường để tránh lặp '/api/api'
+  const baseUrl = process.env.REACT_APP_API_URL?.replace(/\/api\/?$/, '');
+  return `${baseUrl}/${url.replace(/^\/+/, '')}`;
 }
 
 function getInitialShowCount() {
@@ -89,6 +90,8 @@ const News = () => {
 
   // Fetch news
   useEffect(() => {
+    console.log('API_URL:', process.env.REACT_APP_API_URL); // Debug biến môi trường
+    console.log('BASE_URL:', process.env.BASE_URL); // Debug biến môi trường
     setLoading(true);
     fetch(`${process.env.REACT_APP_API_URL}/new`)
       .then((res) => res.json())
@@ -224,7 +227,7 @@ const News = () => {
             <img
               key={src}
               className={`${styles.bannerImage} ${idx === current ? styles.active : ''} ${
-                idx === (current - 1 + bannerImages.length) % bannerImages.length ? styles.prev: ''
+                idx === (current - 1 + bannerImages.length) % bannerImages.length ? styles.prev : ''
               }`}
               src={src}
               alt={`Banner ${idx + 1}`}
@@ -250,7 +253,7 @@ const News = () => {
             {bannerImages.map((_, idx) => (
               <span
                 key={idx}
-                className={`${styles.indicator} ${idx === current ? styles.active: ''}`}
+                className={`${styles.indicator} ${idx === current ? styles.active : ''}`}
                 onClick={() => showSlide(idx)}
                 aria-label={`Chuyển đến banner ${idx + 1}`}
               ></span>

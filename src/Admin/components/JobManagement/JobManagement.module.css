@@ -528,3 +528,26 @@
   -webkit-overflow-scrolling: touch;
 }
 
+:global(.notification) {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 10px 20px;
+  border-radius: 5px;
+  z-index: 1000;
+  color: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: opacity 0.5s ease;
+}
+
+:global(.notification.success) {
+  background-color: #4caf50;
+}
+
+:global(.notification.error) {
+  background-color: #f44336;
+}
+
+:global(.notification.info) {
+  background-color: #2196f3;
+}

@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import News from './pages/News';
 import About from './pages/About';
-import Contact from './pages/Contact';
+import UserContact from './pages/Contact'; // Đổi tên import cho trang người dùng
 import Jobcontent from './pages/Job';
 import JobDetail from './pages/JobDetail';
 import NewsDetail from './pages/NewsDetail';
@@ -11,6 +11,7 @@ import Dashboard from './Admin/pages/Dashboard';
 import SubmitProfile from './Admin/pages/SubmitProfile';
 import Job from './Admin/pages/Job';
 import AdminNews from './Admin/pages/News';
+import AdminContact from './Admin/pages/Contact'; // Đổi tên import cho trang admin
 // import Banner from './Admin/pages/Banner'; // Thêm import cho Banner
 import Login from './Admin/pages/Login';
 import ProtectedRoute from './Admin/components/ProtectedRoute/ProtectedRoute';
@@ -28,7 +29,7 @@ function App() {
             <Route path="/news" element={<News />} />
             <Route path="/news/:id" element={<NewsDetail />} />
             <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
+            <Route path="/contact" element={<UserContact />} /> {/* Sử dụng UserContact */}
             <Route path="/JobContent" element={<Jobcontent />} />
             <Route path="/DetailJob/:jobId" element={<JobDetail />} />
 
@@ -68,14 +69,14 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            {/* <Route
-              path="/admin/banners"
+            <Route
+              path="/admin/contact"
               element={
                 <ProtectedRoute>
-                  <Banner />
+                  <AdminContact /> {/* Sử dụng AdminContact */}
                 </ProtectedRoute>
               }
-            /> */}
+            />
           </Routes>
         </div>
       </Router>

@@ -71,6 +71,11 @@ const Sidebar = ({ isAlwaysVisible = false }) => {
               <i className="fa-solid fa-address-card"></i> Hồ Sơ Ứng Tuyển
             </Link>
           </li>
+          <li>
+            <Link to="/admin/contact">
+              <i class="fa-solid fa-address-book"></i> Quản Lý Liên Hệ
+            </Link>
+          </li>
          
           <li>
             <button onClick={handleLogout} className={styles.logoutBtn}>

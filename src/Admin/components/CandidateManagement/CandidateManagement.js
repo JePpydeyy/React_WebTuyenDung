@@ -28,11 +28,20 @@ const CandidateManagement = () => {
     'Đang chờ xét duyệt': 'pending',
     'Đã phỏng vấn': 'interview',
     'Đã tuyển dụng': 'accepted',
-    'Đã từ chối': 'rejected', 
+    'Đã từ chối': 'rejected',
   };
 
   const showNotification = useCallback((message, type = 'success') => {
-    window.alert(`${type === 'error' ? 'Lỗi: ' : 'Thông báo: '} ${message}`);
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`; // Sử dụng class CSS động
+    notification.textContent = message;
+    document.body.appendChild(notification);
+
+    // Tự động xóa sau 3 giây với hiệu ứng mờ dần
+    setTimeout(() => {
+      notification.style.opacity = '0';
+      setTimeout(() => notification.remove(), 500); // Đợi hiệu ứng mờ dần hoàn tất
+    }, 3000);
   }, []);
 
   const normalizeVietnamese = useCallback((str) => {

@@ -40,6 +40,19 @@ const JobManagement = () => {
     hidden: 'Tạm dừng',
   };
 
+  const showNotification = (message, type = 'success') => {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`; // Sử dụng class CSS động
+    notification.textContent = message;
+    document.body.appendChild(notification);
+
+    // Tự động xóa sau 3 giây với hiệu ứng mờ dần
+    setTimeout(() => {
+      notification.style.opacity = '0';
+      setTimeout(() => notification.remove(), 500); // Đợi hiệu ứng mờ dần hoàn tất
+    }, 3000);
+  };
+
   const formatDate = (dateString) => {
     if (!dateString) return '';
     if (dateString.includes('/')) return dateString;
@@ -145,7 +158,7 @@ const JobManagement = () => {
       });
     } catch (error) {
       console.error('Lỗi khi xem chi tiết công việc:', error);
-      alert('Có lỗi xảy ra khi xem chi tiết công việc.');
+      showNotification('Có lỗi xảy ra khi xem chi tiết công việc.', 'error');
     } finally {
       setIsLoading(false);
     }
@@ -220,7 +233,7 @@ const JobManagement = () => {
         window.location.reload();
       } catch (error) {
         console.error('Lỗi khi tạm dừng công việc:', error);
-        alert('Có lỗi xảy ra khi tạm dừng công việc.');
+        showNotification('Có lỗi xảy ra khi tạm dừng công việc.', 'error');
       } finally {
         setIsLoading(false);
       }
@@ -228,6 +241,9 @@ const JobManagement = () => {
   };
 
   const handleToggleVisibility = async (jobId) => {
+    await displayJobs(1);
+      showNotification('Đổi trạng thái thành công!', 'success');
+      setShowModal(false);
     if (!token) return;
     setIsLoading(true);
     try {
@@ -259,7 +275,7 @@ const JobManagement = () => {
       setSelectedJob(null);
     } catch (error) {
       console.error('Lỗi khi thay đổi trạng thái:', error.message);
-      alert(`Có lỗi xảy ra khi thay đổi trạng thái công việc: ${error.message}`);
+      showNotification(`Có lỗi xảy ra khi thay đổi trạng thái công việc: ${error.message}`, 'error');
     } finally {
       setIsLoading(false);
     }
@@ -363,6 +379,7 @@ const JobManagement = () => {
       }
 
       await displayJobs(1);
+      showNotification('Lưu công việc thành công!', 'success');
       setShowModal(false);
       setFormData({
         JobType: '',
@@ -384,7 +401,7 @@ const JobManagement = () => {
       setFormErrors({});
     } catch (error) {
       console.error('Lỗi khi lưu công việc:', error.message);
-      alert(`Có lỗi xảy ra khi lưu công việc: ${error.message}`);
+      showNotification(`Có lỗi xảy ra khi lưu công việc: ${error.message}`, 'error');
     } finally {
       setIsLoading(false);
     }
