@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './Contact.module.css';
 
 const Contact = () => {
@@ -11,14 +11,15 @@ const Contact = () => {
 
   const [formErrors, setFormErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [contacts, setContacts] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const showNotification = (message, type = 'success') => {
     const notification = document.createElement('div');
-    notification.className = `notification ${type}`; // Sử dụng class CSS động
+    notification.className = `notification ${type}`;
     notification.textContent = message;
     document.body.appendChild(notification);
 
-    // Đặt vị trí thông báo nổi
     notification.style.position = 'fixed';
     notification.style.top = '20px';
     notification.style.right = '20px';
@@ -30,7 +31,6 @@ const Contact = () => {
     notification.style.boxShadow = '0 2px 5px rgba(0, 0, 0, 0.2)';
     notification.style.transition = 'opacity 0.5s ease';
 
-    // Tự động xóa sau 3 giây
     setTimeout(() => {
       notification.style.opacity = '0';
       setTimeout(() => notification.remove(), 500);
@@ -49,19 +49,16 @@ const Contact = () => {
     e.preventDefault();
     const errors = {};
 
-    // Validate name
     if (!formData.name.trim()) {
       errors.name = 'Vui lòng nhập họ tên';
     }
 
-    // Validate email
     if (!formData.email.trim()) {
       errors.email = 'Vui lòng nhập email';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       errors.email = 'Email không hợp lệ';
     }
 
-    // Validate Vietnamese phone
     const phoneRegex = /^(0|\+84)[0-9]{9}$/;
     if (!formData.phone.trim()) {
       errors.phone = 'Vui lòng nhập số điện thoại';
@@ -85,6 +82,7 @@ const Contact = () => {
             email: formData.email,
             phone: formData.phone,
             message: formData.message,
+            createdAt: new Date().toISOString(), // Thêm thời gian gửi
           }),
         });
 
@@ -93,15 +91,14 @@ const Contact = () => {
           throw new Error(data.message || 'Không thể gửi liên hệ');
         }
 
-        // Gửi thành công
         showNotification('Gửi liên hệ thành công! Chúng tôi sẽ phản hồi sớm.', 'success');
-        // Reset form
         setFormData({
           name: '',
           email: '',
           phone: '',
           message: '',
         });
+        fetchContacts(); // Cập nhật danh sách sau khi gửi
       } catch (err) {
         console.error('Lỗi khi gửi liên hệ:', err);
         showNotification(err.message || 'Đã có lỗi khi gửi liên hệ. Vui lòng thử lại sau.', 'error');
@@ -110,6 +107,33 @@ const Contact = () => {
       }
     }
   };
+
+  const fetchContacts = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/contact`);
+      if (!response.ok) throw new Error(`HTTP error ${response.status}`);
+      const data = await response.json();
+      // Sắp xếp theo createdAt từ mới nhất đến cũ nhất
+      const sortedContacts = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      setContacts(sortedContacts);
+    } catch (error) {
+      console.error('Lỗi khi lấy danh sách liên hệ:', error);
+      setContacts([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  };
+
+  useEffect(() => {
+    fetchContacts();
+  }, []);
 
   return (
     <div className={styles.container}>
@@ -252,6 +276,58 @@ const Contact = () => {
             ></iframe>
           </div>
         </div>
+      </div>
+
+      {/* Contact List */}
+      <div className={styles.contactListSection}>
+        <h3>Danh Sách Liên Hệ</h3>
+        {isLoading ? (
+          <p>Đang tải...</p>
+        ) : contacts.length === 0 ? (
+          <p>Không có liên hệ nào.</p>
+        ) : (
+          <table className={styles.contactTable}>
+            <thead>
+              <tr>
+                <th>STT</th>
+                <th>Họ và tên</th>
+                <th>Email</th>
+                <th>Điện thoại</th>
+                <th>Thời gian</th>
+                <th>Trạng thái</th>
+                <th>Thao Tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              {contacts.map((contact, index) => (
+                <tr key={contact._id || index}>
+                  <td>{index + 1}</td>
+                  <td>{contact.fullName}</td>
+                  <td>{contact.email}</td>
+                  <td>{contact.phone}</td>
+                  <td>{formatDate(contact.createdAt)}</td>
+                  <td>
+                    <span
+                      className={`${styles.status} ${
+                        contact.status === 'Chưa xử lý' ? styles.pending : styles.processed
+                      }`}
+                    >
+                      {contact.status || 'Chưa xử lý'}
+                    </span>
+                  </td>
+                  <td>
+                    <button className={styles.viewBtn}>
+                      <i className="fa-solid fa-eye"></i>
+                    </button>
+                    <button className={styles.editBtn}>
+                      <i className="fa-solid fa-edit"></i>
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   );
