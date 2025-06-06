@@ -42,6 +42,10 @@ const NewsDetail = () => {
         return res.json();
       })
       .then((data) => {
+        // Ensure the article has status: "show"
+        if (data.status !== 'show') {
+          throw new Error('Bài viết không khả dụng');
+        }
         setArticle(data);
       })
       .catch((err) => {
@@ -56,7 +60,7 @@ const NewsDetail = () => {
       .then((data) => {
         const filteredNews = Array.isArray(data)
           ? data
-              .filter((item) => item.id !== id)
+              .filter((item) => item.id !== id && item.status === 'show') // Filter for status: "show"
               .sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt))
               .slice(0, 3) // Limit to 3 other news
           : [];
@@ -74,9 +78,9 @@ const NewsDetail = () => {
         const currentDate = new Date();
         const sortedJobs = Array.isArray(data)
           ? data
-              .filter((job) => job.status !== 'hidden') // Lọc công việc không ẩn
-              .filter((job) => new Date(job['Due date']) >= currentDate) // Lọc công việc chưa hết hạn
-              .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Sắp xếp theo createdAt
+              .filter((job) => job.status === 'show') // Filter for status: "show"
+              .filter((job) => new Date(job['Due date']) >= currentDate) // Filter jobs not expired
+              .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Sort by createdAt
               .slice(0, 3) // Limit to 3 jobs
           : [];
         setJobs(sortedJobs);

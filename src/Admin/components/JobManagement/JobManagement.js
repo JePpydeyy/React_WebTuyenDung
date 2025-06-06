@@ -248,9 +248,6 @@ const JobManagement = () => {
   };
 
   const handleToggleVisibility = async (jobId) => {
-    await displayJobs(1);
-      showNotification('Đổi trạng thái thành công!', 'success');
-      setShowModal(false);
     if (!token) return;
     setIsLoading(true);
     try {
@@ -271,14 +268,16 @@ const JobManagement = () => {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ status: newStatus }),
-      });
-
+        });
+        
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(`Không thể thay đổi trạng thái: HTTP error ${response.status} - ${JSON.stringify(errorData)}`);
       }
 
       await displayJobs(currentPage);
+      showNotification('Đổi trạng thái thành công!', 'success');
+      setShowModal(false);
       setSelectedJob(null);
     } catch (error) {
       console.error('Lỗi khi thay đổi trạng thái:', error.message);
@@ -430,6 +429,13 @@ const JobManagement = () => {
     }
     if (status) filtered = filtered.filter(j => j.status === status);
     if (jobType) filtered = filtered.filter(j => String(j.jobType || '').toLowerCase() === jobType.toLowerCase());
+
+    // Sắp xếp lại theo ngày tạo mới nhất lên trên (createdAt dạng ISO)
+    filtered = filtered.slice().sort((a, b) => {
+      const dateA = new Date(a.createdAt);
+      const dateB = new Date(b.createdAt);
+      return dateB - dateA;
+    });
 
     setFilteredJobs(filtered.slice(0, itemsPerPage));
     setTotalPages(Math.ceil(filtered.length / itemsPerPage));
@@ -795,14 +801,13 @@ const JobManagement = () => {
               <div className={styles.detailRow}>
                 <div className={styles.detailGroup}>
                   <label>Hạn nộp: <span style={{ color: 'red' }}>*</span></label>
-                 <input
+                  <input
                     type="date"
                     name="Due date"
                     value={formData['Due date']}
                     onChange={handleInputChange}
                     required
                   />
-                  
                   {formErrors['Due date'] && <p style={{ color: 'red' }}>{formErrors['Due date']}</p>}
                 </div>
                 <div className={styles.detailGroup}>

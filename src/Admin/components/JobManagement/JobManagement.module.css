@@ -16,17 +16,17 @@
   --status-interview-text: #ff6f00;
   --add-bg: #28a745;
   --add-text: #fff;
-  --spacing-sm: 8px;
-  --spacing-md: 15px;
-  --spacing-lg: 20px;
-  --border-radius: 5px;
-  --box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --border-radius: 0.3rem;
+  --box-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.1);
 }
 
 /* Container chính */
 .container {
-  margin-left: 250px;
-  width: calc(100% - 250px);
+  margin-left: 15%;
+  width: 85%;
   padding: var(--spacing-lg);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   color: var(--text-color);
@@ -36,24 +36,24 @@
 /* Bộ lọc */
 .filters {
   background: var(--background-light);
-  padding: var(--spacing-lg);
+  padding: var(--spacing-md);
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
-  margin-bottom: var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
   display: flex;
   flex-wrap: wrap;
-  gap: var(--spacing-md);
+  gap: var(--spacing-sm);
   align-items: center;
 }
 
 .filters select,
 .filters input,
 .searchBar {
-  padding: var(--spacing-sm) 12px;
+  padding: 0.4rem 0.8rem;
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
-  font-size: 0.875rem;
-  min-width: 150px;
+  font-size: 0.85rem; /* Tăng từ 0.75rem */
+  min-width: 10vw;
   transition: border-color 0.2s ease;
   box-sizing: border-box;
 }
@@ -63,21 +63,21 @@
 .searchBar:focus {
   border-color: var(--primary-color);
   outline: none;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+  box-shadow: 0 0 0 0.1rem rgba(0, 123, 255, 0.25);
 }
 
 .filters button {
-  padding: var(--spacing-sm) var(--spacing-md);
+  padding: 0.4rem 0.8rem;
   background: var(--secondary-color);
   color: #fff;
   border: none;
   border-radius: var(--border-radius);
   cursor: pointer;
-  font-size: 0.875rem;
+  font-size: 0.85rem; /* Tăng từ 0.75rem */
   transition: background-color 0.2s ease;
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 0.3rem;
   white-space: nowrap;
 }
 
@@ -98,31 +98,31 @@
 /* Bảng công việc */
 .jobs {
   background: var(--background-light);
-  padding: var(--spacing-lg);
+  padding: var(--spacing-md);
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
-  margin-bottom: var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
   overflow-x: auto;
 }
 
 .jobs h3 {
-  font-size: 1.125rem;
-  margin-bottom: var(--spacing-md);
+  font-size: 1.1rem; /* Tăng từ 1rem */
+  margin-bottom: var(--spacing-sm);
 }
 
 .jobs h3 button {
-  padding: var(--spacing-sm) var(--spacing-md);
+  padding: 0.4rem 0.8rem;
   background: var(--add-bg);
   color: var(--add-text);
   border: none;
   border-radius: var(--border-radius);
   cursor: pointer;
-  font-size: 0.875rem;
+  font-size: 0.85rem; /* Tăng từ 0.75rem */
   transition: background-color 0.2s ease;
   white-space: nowrap;
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 0.3rem;
 }
 
 .jobs h3 button:hover {
@@ -133,14 +133,14 @@
   width: 100%;
   border-collapse: collapse;
   table-layout: auto;
-  min-width: 800px;
+  max-width: 100%;
 }
 
 .jobs th,
 .jobs td {
-  padding: 12px 10px;
+  padding: 0.6rem 0.5rem;
   text-align: left;
-  font-size: 0.875rem;
+  font-size: 0.85rem; /* Tăng từ 0.75rem */
   border-bottom: 1px solid #eee;
   vertical-align: middle;
   overflow: hidden;
@@ -154,39 +154,39 @@
   white-space: nowrap;
 }
 
-/* Thiết lập độ rộng tối thiểu cho các cột */
+/* Thiết lập độ rộng tối thiểu cho các cột bằng % */
 .jobs th:nth-child(1),
 .jobs td:nth-child(1) {
-  min-width: 50px;   /* STT */
+  width: 5%;
   text-align: center;
 }
 .jobs th:nth-child(2),
 .jobs td:nth-child(2) {
-  min-width: 180px;  /* Tên Công Việc */
+  width: 20%;
 }
 .jobs th:nth-child(3),
 .jobs td:nth-child(3) {
-  min-width: 100px;  /* Thương Hiệu */
+  width: 15%;
 }
 .jobs th:nth-child(4),
 .jobs td:nth-child(4) {
-  min-width: 90px;   /* Loại Công Việc */
+  width: 10%;
 }
 .jobs th:nth-child(5),
 .jobs td:nth-child(5) {
-  min-width: 120px;  /* Mức Lương */
+  width: 15%;
 }
 .jobs th:nth-child(6),
 .jobs td:nth-child(6) {
-  min-width: 120px;  /* Địa Điểm */
+  width: 15%;
 }
 .jobs th:nth-child(7),
 .jobs td:nth-child(7) {
-  min-width: 90px;   /* Hạn Nộp */
+  width: 10%;
 }
 .jobs th:nth-child(8),
 .jobs td:nth-child(8) {
-  min-width: 90px;   /* Trạng Thái */
+  width: 10%;
   text-align: center;
 }
 
@@ -203,14 +203,14 @@
   white-space: normal;
   word-break: break-word;
   line-height: 1.4;
-  max-height: 60px;
+  max-height: 3rem;
 }
 
 /* Status styling */
 .status {
-  padding: 4px 8px;
+  padding: 0.2rem 0.5rem;
   border-radius: var(--border-radius);
-  font-size: 0.875rem;
+  font-size: 0.85rem; /* Tăng từ 0.75rem */
   display: inline-block;
 }
 
@@ -227,16 +227,16 @@
 /* Action buttons */
 .actionButtons {
   display: flex;
-  gap: 5px;
+  gap: 0.3rem;
   justify-content: flex-start;
 }
 
 .actionButtons button {
-  padding: 6px 10px;
+  padding: 0.3rem 0.6rem;
   border: none;
-  border-radius: 4px;
+  border-radius: 0.2rem;
   cursor: pointer;
-  font-size: 0.75rem;
+  font-size: 0.75rem; /* Tăng từ 0.65rem */
   transition: background-color 0.2s ease;
 }
 
@@ -269,19 +269,18 @@
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
-
   align-items: center;
   justify-content: center;
 }
 
 .modalContent {
   background: var(--background-light);
-  padding: var(--spacing-lg);
+  padding: var(--spacing-md);
   z-index: 10000;
   border-radius: var(--border-radius);
-  width: 90%;
-  max-width: 900px;
-  max-height: 90vh;
+  width: 80%;
+  max-width: 600px;
+  max-height: 80vh;
   overflow-y: auto;
   position: relative;
   animation: modalSlideIn 0.3s ease-out;
@@ -289,7 +288,7 @@
 
 @keyframes modalSlideIn {
   from {
-    transform: translateY(-50px);
+    transform: translateY(-2rem);
     opacity: 0;
   }
   to {
@@ -300,60 +299,59 @@
 
 .close {
   color: #fd0000;
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: bold;
   cursor: pointer;
   transition: color 0.2s ease;
   float: right;
-  margin-right: 10px
+  margin-right: 0.5rem;
 }
 
 .close:hover {
-    color: #530000;
-
+  color: #530000;
 }
 
 .modalContent h3 {
   margin-top: 0;
-  margin-bottom: var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
   color: var(--text-color);
-  border-bottom: 2px solid var(--border-color);
-  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.5rem;
 }
 
 /* Job details */
 .jobDetails {
-  margin-top: var(--spacing-lg);
+  margin-top: var(--spacing-md);
 }
 
 .detailRow {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--spacing-lg);
-  margin-bottom: var(--spacing-md);
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
 }
 
 .detailGroup {
   flex: 1;
-  min-width: 200px;
+  min-width: 15vw;
 }
 
 .detailGroup.full {
   flex: 100%;
-  margin-bottom: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
 }
 
 .detailGroup label {
   font-weight: 600;
   color: var(--text-muted);
   display: block;
-  margin-bottom: 8px;
-  font-size: 0.9rem;
+  margin-bottom: 0.4rem;
+  font-size: 0.9rem; /* Tăng từ 0.8rem */
 }
 
 .detailGroup p {
   margin: 0;
-  line-height: 1.5;
+  line-height: 1.4;
   color: var(--text-color);
 }
 
@@ -361,10 +359,10 @@
 .detailGroup select,
 .detailGroup textarea {
   width: 100%;
-  padding: 10px 12px;
+  padding: 0.5rem 0.8rem;
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
-  font-size: 0.875rem;
+  font-size: 0.85rem; /* Tăng từ 0.75rem */
   font-family: inherit;
   transition: border-color 0.2s ease;
   box-sizing: border-box;
@@ -375,47 +373,47 @@
 .detailGroup textarea:focus {
   border-color: var(--primary-color);
   outline: none;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+  box-shadow: 0 0 0 0.1rem rgba(0, 123, 255, 0.25);
 }
 
 .detailGroup textarea {
   resize: vertical;
-  min-height: 100px;
-  line-height: 1.5;
+  min-height: 5rem;
+  line-height: 1.4;
 }
 
 /* Error styles */
 .errorInput {
   border-color: #dc3545 !important;
-  box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.25) !important;
+  box-shadow: 0 0 0 0.1rem rgba(220, 53, 69, 0.25) !important;
 }
 
 .error {
   color: #dc3545;
-  font-size: 0.75rem;
-  margin-top: 4px;
+  font-size: 0.75rem; /* Tăng từ 0.65rem */
+  margin-top: 0.2rem;
   display: block;
 }
 
 /* Form actions */
 .formActions {
   display: flex;
-  gap: 1rem;
+  gap: 0.5rem;
   justify-content: flex-end;
-  margin-top: 2rem;
-  padding-top: 1rem;
+  margin-top: 1rem;
+  padding-top: 0.5rem;
   border-top: 1px solid var(--border-color);
 }
 
 .formActions button {
-  padding: 10px 20px;
+  padding: 0.5rem 1rem;
   border: none;
   border-radius: var(--border-radius);
   cursor: pointer;
-  font-size: 0.875rem;
+  font-size: 0.85rem; /* Tăng từ 0.75rem */
   font-weight: 500;
   transition: all 0.2s ease;
-  min-width: 100px;
+  min-width: 5rem;
 }
 
 .formActions button[type="submit"] {
@@ -443,11 +441,11 @@
 
 /* Status button in modal */
 .statusBtn {
-  padding: 8px 16px;
+  padding: 0.4rem 0.8rem;
   border: none;
   border-radius: var(--border-radius);
   cursor: pointer;
-  font-size: 0.875rem;
+  font-size: 0.85rem; /* Tăng từ 0.75rem */
   font-weight: 500;
   transition: all 0.2s ease;
 }
@@ -464,13 +462,13 @@
 
 .statusBtn:hover {
   opacity: 0.8;
-  transform: translateY(-1px);
+  transform: translateY(-0.05rem);
 }
 
 /* Loading states */
 .jobs tbody tr td[colspan="8"] {
   text-align: center;
-  padding: 40px 20px;
+  padding: 2rem 1rem;
   color: var(--text-muted);
   font-style: italic;
 }
@@ -479,19 +477,20 @@
 .pagination {
   display: flex;
   justify-content: center;
-  margin-top: var(--spacing-lg);
-  gap: 5px;
+  margin-top: var(--spacing-md);
+  gap: 0.3rem;
   flex-wrap: wrap;
 }
 
 .pagination button {
-  padding: 8px 12px;
+  padding: 0.4rem 0.6rem;
   border: 1px solid var(--border-color);
   background: var(--background-light);
-  border-radius: 3px;
+  border-radius: 0.2rem;
   cursor: pointer;
   transition: background-color 0.2s ease, color 0.2s ease;
-  min-width: 40px;
+  min-width: 2rem;
+  font-size: 0.85rem; /* Tăng từ 0.75rem */
 }
 
 .pagination button.active,
@@ -507,7 +506,7 @@
 }
 
 .pagination span {
-  padding: 8px 4px;
+  padding: 0.4rem 0.2rem;
   display: flex;
   align-items: center;
 }
@@ -515,9 +514,9 @@
 /* Thêm style cho hình ảnh trong modal */
 .detailGroup img {
   max-width: 100%;
-  max-height: 200px;
+  max-height: 10rem;
   object-fit: contain;
-  margin-top: 10px;
+  margin-top: 0.5rem;
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
 }
@@ -528,15 +527,96 @@
   -webkit-overflow-scrolling: touch;
 }
 
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    margin-left: 0;
+    width: 100%;
+    padding: var(--spacing-sm);
+  }
+
+  .filters {
+    padding: var(--spacing-sm);
+    gap: 0.5rem;
+  }
+
+  .filters select,
+  .filters input,
+  .searchBar {
+    min-width: 100%;
+    font-size: 0.8rem; /* Tăng từ 0.7rem */
+  }
+
+  .filters button {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.8rem; /* Tăng từ 0.7rem */
+  }
+
+  .jobs {
+    padding: var(--spacing-sm);
+  }
+
+  .jobs th,
+  .jobs td {
+    padding: 0.4rem 0.3rem;
+    font-size: 0.8rem; /* Tăng từ 0.65rem */
+  }
+
+  .jobs th:nth-child(1),
+  .jobs td:nth-child(1) {
+    width: 8%;
+  }
+  .jobs th:nth-child(2),
+  .jobs td:nth-child(2) {
+    width: 25%;
+  }
+  .jobs th:nth-child(3),
+  .jobs td:nth-child(3) {
+    width: 20%;
+  }
+  .jobs th:nth-child(4),
+  .jobs td:nth-child(4) {
+    width: 15%;
+  }
+  .jobs th:nth-child(5),
+  .jobs td:nth-child(5) {
+    width: 15%;
+  }
+  .jobs th:nth-child(6),
+  .jobs td:nth-child(6) {
+    width: 15%;
+  }
+  .jobs th:nth-child(7),
+  .jobs td:nth-child(7) {
+    width: 15%;
+  }
+  .jobs th:nth-child(8),
+  .jobs td:nth-child(8) {
+    width: 15%;
+  }
+
+  .pagination button {
+    padding: 0.3rem 0.5rem;
+    min-width: 1.8rem;
+    font-size: 0.8rem; /* Tăng từ 0.65rem */
+  }
+
+  .modalContent {
+    width: 90%;
+    max-width: 90%;
+    padding: var(--spacing-sm);
+  }
+}
+
 :global(.notification) {
   position: fixed;
-  top: 20px;
-  right: 20px;
-  padding: 10px 20px;
-  border-radius: 5px;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.3rem;
   z-index: 1000;
   color: #fff;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.2);
   transition: opacity 0.5s ease;
 }
 

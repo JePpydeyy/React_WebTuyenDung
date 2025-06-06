@@ -33,14 +33,13 @@ const CandidateManagement = () => {
 
   const showNotification = useCallback((message, type = 'success') => {
     const notification = document.createElement('div');
-    notification.className = `notification ${type}`; // Sử dụng class CSS động
+    notification.className = `notification ${type}`;
     notification.textContent = message;
     document.body.appendChild(notification);
 
-    // Tự động xóa sau 3 giây với hiệu ứng mờ dần
     setTimeout(() => {
       notification.style.opacity = '0';
-      setTimeout(() => notification.remove(), 500); // Đợi hiệu ứng mờ dần hoàn tất
+      setTimeout(() => notification.remove(), 500);
     }, 3000);
   }, []);
 
@@ -87,7 +86,9 @@ const CandidateManagement = () => {
       }
       if (!response.ok) throw new Error(`Không thể tải danh sách ứng viên: ${response.status}`);
       const data = await response.json();
-      return data.map(candidate => ({
+      
+      // Ánh xạ dữ liệu
+      const mappedData = data.map(candidate => ({
         ...candidate,
         id: candidate._id || candidate.jobId,
         name: sanitizeHTML(candidate.form?.fullName),
@@ -103,6 +104,11 @@ const CandidateManagement = () => {
         resume: candidate.form?.resume,
         status: statusDisplayMap[candidate.status] || candidate.status,
       }));
+
+      // Sắp xếp theo appliedAt giảm dần (mới nhất lên đầu)
+      mappedData.sort((a, b) => new Date(b.appliedAt) - new Date(a.appliedAt));
+
+      return mappedData;
     } catch (error) {
       console.error('Lỗi khi lấy danh sách ứng viên:', error);
       showNotification(`Lỗi khi tải danh sách ứng viên: ${error.message}`, 'error');
@@ -199,7 +205,6 @@ const CandidateManagement = () => {
     [getAuthHeaders, showNotification, navigate]
   );
 
-  // Change Status với cập nhật lạc quan
   const changeStatus = useCallback(
     async (id, newStatus) => {
       const backendStatus = statusBackendMap[newStatus];
@@ -208,7 +213,6 @@ const CandidateManagement = () => {
         return;
       }
 
-      // Cập nhật lạc quan
       const previousCandidates = [...candidates];
       const previousFiltered = [...filteredCandidates];
       setCandidates(prev => prev.map(c => (c.id === id ? { ...c, status: newStatus } : c)));
@@ -264,12 +268,10 @@ const CandidateManagement = () => {
     [getAuthHeaders, showNotification, navigate, selectedCandidate, candidates, filteredCandidates]
   );
 
-  // Delete Candidate với reload mượt mà
   const hideCandidate = useCallback(
     async (id) => {
       if (!window.confirm('Bạn có chắc chắn muốn xóa ứng viên này?')) return;
 
-      // Cập nhật lạc quan
       const previousCandidates = [...candidates];
       const previousFiltered = [...filteredCandidates];
       setCandidates(prev => prev.filter(c => c.id !== id));
@@ -303,7 +305,6 @@ const CandidateManagement = () => {
           throw new Error(errorData.message || `Không thể ẩn ứng viên: ${response.status}`);
         }
         showNotification('Đã xóa ứng viên thành công', 'success');
-        // Reload danh sách ứng viên từ server
         await displayCandidates(currentPage);
       } catch (error) {
         console.error('Lỗi khi xóa ứng viên:', error);
@@ -320,7 +321,6 @@ const CandidateManagement = () => {
     [getAuthHeaders, showNotification, navigate, selectedCandidate, candidates, filteredCandidates, displayCandidates, currentPage]
   );
 
-  // Tìm kiếm mượt mà giống JobManagement
   const handleApplyFilters = useCallback(
     async () => {
       const positionFilter = document.getElementById('positionFilter')?.value;

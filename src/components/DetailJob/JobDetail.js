@@ -21,6 +21,16 @@ const bannerImages = [
   '/assets/images/BANNER2.jpg',
 ];
 
+// Format date to Vietnamese locale (e.g., "ngày 29 tháng 06 năm 2025")
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('vi-VN', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+}
+
 const JobDetail = () => {
   const { jobId } = useParams();
   const [job, setJob] = useState(null);
@@ -60,12 +70,16 @@ const JobDetail = () => {
     const fetchJob = async () => {
       try {
         console.log('Đang tải công việc với ID:', jobId);
-        const res = await fetch(`https://api-tuyendung-cty.onrender.com/api/job/${jobId}`);
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/job/${jobId}`);
         if (!res.ok) throw new Error('Không tìm thấy công việc');
         const data = await res.json();
         console.log('Dữ liệu công việc:', data);
         if (!data._id || !data.Name || !data.Workplace) {
           throw new Error('Dữ liệu công việc không đầy đủ');
+        }
+        // Ensure the job has status: "show"
+        if (data.status !== 'show') {
+          throw new Error('Công việc không khả dụng');
         }
         setJob(data);
       } catch (err) {
@@ -80,8 +94,13 @@ const JobDetail = () => {
       try {
         const res = await fetch('https://api-tuyendung-cty.onrender.com/api/job');
         const data = await res.json();
+        const currentDate = new Date();
         const sortedJobs = Array.isArray(data)
-          ? data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 3)
+          ? data
+              .filter((job) => job.status === 'show') // Filter for status: "show"
+              .filter((job) => new Date(job['Due date']) >= currentDate) // Filter non-expired jobs
+              .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Sort by createdAt
+              .slice(0, 3) // Limit to 3 jobs
           : [];
         setLatestJobs(sortedJobs);
       } catch (err) {
@@ -442,7 +461,7 @@ const JobDetail = () => {
               Hết hạn nộp
             </h2>
             <ul>
-              <li>{job['Due date']}</li>
+              <li>{formatDate(job['Due date'])}</li>
             </ul>
           </div>
           <div className={styles.jobDetailColumn}>
@@ -512,8 +531,7 @@ const JobDetail = () => {
                       <strong>Số lượng tuyển:</strong> {latestJob.Slot}
                     </div>
                     <div className={styles.jobCardInfo}>
-                      <strong>Ngày đăng:</strong>{' '}
-                      {new Date(latestJob.createdAt).toLocaleDateString('vi-VN')}
+                      <strong>Ngày hết hạn:</strong> {formatDate(latestJob['Due date'])}
                     </div>
                     <Link
                       to={`/DetailJob/${latestJob._id}`}
