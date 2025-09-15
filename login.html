@@ -1,189 +1,777 @@
 <!DOCTYPE html>
 <html lang="vi">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Đăng Nhập Quản Trị</title>
-  <link rel="stylesheet" href="styles/login.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <style>
-    * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tìm kiếm việc làm</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Arial, sans-serif;
+      }
 
-/* Thanh bên */
-.sidebar {
-  width: 250px;
-  background: #100f27;
-  color: #fff;
-  padding: 20px;
-  position: fixed;
-  height: 100%;
-}
+      body {
+        background: linear-gradient(to top, #ffffff, #daf4ff);
+        color: #333;
+        line-height: 1.6;
+        min-height: 100vh;
+      }
 
-.sidebar .logo {
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-  width: 170px;
-  height: 100px;
-}
+      .container {
+        max-width: 1200px;
+        margin: 20px auto;
+        padding: 0 15px;
+        display: flex;
+        gap: 25px;
+      }
 
-.sidebar .logo img {
-  width: 100%;
-  height: auto;
-}
+      /* Header */
+      .header {
+        background: #1e40af00;
+        color: rgb(0, 0, 0);
+        padding: 2vw 0 1.5vw;
+        max-width: 80%;
+        margin: 0 auto; /* Center header content */
+        margin-bottom: 10px;
+      }
 
-.sidebar ul {
-  list-style: none;
-}
+      .header-content {
+        max-width: 500px;
+        padding: 0 15px;
+      }
 
-.sidebar ul li {
-  margin: 20px 0;
-}
+      .header h1 {
+        font-size: clamp(1.8rem, 5vw, 2.2rem); /* Responsive font size */
+        margin-bottom: 12px;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+      }
 
-.sidebar ul li a {
-  color: #b0b7c3;
-  text-decoration: none;
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-}
+      .header p {
+        font-size: clamp(0.9rem, 3vw, 1rem);
+        line-height: 1.5;
+        opacity: 0.85;
+      }
 
-.sidebar ul li a i {
-  margin-right: 10px;
-}
+      /* Search and Filters */
+      .search-filters {
+        flex: 0 0 350px;
+        background-color: #ffffff00;
+        border-radius: 10px;
+        padding: 20px;
+        align-self: flex-start;
+        position: sticky;
+        top: 20px;
+      }
 
-.sidebar ul li a:hover {
-  color: #fff;
-}
+      .search-filters h3 {
+        font-size: clamp(1rem, 2.5vw, 1.2rem);
+        margin-bottom: 18px;
+        color: #000000;
+        font-weight: 600;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #eee;
+      }
 
-/* Nội dung chính */
-.main-content {
-  margin-left: 250px;
-  padding: 20px;
-  width: calc(100% - 250px);
-}
+      .search-box {
+        margin-bottom: 20px;
+        position: relative;
+      }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
+      .search-box input {
+        width: 100%;
+        padding: 12px 15px 12px 40px;
+        border: 1px solid #e1e5eb;
+        border-radius: 8px;
+        font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+        transition: all 0.3s ease;
+      }
 
-.header h1 {
-  font-size: 24px;
-  color: #333;
-}
+      .search-box input:focus {
+        outline: none;
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      }
 
-/* Form đăng nhập */
-.login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: calc(100vh - 100px);
-}
+      .search-box i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #7b7b7b;
+        font-size: 1rem;
+      }
 
-.login-form {
-  background: #fff;
-  padding: 30px;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-  width: 100%;
-  max-width: 600px;
-}
+      .search-buton {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 20px;
+      }
 
-.form-group {
-  margin-bottom: 20px;
-}
+      .search-buton > a {
+        border: 1px solid #ddd;
+        padding: 8px 14px;
+        font-size: clamp(0.8rem, 2vw, 0.85rem);
+        text-decoration: none;
+        border-radius: 6px;
+        color: #555;
+        transition: all 0.2s ease;
+        background: #f8f9fa;
+      }
 
-.form-group label {
-  display: flex;
-  align-items: center;
-  font-size: 18px;
-  color: #666;
-  margin-bottom: 8px;
-}
+      .search-buton > a:hover {
+        background: #e9ecef;
+        border-color: #ccc;
+      }
 
-.form-group label i {
-  margin-right: 10px;
-}
+      /* Job Listings */
+      .job-listings {
+        flex: 1;
+      }
 
-.form-group input {
-  width: 100%;
-  padding: 15px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  font-size: 16px;
-}
+      .job-cards {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
 
-.form-group button {
-  margin-top: 40px;
-  width: 100%;
-  padding: 15px;
-  background: #00026b;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  font-size: 18px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+      .job-card {
+        background-color: white;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+        display: flex;
+        justify-content: space-between;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-left: 4px solid transparent;
+      }
 
-.form-group button i {
-  margin-right: 10px;
-}
+      .job-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        border-left-color: #2563eb;
+      }
 
-.form-group button:hover {
-  background: #03002c;
-}
-  </style>
-</head>
-<body>
-  <!-- Thanh bên -->
-  <div class="sidebar">
-    <a href="index.html" class="logo">
-      <img src="../images/logo.png" alt="Logo">
-    </a>
-    <ul>
-      <li><a href="index.html"><i class="fa-solid fa-chart-line"></i> Bảng Điều Khiển</a></li>
-      <li><a href="./tintuc/tintuc.html"><i class="fa-regular fa-newspaper"></i> Tin Tức</a></li>
-      <li><a href="./Job.html"><i class="fa-solid fa-briefcase"></i> Quản Lý Công Việc</a></li>
-      <li><a href="./SubmitProfile.html"><i class="fa-solid fa-address-card"></i> Hồ Sơ Ứng Tuyển</a></li>
-      <li><a href="#"><i class="fa-solid fa-right-from-bracket"></i> Đăng Xuất</a></li>
-    </ul>
-  </div>
+      .job-info {
+        flex: 1;
+      }
 
-  <!-- Nội dung chính -->
-  <div class="main-content">
+      .job-title {
+        font-size: clamp(1rem, 3vw, 1.2rem);
+        font-weight: 600;
+        color: #000000;
+        margin-bottom: 12px;
+        line-height: 1.4;
+      }
+
+      .company-info {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+        color: #666;
+        font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .company-name {
+        font-weight: 600;
+        color: #444;
+      }
+
+      .divider {
+        color: #ddd;
+      }
+
+      .job-meta {
+        display: flex;
+        gap: 15px;
+        margin-top: 15px;
+      }
+
+      .view-btn {
+        background-color: #c0dbfe;
+        color: #1e40af;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: clamp(0.85rem, 2.5vw, 0.9rem);
+        transition: all 0.3s ease;
+        white-space: nowrap;
+        font-weight: 500;
+      }
+
+      .view-btn:hover {
+        color: #ffffff;
+        background-color: #1e40af;
+        box-shadow: 0 3px 8px rgba(37, 99, 235, 0.25);
+      }
+
+      /* Pagination */
+      .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 20px;
+        flex-wrap: wrap; /* Allow buttons to wrap on small screens */
+      }
+
+      .pagination button {
+        padding: 8px 14px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        background: #f8f9fa;
+        cursor: pointer;
+        font-size: clamp(0.85rem, 2.5vw, 0.9rem);
+        transition: all 0.2s ease;
+        min-width: 40px; /* Ensure buttons are touch-friendly */
+      }
+
+      .pagination button:hover {
+        background: #e9ecef;
+        border-color: #ccc;
+      }
+
+      .pagination button.active {
+        background: #2563eb;
+        color: white;
+        border-color: #2563eb;
+      }
+
+      .pagination button:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 900px) {
+        .container {
+          flex-direction: column;
+          gap: 15px;
+        }
+
+        .search-filters {
+          width: 100%;
+          position: static;
+          padding: 15px;
+        }
+
+        .header-content {
+          margin: 0 auto;
+          max-width: 100%;
+          text-align: center; /* Center text on smaller screens */
+        }
+
+        .search-buton {
+          justify-content: center; /* Center filter buttons */
+        }
+      }
+
+      @media (max-width: 576px) {
+        .job-card {
+          flex-direction: column;
+          padding: 15px;
+        }
+
+        .company-info {
+          gap: 5px;
+          flex-direction: column; /* Stack company info vertically */
+          align-items: flex-start;
+        }
+
+        .divider {
+          display: none; /* Hide dividers on small screens */
+        }
+
+        .view-btn {
+          width: 100%; /* Full-width button on mobile */
+          text-align: center;
+        }
+
+        .pagination button {
+          padding: 6px 12px;
+          font-size: 0.8rem;
+        }
+
+        .header {
+          padding: 15px 0;
+        }
+
+        .search-box input {
+          padding: 10px 15px 10px 35px;
+        }
+
+        .search-box i {
+          font-size: 0.9rem;
+        }
+      }
+
+      @media (max-width: 400px) {
+        .header h1 {
+          font-size: 1.5rem;
+        }
+
+        .header p {
+          font-size: 0.85rem;
+        }
+
+        .search-filters h3 {
+          font-size: 1rem;
+        }
+
+        .search-buton > a {
+          padding: 6px 10px;
+          font-size: 0.75rem;
+        }
+
+        .job-title {
+          font-size: 1rem;
+        }
+
+        .company-info {
+          font-size: 0.75rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
     <div class="header">
-      <h1>Đăng Nhập Quản Trị</h1>
+      <div class="header-content">
+        <h1>Công việc khối văn phòng</h1>
+        <p>
+          Khám phá các cơ hội việc làm khối văn phòng hấp dẫn tại PPM. Cùng bạn
+          xây dựng sự nghiệp vững chắc trong môi trường chuyên nghiệp và năng
+          động
+        </p>
+      </div>
     </div>
-    <div class="login-container">
-      <form class="login-form">
-        <div class="form-group">
-          <label for="username"><i class="fa-solid fa-user"></i> Tên Đăng Nhập</label>
-          <input type="text" id="username" name="username" placeholder="Nhập tên đăng nhập" required>
-        </div>
-        <div class="form-group">
-          <label for="password"><i class="fa-solid fa-lock"></i> Mật Khẩu</label>
-          <input type="password" id="password" name="password" placeholder="Nhập mật khẩu" required>
-        </div>
-        <div class="form-group">
-          <button type="submit"><i class="fa-solid fa-right-to-bracket"></i> Đăng Nhập</button>
-        </div>
-      </form>
-    </div>
-  </div>
 
-  <script>
-    // JavaScript để xử lý form đăng nhập (có thể mở rộng sau)
-    console.log("Trang đăng nhập đã được tải.");
-  </script>
-</body>
+    <div class="container">
+      <!-- Search and Filters Sidebar -->
+      <div class="search-filters">
+        <h3>Tìm kiếm việc làm</h3>
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" placeholder="Tìm kiếm việc làm, công ty..." />
+        </div>
+        <h3>Nơi làm việc</h3>
+        <div class="search-buton">
+          <a href="">Hồ Chí Minh</a>
+          <a href="">Quận 1</a>
+          <a href="">Quận 3</a>
+          <a href="">Quận 7</a>
+          <a href="">Bình Thạnh</a>
+          <a href="">Tân Bình</a>
+        </div>
+      </div>
+
+      <!-- Job Listings -->
+      <div class="job-listings">
+        <div class="job-cards" id="jobCards">
+          <!-- Job Card 1 -->
+          <div class="job-card">
+            <div class="job-info">
+              <div class="job-title">
+                NHÂN VIÊN BÁN HÀNG QUẬN 7/QUẬN 1/BÌNH THẠNH - ARMANI EXCHANGE
+              </div>
+              <div class="company-info">
+                <span class="company-name">ARMANI EXCHANGE</span>
+                <span class="divider">|</span>
+                <span>Quận 7, Hồ Chí Minh</span>
+                <span class="divider">|</span>
+                <span>Đại Học</span>
+                <span class="divider">|</span>
+                <span>29/06/2025</span>
+              </div>
+              <div class="job-meta">
+                <button class="view-btn">Xem chi tiết</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="job-card">
+            <div class="job-info">
+              <div class="job-title">
+                NHÂN VIÊN BÁN HÀNG QUẬN 7/QUẬN 1/BÌNH THẠNH - ARMANI EXCHANGE
+              </div>
+              <div class="company-info">
+                <span class="company-name">ARMANI EXCHANGE</span>
+                <span class="divider">|</span>
+                <span>Quận 7, Hồ Chí Minh</span>
+                <span class="divider">|</span>
+                <span>Đại Học</span>
+                <span class="divider">|</span>
+                <span>29/06/2025</span>
+              </div>
+              <div class="job-meta">
+                <button class="view-btn">Xem chi tiết</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="job-card">
+            <div class="job-info">
+              <div class="job-title">
+                NHÂN VIÊN BÁN HÀNG QUẬN 7/QUẬN 1/BÌNH THẠNH - ARMANI EXCHANGE
+              </div>
+              <div class="company-info">
+                <span class="company-name">ARMANI EXCHANGE</span>
+                <span class="divider">|</span>
+                <span>Quận 7, Hồ Chí Minh</span>
+                <span class="divider">|</span>
+                <span>Đại Học</span>
+                <span class="divider">|</span>
+                <span>29/06/2025</span>
+              </div>
+              <div class="job-meta">
+                <button class="view-btn">Xem chi tiết</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="job-card">
+            <div class="job-info">
+              <div class="job-title">
+                NHÂN VIÊN BÁN HÀNG QUẬN 7/QUẬN 1/BÌNH THẠNH - ARMANI EXCHANGE
+              </div>
+              <div class="company-info">
+                <span class="company-name">ARMANI EXCHANGE</span>
+                <span class="divider">|</span>
+                <span>Quận 7, Hồ Chí Minh</span>
+                <span class="divider">|</span>
+                <span>Đại Học</span>
+                <span class="divider">|</span>
+                <span>29/06/2025</span>
+              </div>
+              <div class="job-meta">
+                <button class="view-btn">Xem chi tiết</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="job-card">
+            <div class="job-info">
+              <div class="job-title">
+                NHÂN VIÊN BÁN HÀNG QUẬN 7/QUẬN 1/BÌNH THẠNH - ARMANI EXCHANGE
+              </div>
+              <div class="company-info">
+                <span class="company-name">ARMANI EXCHANGE</span>
+                <span class="divider">|</span>
+                <span>Quận 7, Hồ Chí Minh</span>
+                <span class="divider">|</span>
+                <span>Đại Học</span>
+                <span class="divider">|</span>
+                <span>29/06/2025</span>
+              </div>
+              <div class="job-meta">
+                <button class="view-btn">Xem chi tiết</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="job-card">
+            <div class="job-info">
+              <div class="job-title">
+                NHÂN VIÊN BÁN HÀNG QUẬN 7/QUẬN 1/BÌNH THẠNH - ARMANI EXCHANGE
+              </div>
+              <div class="company-info">
+                <span class="company-name">ARMANI EXCHANGE</span>
+                <span class="divider">|</span>
+                <span>Quận 7, Hồ Chí Minh</span>
+                <span class="divider">|</span>
+                <span>Đại Học</span>
+                <span class="divider">|</span>
+                <span>29/06/2025</span>
+              </div>
+              <div class="job-meta">
+                <button class="view-btn">Xem chi tiết</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="job-card">
+            <div class="job-info">
+              <div class="job-title">
+                NHÂN VIÊN BÁN HÀNG QUẬN 7/QUẬN 1/BÌNH THẠNH - ARMANI EXCHANGE
+              </div>
+              <div class="company-info">
+                <span class="company-name">ARMANI EXCHANGE</span>
+                <span class="divider">|</span>
+                <span>Quận 7, Hồ Chí Minh</span>
+                <span class="divider">|</span>
+                <span>Đại Học</span>
+                <span class="divider">|</span>
+                <span>29/06/2025</span>
+              </div>
+              <div class="job-meta">
+                <button class="view-btn">Xem chi tiết</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="job-card">
+            <div class="job-info">
+              <div class="job-title">
+                NHÂN VIÊN BÁN HÀNG QUẬN 7/QUẬN 1/BÌNH THẠNH - ARMANI EXCHANGE
+              </div>
+              <div class="company-info">
+                <span class="company-name">ARMANI EXCHANGE</span>
+                <span class="divider">|</span>
+                <span>Quận 7, Hồ Chí Minh</span>
+                <span class="divider">|</span>
+                <span>Đại Học</span>
+                <span class="divider">|</span>
+                <span>29/06/2025</span>
+              </div>
+              <div class="job-meta">
+                <button class="view-btn">Xem chi tiết</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="job-card">
+            <div class="job-info">
+              <div class="job-title">
+                NHÂN VIÊN BÁN HÀNG QUẬN 7/QUẬN 1/BÌNH THẠNH - ARMANI EXCHANGE
+              </div>
+              <div class="company-info">
+                <span class="company-name">ARMANI EXCHANGE</span>
+                <span class="divider">|</span>
+                <span>Quận 7, Hồ Chí Minh</span>
+                <span class="divider">|</span>
+                <span>Đại Học</span>
+                <span class="divider">|</span>
+                <span>29/06/2025</span>
+              </div>
+              <div class="job-meta">
+                <button class="view-btn">Xem chi tiết</button>
+              </div>
+            </div>
+          </div>
+          <div class="job-card">
+            <div class="job-info">
+              <div class="job-title">
+                NHÂN VIÊN BÁN HÀNG QUẬN 7/QUẬN 1/BÌNH THẠNH - ARMANI EXCHANGE
+              </div>
+              <div class="company-info">
+                <span class="company-name">ARMANI EXCHANGE</span>
+                <span class="divider">|</span>
+                <span>Quận 7, Hồ Chí Minh</span>
+                <span class="divider">|</span>
+                <span>Đại Học</span>
+                <span class="divider">|</span>
+                <span>29/06/2025</span>
+              </div>
+              <div class="job-meta">
+                <button class="view-btn">Xem chi tiết</button>
+              </div>
+            </div>
+          </div>
+          <div class="job-card">
+            <div class="job-info">
+              <div class="job-title">
+                NHÂN VIÊN BÁN HÀNG QUẬN 7/QUẬN 1/BÌNH THẠNH - ARMANI EXCHANGE
+              </div>
+              <div class="company-info">
+                <span class="company-name">ARMANI EXCHANGE</span>
+                <span class="divider">|</span>
+                <span>Quận 7, Hồ Chí Minh</span>
+                <span class="divider">|</span>
+                <span>Đại Học</span>
+                <span class="divider">|</span>
+                <span>29/06/2025</span>
+              </div>
+              <div class="job-meta">
+                <button class="view-btn">Xem chi tiết</button>
+              </div>
+            </div>
+          </div>
+          <div class="job-card">
+            <div class="job-info">
+              <div class="job-title">
+                NHÂN VIÊN BÁN HÀNG QUẬN 7/QUẬN 1/BÌNH THẠNH - ARMANI EXCHANGE
+              </div>
+              <div class="company-info">
+                <span class="company-name">ARMANI EXCHANGE</span>
+                <span class="divider">|</span>
+                <span>Quận 7, Hồ Chí Minh</span>
+                <span class="divider">|</span>
+                <span>Đại Học</span>
+                <span class="divider">|</span>
+                <span>29/06/2025</span>
+              </div>
+              <div class="job-meta">
+                <button class="view-btn">Xem chi tiết</button>
+              </div>
+            </div>
+          </div>
+          <div class="job-card">
+            <div class="job-info">
+              <div class="job-title">
+                NHÂN VIÊN BÁN HÀNG QUẬN 7/QUẬN 1/BÌNH THẠNH - ARMANI EXCHANGE
+              </div>
+              <div class="company-info">
+                <span class="company-name">ARMANI EXCHANGE</span>
+                <span class="divider">|</span>
+                <span>Quận 7, Hồ Chí Minh</span>
+                <span class="divider">|</span>
+                <span>Đại Học</span>
+                <span class="divider">|</span>
+                <span>29/06/2025</span>
+              </div>
+              <div class="job-meta">
+                <button class="view-btn">Xem chi tiết</button>
+              </div>
+            </div>
+          </div>
+          <div class="job-card">
+            <div class="job-info">
+              <div class="job-title">
+                NHÂN VIÊN BÁN HÀNG QUẬN 7/QUẬN 1/BÌNH THẠNH - ARMANI EXCHANGE
+              </div>
+              <div class="company-info">
+                <span class="company-name">ARMANI EXCHANGE</span>
+                <span class="divider">|</span>
+                <span>Quận 7, Hồ Chí Minh</span>
+                <span class="divider">|</span>
+                <span>Đại Học</span>
+                <span class="divider">|</span>
+                <span>29/06/2025</span>
+              </div>
+              <div class="job-meta">
+                <button class="view-btn">Xem chi tiết</button>
+              </div>
+            </div>
+          </div>
+          <div class="job-card">
+            <div class="job-info">
+              <div class="job-title">
+                NHÂN VIÊN BÁN HÀNG QUẬN 7/QUẬN 1/BÌNH THẠNH - ARMANI EXCHANGE
+              </div>
+              <div class="company-info">
+                <span class="company-name">ARMANI EXCHANGE</span>
+                <span class="divider">|</span>
+                <span>Quận 7, Hồ Chí Minh</span>
+                <span class="divider">|</span>
+                <span>Đại Học</span>
+                <span class="divider">|</span>
+                <span>29/06/2025</span>
+              </div>
+              <div class="job-meta">
+                <button class="view-btn">Xem chi tiết</button>
+              </div>
+            </div>
+          </div>
+          <div class="job-card">
+            <div class="job-info">
+              <div class="job-title">
+                NHÂN VIÊN BÁN HÀNG QUẬN 7/QUẬN 1/BÌNH THẠNH - ARMANI EXCHANGE
+              </div>
+              <div class="company-info">
+                <span class="company-name">ARMANI EXCHANGE</span>
+                <span class="divider">|</span>
+                <span>Quận 7, Hồ Chí Minh</span>
+                <span class="divider">|</span>
+                <span>Đại Học</span>
+                <span class="divider">|</span>
+                <span>29/06/2025</span>
+              </div>
+              <div class="job-meta">
+                <button class="view-btn">Xem chi tiết</button>
+              </div>
+            </div>
+          </div>
+          <div class="job-card">
+            <div class="job-info">
+              <div class="job-title">
+                NHÂN VIÊN BÁN HÀNG QUẬN 7/QUẬN 1/BÌNH THẠNH - ARMANI EXCHANGE
+              </div>
+              <div class="company-info">
+                <span class="company-name">ARMANI EXCHANGE</span>
+                <span class="divider">|</span>
+                <span>Quận 7, Hồ Chí Minh</span>
+                <span class="divider">|</span>
+                <span>Đại Học</span>
+                <span class="divider">|</span>
+                <span>29/06/2025</span>
+              </div>
+              <div class="job-meta">
+                <button class="view-btn">Xem chi tiết</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="pagination" id="pagination"></div>
+      </div>
+    </div>
+
+    <script>
+      const jobsPerPage = 8;
+      const jobCards = document.querySelectorAll(".job-card");
+      const totalPages = Math.ceil(jobCards.length / jobsPerPage);
+      let currentPage = 1;
+
+      function showPage(page) {
+        currentPage = page;
+        const start = (page - 1) * jobsPerPage;
+        const end = start + jobsPerPage;
+
+        // Hide all job cards
+        jobCards.forEach((card, index) => {
+          card.style.display = index >= start && index < end ? "flex" : "none";
+        });
+
+        // Update pagination buttons
+        updatePagination();
+      }
+
+      function updatePagination() {
+        const pagination = document.getElementById("pagination");
+        pagination.innerHTML = "";
+
+        // Calculate the range of pages to show (max 3 buttons)
+        let startPage = Math.max(1, currentPage - 1);
+        let endPage = Math.min(totalPages, startPage + 2);
+
+        // Adjust startPage if endPage is at the maximum
+        if (endPage - startPage < 2) {
+          startPage = Math.max(1, endPage - 2);
+        }
+
+        // First page button
+        const firstButton = document.createElement("button");
+        firstButton.textContent = "Đầu";
+        firstButton.disabled = currentPage === 1;
+        firstButton.addEventListener("click", () => showPage(currentPage - 1));
+        pagination.appendChild(firstButton);
+
+        // Page number buttons
+        for (let i = startPage; i <= endPage; i++) {
+          const button = document.createElement("button");
+          button.textContent = i;
+          button.className = i === currentPage ? "active" : "";
+          button.addEventListener("click", () => showPage(i));
+          pagination.appendChild(button);
+        }
+
+        // Last page button
+        const lastButton = document.createElement("button");
+        lastButton.textContent = "Cuối";
+        lastButton.disabled = currentPage === totalPages;
+        lastButton.addEventListener("click", () => showPage(currentPage + 1));
+        pagination.appendChild(lastButton);
+      }
+
+      // Initialize the first page
+      showPage(1);
+    </script>
+  </body>
 </html>

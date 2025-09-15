@@ -1,10 +1,13 @@
 /* Container chung */
+
 .container {
-  max-width: 100%;
-  margin: 0 auto;
-  padding: 20px;
-  box-sizing: border-box;
+  max-width: 1600px; /* Đặt chiều rộng tối đa để căn giữa */
+  width: 100%; /* Đảm bảo chiếm toàn bộ chiều rộng có thể */
+  margin: 0 auto; /* Căn giữa theo chiều ngang */
+  padding: 20px; /* Giữ padding như cũ */
+  box-sizing: border-box; /* Đảm bảo padding không làm tăng kích thước */
 }
+x
 
 /* Loading spinner */
 .loading {
@@ -250,9 +253,9 @@
   margin-top: auto;
   align-self: flex-start;
   padding: 10px 20px;
-  border: 1px solid #8b1c2c;
+  border: 1px solid #1678f2;
   background-color: transparent;
-  color: #8b1c2c;
+  color: #1678f2;
   border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.3s, color 0.3s, transform 0.2s;

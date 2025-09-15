@@ -1,5 +1,3 @@
-/* News.module.css */
-
 /* Banner */
 .banner {
   position: relative;
@@ -32,7 +30,7 @@
   transform: translateX(100%);
   transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 1;
-  object-fit: fill; /* Sử dụng object-fit: fill theo mẫu */
+  object-fit: fill;
   pointer-events: none;
 }
 
@@ -40,7 +38,7 @@
   opacity: 1;
   transform: translateX(0);
   z-index: 2;
-  pointer-events: auto; /* Cho phép tương tác khi active */
+  pointer-events: auto;
 }
 
 .bannerImage.prev {
@@ -131,12 +129,8 @@
 }
 
 @keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 /* Containers */
@@ -149,84 +143,16 @@
   box-sizing: border-box;
 }
 
-/* Posts */
-.latestPost,
-.featuredPost {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 2rem;
-}
-
 .latestPostTitle,
 .featuredPostTitle {
   font-size: 1.75rem;
   font-weight: 600;
   margin-bottom: 1.5rem;
   color: #333;
+  text-align: center;
 }
 
-.postItem {
-  display: flex;
-  gap: 1.5rem;
-  margin-bottom: 1.5rem;
-}
-
-.postImage {
-  flex: 0 0 40%;
-  overflow: hidden;
-}
-
-.postImage img {
-  width: 100%;
-  height: auto;
-  object-fit: cover;
-  border-radius: 4px;
-  transition: transform 0.3s ease;
-}
-
-.postContent {
-  flex: 0 0 60%;
-  display: flex;
-  flex-direction: column;
-}
-
-.postTitle {
-  font-size: 1.5rem;
-  font-weight: 500;
-  margin-bottom: 0.75rem;
-  color: #1678f2;
-  text-decoration: none;
-}
-
-.postTitle:hover {
-  color: #a00;
-}
-
-.featuredPost .postTitle {
-  color: #e67e22;
-}
-
-.featuredPost .postTitle:hover {
-  color: #a00;
-}
-
-.postTitle:focus {
-  outline: 2px solid #1678f2;
-  outline-offset: 2px;
-}
-
-.postDate {
-  font-size: 1rem;
-  color: #777;
-  margin-bottom: 0.75rem;
-}
-
-.postExcerpt {
-  font-size: 1.1rem;
-  line-height: 1.5;
-  color: #444;
-}
-
+/* Posts Grid */
 .postsGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -235,61 +161,116 @@
 }
 
 .gridItem {
-  display: flex;
-  flex-direction: column;
+  position: relative;
 }
 
 .gridItem.hidden {
   display: none;
 }
 
-.gridImage {
-  height: 20rem;
+/* Image Container for Hover Effect */
+.imageContainer {
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-top: 100%; /* Tỷ lệ 1:1, có thể điều chỉnh */
   overflow: hidden;
   border-radius: 4px;
+}
+
+.newsImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.gridItem:hover .newsImage {
+  transform: scale(1.1);
+}
+
+.overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 30%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.gridItem:hover .overlay {
+  opacity: 0;
+}
+
+.title {
+
+  
+  margin: 0;
+  padding: 0.5rem;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+.hoverInfo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  display: flex;
+  flex-direction: column;
+ 
+  align-items: center;
+  padding: 1rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.gridItem:hover .hoverInfo {
+  opacity: 1;
+}
+
+.date {
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.excerpt {
+  font-size: 1rem;
+
   margin-bottom: 1rem;
 }
 
-.gridImage img {
-  height: 100%;
-  width: 100%;
-  object-fit: cover;
-}
-
-.gridTitle {
-  font-size: 1.1rem;
-  font-weight: 500;
-  margin-bottom: 0.5rem;
-  color: #1678f2;
+.viewMore {
+  color: #fff;
   text-decoration: none;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  background-color: #1678f2;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
 }
 
-.gridTitle:hover {
-  color: #a00;
+.viewMore:hover {
+  /* background-color: #a00; */
 }
 
-.gridTitle:focus {
-  outline: 2px solid #1678f2;
-  outline-offset: 2px;
-}
-
-.gridDate {
-  font-size: 0.875rem;
-  color: #777;
-  margin-bottom: 0.5rem;
-}
-
-.gridExcerpt {
-  font-size: 1rem;
-  font-weight: 200;
-  color: #444;
-}
-
+/* View More Button */
 .viewMoreBtn {
   display: block;
   margin: 3rem auto 0 auto;
   padding: 0.75rem 2rem;
-  background: #a00;
+  background: #1678f2;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -309,11 +290,12 @@
   outline-offset: 2px;
 }
 
+/* Divider */
 .divider {
   width: 100%;
   max-width: 90rem;
   margin: 1.5rem auto;
-  border: 1px solid #a00;
+
 }
 
 /* Responsive CSS */
@@ -333,33 +315,20 @@
     gap: 1.5rem;
   }
 
-  .gridImage {
-    height: 15rem;
+  .imageContainer {
+    padding-top: 75%; /* Điều chỉnh tỷ lệ trên tablet */
   }
 
-  .latestPostTitle,
-  .featuredPostTitle {
-    font-size: 1.5rem;
+  .title {
+    font-size: 1.2rem;
   }
 
-  .postTitle {
-    font-size: 1.25rem;
+  .date {
+    font-size: 0.8rem;
   }
 
-  .postDate {
-    font-size: 0.875rem;
-  }
-
-  .postExcerpt {
-    font-size: 1rem;
-  }
-
-  .gridTitle {
-    font-size: 1rem;
-  }
-
-  .gridExcerpt {
-    font-size: 0.875rem;
+  .excerpt {
+    font-size: 0.9rem;
   }
 
   .bannerBtn {
@@ -379,48 +348,15 @@
 
 @media screen and (max-width: 780px) {
   .banner {
-    height: 350px; /* Chiều cao cố định 350px tại 780px */
+    height: 350px;
   }
 
   .bannerWrapper {
-    height: 100%; /* Đảm bảo wrapper chiếm toàn bộ chiều cao của banner */
+    height: 100%;
   }
 
   .bannerImage {
-    object-fit: fill; /* Giữ object-fit: fill */
-  }
-
-  .bannerBtn {
-    font-size: 0.9rem;
-    width: 32px;
-    height: 32px;
-  }
-
-  .bannerBtnLeft {
-    left: 0.5rem;
-  }
-
-  .bannerBtnRight {
-    right: 0.5rem;
-  }
-
-  .bannerIndicators {
-    bottom: 0.8rem;
-    gap: 0.4rem;
-  }
-
-  .indicator {
-    width: 8px;
-    height: 8px;
-  }
-
-  .postItem {
-    flex-direction: column;
-  }
-
-  .postImage,
-  .postContent {
-    flex: 1 1 100%;
+    object-fit: fill;
   }
 
   .postsGrid {
@@ -428,8 +364,20 @@
     gap: 1rem;
   }
 
-  .gridImage {
-    height: 12rem;
+  .imageContainer {
+    padding-top: 50%; /* Điều chỉnh tỷ lệ trên mobile */
+  }
+
+  .title {
+    font-size: 1rem;
+  }
+
+  .date {
+    font-size: 0.7rem;
+  }
+
+  .excerpt {
+    font-size: 0.8rem;
   }
 
   .viewMoreBtn {
@@ -437,28 +385,11 @@
     font-size: 0.9rem;
     margin-top: 2rem;
   }
-
-  .latestPostTitle,
-  .featuredPostTitle {
-    font-size: 1.25rem;
-  }
-
-  .postTitle {
-    font-size: 1.1rem;
-  }
-
-  .postDate {
-    font-size: 0.75rem;
-  }
-
-  .postExcerpt {
-    font-size: 0.9rem;
-  }
 }
 
 @media screen and (max-width: 380px) {
   .banner {
-    height: 200px; /* Chiều cao giảm tại 380px để phù hợp với màn hình nhỏ */
+    height: 200px;
   }
 
   .bannerWrapper {
@@ -467,36 +398,23 @@
   }
 
   .bannerImage {
-    object-fit: fill; /* Giữ object-fit: fill */
+    object-fit: fill;
   }
 
-  .bannerBtn {
-    font-size: 0.8rem;
-    width: 28px;
-    height: 28px;
+  .imageContainer {
+    padding-top: 50%;
   }
 
-  .bannerBtnLeft {
-    left: 0.5rem;
+  .title {
+    font-size: 0.9rem;
   }
 
-  .bannerBtnRight {
-    right: 0.5rem;
+  .date {
+    font-size: 0.6rem;
   }
 
-  .bannerIndicators {
-    bottom: 0.5rem;
-    gap: 0.3rem;
-  }
-
-  .indicator {
-    width: 6px;
-    height: 6px;
-    padding: 0.3rem; /* Tăng vùng chạm cho thiết bị cảm ứng */
-  }
-
-  .gridImage {
-    height: 10rem;
+  .excerpt {
+    font-size: 0.7rem;
   }
 
   .viewMoreBtn {

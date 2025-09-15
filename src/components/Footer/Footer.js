@@ -114,6 +114,8 @@ const Footer = () => {
             </div>
           </div>
         </div>
+        <hr></hr>
+        <p>© 2025 PPMVN. All Rights Reserved</p>
        
       </div>
     </footer>

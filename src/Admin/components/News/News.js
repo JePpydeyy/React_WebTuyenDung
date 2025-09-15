@@ -1,8 +1,9 @@
+
 import React, { useState, useEffect } from 'react';
 import styles from './New.module.css';
 import { v4 as uuidv4 } from 'uuid';
 
-const API_URL = process.env.REACT_APP_API_URL ? `${process.env.REACT_APP_API_URL}/new` : '/api/new';
+const API_URL = process.env.REACT_APP_API_URL ? `https://api-tuyendung-cty.onrender.com/api/new` : '/api/new';
 const BASE_URL = process.env.REACT_APP_BASE_URL || '';
 
 const getImageUrl = (url) => {
@@ -30,6 +31,7 @@ const NewsManagement = () => {
     publishedAt: new Date().toISOString().split('T')[0],
     views: 0,
     status: 'Hiển thị',
+    category: 'news',
     contentBlocks: [],
   });
   const [previewUrls, setPreviewUrls] = useState([]);
@@ -43,6 +45,16 @@ const NewsManagement = () => {
   const statusBackendMap = {
     'Hiển thị': 'show',
     'Đã ẩn': 'hidden',
+  };
+
+  const categoryDisplayMap = {
+    news: 'Tin tức',
+    interview_tip: 'Tip phỏng vấn',
+  };
+
+  const categoryBackendMap = {
+    'Tin tức': 'news',
+    'Tip phỏng vấn': 'interview_tip',
   };
 
   const showNotification = (message, type = 'success') => {
@@ -95,12 +107,13 @@ const NewsManagement = () => {
           slug: sanitizeHTML(item.slug || ''),
           thumbnailUrl: getImageUrl(item.thumbnailUrl),
           thumbnailCaption: sanitizeHTML(item.thumbnailCaption || ''),
-          publishedAt: item.publishedAt, // Giữ nguyên định dạng gốc để sắp xếp
+          publishedAt: item.publishedAt,
           status: statusDisplayMap[item.status] || item.status || 'Hiển thị',
+          category: categoryDisplayMap[item.category] || item.category || 'Tin tức',
           views: item.views || 0,
           contentBlocks: Array.isArray(item.contentBlocks) ? item.contentBlocks : [],
         }))
-        .sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt)); // Sắp xếp theo ngày mới nhất
+        .sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
       return sanitizedData;
     } catch (error) {
       console.error('Lỗi fetchNews:', error);
@@ -122,7 +135,6 @@ const NewsManagement = () => {
       const startIndex = (page - 1) * itemsPerPage;
       const endIndex = Math.min(startIndex + itemsPerPage, displayData.length);
       const paginatedData = displayData.slice(startIndex, endIndex);
-      // Định dạng lại publishedAt để hiển thị
       const formattedNews = paginatedData.map(item => ({
         ...item,
         publishedAt: formatDate(item.publishedAt),
@@ -157,6 +169,7 @@ const NewsManagement = () => {
         thumbnailCaption: sanitizeHTML(newsItem.thumbnailCaption || ''),
         publishedAt: formatDate(newsItem.publishedAt),
         status: statusDisplayMap[newsItem.status] || newsItem.status || 'Hiển thị',
+        category: categoryDisplayMap[newsItem.category] || newsItem.category || 'Tin tức',
         contentBlocks: Array.isArray(newsItem.contentBlocks)
           ? newsItem.contentBlocks.map(block => ({
               ...block,
@@ -213,6 +226,7 @@ const NewsManagement = () => {
           thumbnailCaption: sanitizeHTML(result.news.thumbnailCaption || ''),
           publishedAt: formatDate(result.news.publishedAt),
           status: statusDisplayMap[result.news.status] || result.news.status || 'Hiển thị',
+          category: categoryDisplayMap[result.news.category] || result.news.category || 'Tin tức',
           views: result.news.views || 0,
           contentBlocks: Array.isArray(result.news.contentBlocks)
             ? result.news.contentBlocks.map(block => ({
@@ -257,6 +271,7 @@ const NewsManagement = () => {
       publishedAt: newsItem.publishedAt ? newsItem.publishedAt.split('/').reverse().join('-') : new Date().toISOString().split('T')[0],
       views: newsItem.views || 0,
       status: newsItem.status || 'Hiển thị',
+      category: newsItem.category || 'Tin tức',
       contentBlocks: Array.isArray(newsItem.contentBlocks)
         ? newsItem.contentBlocks.map(block => ({
             type: block.type || 'text',
@@ -345,6 +360,7 @@ const NewsManagement = () => {
   const saveNews = async () => {
     try {
       if (!editForm) throw new Error('Dữ liệu chỉnh sửa không hợp lệ');
+      if (!editForm.slug) throw new Error('Slug không hợp lệ');
       const formData = new FormData();
       formData.append('title', editForm.title);
       formData.append('slug', editForm.slug);
@@ -356,6 +372,7 @@ const NewsManagement = () => {
       formData.append('publishedAt', new Date(editForm.publishedAt).toISOString());
       formData.append('views', editForm.views.toString());
       formData.append('status', statusBackendMap[editForm.status] || editForm.status);
+      formData.append('category', categoryBackendMap[editForm.category] || editForm.category);
       const contentBlocksForSubmission = editForm.contentBlocks.map(block => ({
         type: block.type,
         content: block.type === 'text' ? block.content : '',
@@ -373,7 +390,7 @@ const NewsManagement = () => {
         showNotification('Bạn cần đăng nhập với tư cách admin để thực hiện hành động này', 'error');
         return;
       }
-      const response = await fetch(`${API_URL}/${editForm.id}`, {
+      const response = await fetch(`${API_URL}/${editForm.slug}`, {
         method: 'PUT',
         body: formData,
         headers: {
@@ -421,6 +438,7 @@ const NewsManagement = () => {
       formData.append('publishedAt', new Date(createForm.publishedAt).toISOString());
       formData.append('views', createForm.views.toString());
       formData.append('status', statusBackendMap[createForm.status] || createForm.status);
+      formData.append('category', categoryBackendMap[createForm.category] || createForm.category);
       const contentBlocksForSubmission = createForm.contentBlocks.map(block => ({
         type: block.type,
         content: block.type === 'text' ? block.content : '',
@@ -462,6 +480,7 @@ const NewsManagement = () => {
         publishedAt: new Date().toISOString().split('T')[0],
         views: 0,
         status: 'Hiển thị',
+        category: 'news',
         contentBlocks: [],
       });
       await displayNews(1, filteredNews);
@@ -476,11 +495,15 @@ const NewsManagement = () => {
 
   const applyFilters = async () => {
     const statusFilter = document.getElementById('statusFilter').value;
+    const categoryFilter = document.getElementById('categoryFilter').value;
     const searchTerm = document.querySelector('.search-bar')?.value.trim();
     try {
       let newsItems = await fetchNews();
       if (statusFilter) {
         newsItems = newsItems.filter(n => n.status === statusFilter);
+      }
+      if (categoryFilter) {
+        newsItems = newsItems.filter(n => n.category === categoryFilter);
       }
       if (searchTerm) {
         const normalizedSearchTerm = normalizeVietnamese(searchTerm);
@@ -503,6 +526,7 @@ const NewsManagement = () => {
 
   const resetFilters = async () => {
     document.getElementById('statusFilter').value = '';
+    document.getElementById('categoryFilter').value = '';
     document.querySelector('.search-bar').value = '';
     setFilteredNews(null);
     await displayNews(1);
@@ -530,6 +554,11 @@ const NewsManagement = () => {
           <option value="Hiển thị">Hiển thị</option>
           <option value="Đã ẩn">Đã ẩn</option>
         </select>
+        <select id="categoryFilter" onChange={applyFilters}>
+          <option value="">- Tất cả danh mục -</option>
+          <option value="Tin tức">Tin tức</option>
+          <option value="Tip phỏng vấn">Tip phỏng vấn</option>
+        </select>
         <button onClick={applyFilters}><i className="fa-solid fa-filter"></i> Áp dụng</button>
         <button onClick={resetFilters}><i className="fa-solid fa-rotate"></i> Đặt lại</button>
         <button onClick={() => setIsCreating(true)}><i className="fa-solid fa-plus"></i> Thêm tin tức</button>
@@ -542,6 +571,7 @@ const NewsManagement = () => {
             <tr>
               <th>STT</th>
               <th>Tiêu Đề</th>
+              <th>Danh Mục</th>
               <th>Ngày Đăng</th>
               <th>Lượt Xem</th>
               <th>Trạng Thái</th>
@@ -550,12 +580,13 @@ const NewsManagement = () => {
           </thead>
           <tbody>
             {news.length === 0 ? (
-              <tr><td colSpan="6" style={{ textAlign: 'center' }}>Không tìm thấy dữ liệu phù hợp</td></tr>
+              <tr><td colSpan="7" style={{ textAlign: 'center' }}>Không tìm thấy dữ liệu phù hợp</td></tr>
             ) : (
               news.map((item, index) => (
                 <tr key={item.id || `news-${index}`}>
                   <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
                   <td>{item.title || 'Không có tiêu đề'}</td>
+                  <td>{item.category || 'N/A'}</td>
                   <td>{item.publishedAt || 'N/A'}</td>
                   <td>{item.views || 0}</td>
                   <td><span className={`${styles.status} ${getStatusClass(item.status)}`}>{item.status}</span></td>
@@ -695,6 +726,17 @@ const NewsManagement = () => {
                     >
                       <option value="Hiển thị">Hiển thị</option>
                       <option value="Đã ẩn">Đã ẩn</option>
+                    </select>
+                  </div>
+                  <div className={styles.detailGroup}>
+                    <label>Danh mục:</label>
+                    <select
+                      name="category"
+                      value={createForm.category}
+                      onChange={(e) => handleFormChange(e, null, null, 'create')}
+                    >
+                      <option value="Tin tức">Tin tức</option>
+                      <option value="Tip phỏng vấn">Tip phỏng vấn</option>
                     </select>
                   </div>
                   <div className={`${styles.detailGroup} ${styles.full}`}>
@@ -848,6 +890,17 @@ const NewsManagement = () => {
                       <option value="Đã ẩn">Đã ẩn</option>
                     </select>
                   </div>
+                  <div className={styles.detailGroup}>
+                    <label>Danh mục:</label>
+                    <select
+                      name="category"
+                      value={editForm.category}
+                      onChange={handleFormChange}
+                    >
+                      <option value="Tin tức">Tin tức</option>
+                      <option value="Tip phỏng vấn">Tip phỏng vấn</option>
+                    </select>
+                  </div>
                   <div className={`${styles.detailGroup} ${styles.full}`}>
                     <label>Nội dung:</label>
                     {editForm.contentBlocks.map((block, index) => (
@@ -929,6 +982,10 @@ const NewsManagement = () => {
                             {selectedNews.status}
                           </span>
                         </p>
+                      </div>
+                      <div className={styles.detailGroup}>
+                        <label>Danh mục:</label>
+                        <p>{selectedNews.category}</p>
                       </div>
                     </div>
                     <div className={styles.detailRow}>
