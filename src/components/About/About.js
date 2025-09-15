@@ -181,69 +181,87 @@ const About = () => {
       </section>
       
      <div className={styles.ppmvnIntro}>
-  <h2>GIỚI THIỆU VỀ PPM.VN</h2>
-  <p>
-    PPM.VN là công ty chuyên cung cấp dịch vụ quản lý, tư vấn quản lý bất động sản toàn diện với mục tiêu mang lại giá trị cao nhất cho khách hàng sử dụng và vận hành các dự án lớn trên cả nước. Chúng tôi cam kết mang lại cho khách hàng sự hài lòng với chất lượng dịch vụ hàng đầu, chuyên nghiệp và minh bạch. Đội ngũ của chúng tôi có kinh nghiệm phong phú trong lĩnh vực tư vấn giải pháp, cung cấp các dịch vụ cao cấp và có sự kết nối mạnh mẽ với các đối tác trong nước và quốc tế.
-  </p>
-  <p><strong>Tên tiếng Việt:</strong> Công ty TNHH Quản lý tài sản Premier Việt Nam (PPM.VN)</p>
-  <p><strong>Tên tiếng Anh:</strong> Premier Property Management Vietnam Company Limited</p>
-  <p><strong>Trụ sở chính:</strong> 110 Cao Thắng, Phường 4, Quận 3, Tp. Hồ Chí Minh, Việt Nam</p>
-  <p><strong>Hotline:</strong> 0898 514 239</p>
-  <p><strong>Email:</strong> vanhanh@ppmvn.vn</p> {/* Sửa lỗi email */}
-  <p><strong>Số tài khoản:</strong> 189 100000 386 533</p>
-  <a
-    href="https://ppmvn.vn/wp-content/uploads/2023/04/PROFILE-2023.04.12-da-nen.pdf"
-    target="_blank"
-    rel="noopener noreferrer"
-    className={styles.brochureBtn}
-  >
-    TẢI BROCHURE
-  </a>
-</div>
-      {/* Features */}
-      <div className={styles.features}>
-        {features.map((f, idx) => (
-          <div className={styles.feature} key={idx}>
-            <img src={f.img} alt={`${f.title} Icon`} />
-            <h2>{f.title}</h2>
-            <p>{f.desc}</p>
-          </div>
-        ))}
+        <h2>GIỚI THIỆU VỀ PPM.VN</h2>
+        <p>
+          PPM.VN là công ty chuyên cung cấp dịch vụ quản lý, tư vấn quản lý bất động sản toàn diện với mục tiêu mang lại giá trị cao nhất cho khách hàng sử dụng và vận hành các dự án lớn trên cả nước. Chúng tôi cam kết mang lại cho khách hàng sự hài lòng với chất lượng dịch vụ hàng đầu, chuyên nghiệp và minh bạch. Đội ngũ của chúng tôi có kinh nghiệm phong phú trong lĩnh vực tư vấn giải pháp, cung cấp các dịch vụ cao cấp và có sự kết nối mạnh mẽ với các đối tác trong nước và quốc tế.
+        </p>
+        <p><strong>Tên tiếng Việt:</strong> Công ty TNHH Quản lý tài sản Premier Việt Nam (PPM.VN)</p>
+        <p><strong>Tên tiếng Anh:</strong> Premier Property Management Vietnam Company Limited</p>
+        <p><strong>Trụ sở chính:</strong> 110 Cao Thắng, Phường 4, Quận 3, Tp. Hồ Chí Minh, Việt Nam</p>
+        <p><strong>Hotline:</strong> 0898 514 239</p>
+        <p><strong>Email:</strong> vanhanh@ppmvn.vn</p> {/* Sửa lỗi email */}
+        <p><strong>Số tài khoản:</strong> 189 100000 386 533</p>
+        <a
+          href="https://ppmvn.vn/wp-content/uploads/2023/04/PROFILE-2023.04.12-da-nen.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.brochureBtn}
+        >
+          TẢI BROCHURE
+        </a>
       </div>
-      <div className={styles.Aboutcty}>
-<div className={styles.giaTriCotLoi}>
-  <img src="/assets/images/hand2.webp" alt="Handshake representing core values" className={styles.giaTriCotLoiImage} />
-  <div className={styles.giaTriCotLoiContent}>
-    <h2>GIÁ TRỊ CỐT LÕI</h2>
-    <p>
-     Chúng tôi là những chiến binh với nhiệt huyết và khát vọng dẫn đầu luôn sẵn sàng đón nhận thử thách, linh hoạt thích nghi với mọi hoàn cảnh, tận tâm trách nhiệm trong công việc và chân thành tử tế trong các mối quan hệ.
-    </p>
-    <ul>
-      <li>Khát vọng dẫn đầu</li>
-      <li>Linh hoạt thích nghi</li>
-      <li>Tân tâm trách nhiệm</li>
-      <li>Chân thành và uy tín</li>
-    </ul>
-  </div>
-</div>
-<div className={styles.nguyenTacHoatDong}>
-  <div className={styles.nguyenTacHoatDongContent}>
-    <h2>NGUYÊN TẮC HOẠT ĐỘNG</h2>
-    <p>
-      Chúng tôi tuân thủ 6 Quy chế cốt lõi quan trọng trong hoạt động:
-    </p>
-    <ul>
-      <li>Lấy uy tín làm nền tảng cốt lõi trong hoạt động</li>
-      <li>Cung cấp dịch vụ với chất lượng cao nhất</li>
-      <li>Mang đến môi trường làm việc chuyên nghiệp, minh bạch</li>
-      <li>Giai quyết vấn đề nhanh chóng và hiệu quả</li>
-      <li>Nâng cao năng lực hợp tác, cùng phát triển</li>
-      <li>Kiểm soát chặt chẽ chi phí hoạt động và hiệu quả</li>
-    </ul>
-  </div>
-  <img src="/assets/images/hand1.webp" alt="Handshake representing operating principles" className={styles.nguyenTacHoatDongImage} />
-</div>
-    </div>
+      <div className={styles.box}>
+
+      </div>
+      <div className={styles.sectionAbout}>
+        <h2 className={styles.sectionTitle}>GIỚI THIỆU VỀ CHÚNG TÔI</h2>
+        <div className={styles.aboutText}>
+          <p>PPMVN ra đời nhằm đáp ứng nhu cầu cấp thiết của thị trường về một dịch vụ quản lý bất động sản chuyên nghiệp, tiên phong ứng dụng công nghệ và đề cao sự minh bạch. Với khát vọng dẫn đầu, chúng tôi tập trung hiện thực hóa sứ mệnh mang đến giải pháp quản lý toàn diện, hiệu quả cho chung cư, văn phòng và căn hộ dịch vụ – kiến tạo những môi trường sống và làm việc an toàn, tiện nghi, văn minh.</p>
+        </div>
+      </div>
+
+      <div className={styles.aboutList}>
+        <div className={styles.aboutItem}>
+          <div className={styles.imageDiv}>
+            <img className={styles.img} src={`/assets/images/about01.png`}/>
+          </div>
+          <p className={styles.text}>
+            Đội ngũ nhân sự chủ chốt được đào
+            tạo tại các trường đại học danh tiếng
+            trong và ngoài nước, đáp ứng tiêu
+            chuẩn cao của môi trường làm việc
+            hiện đại.
+          </p>
+        </div>
+        <div className={styles.aboutItem}>
+          <div className={styles.imageDiv}>
+            <img className={styles.img} src={`/assets/images/about01.png`}/>
+          </div>
+          <p className={styles.text}>
+            Đội ngũ nhân sự chủ chốt được đào
+            tạo tại các trường đại học danh tiếng
+            trong và ngoài nước, đáp ứng tiêu
+            chuẩn cao của môi trường làm việc
+            hiện đại.
+          </p>
+        </div>
+        <div className={styles.aboutItem}>
+          <div className={styles.imageDiv}>
+            <img className={styles.img} src={`/assets/images/about01.png`}/>
+          </div>
+          <p className={styles.text}>
+            Đội ngũ nhân sự chủ chốt được đào
+            tạo tại các trường đại học danh tiếng
+            trong và ngoài nước, đáp ứng tiêu
+            chuẩn cao của môi trường làm việc
+            hiện đại.
+          </p>
+        </div>
+        <div className={styles.aboutItem}>
+          <div className={styles.imageDiv}>
+            <img className={styles.img} src={`/assets/images/about01.png`}/>
+          </div>
+          <p className={styles.text}>
+            Đội ngũ nhân sự chủ chốt được đào
+            tạo tại các trường đại học danh tiếng
+            trong và ngoài nước, đáp ứng tiêu
+            chuẩn cao của môi trường làm việc
+            hiện đại.
+          </p>
+        </div>
+      </div>
+      
+      
 <div className={styles.statsSection}>
   <h2 className={styles.statsTitle}>NHỮNG CON SỐ ẤN TƯỢNG</h2>
   <div className={styles.statsContainer}>

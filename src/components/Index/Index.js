@@ -4,6 +4,8 @@ import styles from './Index.module.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleLeft, faAngleRight, faSearch, faBriefcase, faMapMarkerAlt, faUserTie } from '@fortawesome/free-solid-svg-icons';
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
 
 // Static data
 const bannerImages = [
@@ -20,7 +22,7 @@ const ppmvnValues = [
 
 const benefits = [
   {
-    icon: '/assets/images/pl-01.png',
+    icon: '/assets/images/001.png',
     title: 'Lương thưởng và chế độ đãi ngộ hấp dẫn',
     items: [
       'Mức lương cạnh tranh, chế độ thưởng KPI theo quý, năm.',
@@ -30,7 +32,7 @@ const benefits = [
     ],
   },
   {
-    icon: '/assets/images/pl-02.png',
+    icon: '/assets/images/002.png',
     title: 'Môi trường làm việc chuyên nghiệp, hiện đại',
     items: [
       'PPM nơi hội tụ những cá nhân tài năng và tận tâm trong lĩnh vực quản lý bất động sản.',
@@ -40,7 +42,7 @@ const benefits = [
     ],
   },
   {
-    icon: '/assets/images/pl-03.png',
+    icon: '/assets/images/003.png',
     title: 'Chương trình đào tạo bài bản, cơ hội phát triển nghề nghiệp',
     items: [
       'Học hỏi và phát triển cùng đội ngũ chuyên gia hàng đầu trong lĩnh vực quản lý bất động sản và dịch vụ vận hành.',
@@ -151,12 +153,12 @@ const Index = () => {
   const [brandOptions, setBrandOptions] = useState([]);
   const [workplaceOptions, setWorkplaceOptions] = useState([]);
   const [nameOptions, setNameOptions] = useState([]);
-  const [visibleJobs, setVisibleJobs] = useState(8);
+  const [visibleJobs, setVisibleJobs] = useState(6);
 
   const handleSearchChange = (e) => {
     const { name, value } = e.target;
     setSearchForm((prev) => ({ ...prev, [name]: value }));
-    setVisibleJobs(8);
+    setVisibleJobs(6);
   };
 
   const handleSearchSubmit = (e) => {
@@ -166,7 +168,7 @@ const Index = () => {
       return;
     }
     setSearching(true);
-    setVisibleJobs(8);
+    setVisibleJobs(6);
   };
 
   useEffect(() => {
@@ -435,114 +437,97 @@ const Index = () => {
         </div>
       </section>
 
-      {/* PPMVN Values Section */}
-      <section className={styles['acfc-values-section']}>
-        <h2 className={styles['section-title']}>PPMVN Việt Nam</h2>
-        <div className={styles['values-grid']}>
-          {ppmvnValues.map((value, idx) => (
-            <div key={idx} className={styles['value-item']}>
-              <img src={value.img} alt={value.text} loading="lazy" />
-              <Link to={value.link}>
-                <p className={styles['value-text']}>{value.text}</p>
-              </Link>
+      {/* PPMVN Abouts Section */}
+      <section className={styles['container-about']}>
+        <h1 className={styles['section-title']}>GIỚI THIỆU VỀ PPM.VN</h1>
+        <div className={styles['about-content']}>
+          <div className={styles['box-video']}>
+            <img></img>
+          </div>
+          <div className={styles['text-content']}>
+            <p>PPM.VN là công ty chuyên cung cấp dịch vụ quản lý, tư vấn quản lý bất động sản toàn diện với mục tiêu mang lại
+              giá trị cao nhất cho khách hàng sử dụng và vận hành các dự án lớn trên cả nước. Chúng tôi cam kết mang lại
+              cho khách hàng sự hài lòng với chất lượng dịch vụ hàng đầu, chuyên nghiệp và minh bạch. Đội ngũ của chúng
+              tôi có kinh nghiệm phong phú trong lĩnh vực tư vấn giải pháp, cung cấp các dịch vụ cao cấp và có sự kết nối
+              mạnh mẽ với các đối tác trong nước và quốc tế.
+            </p>
+            <div className={styles['contact']}>
+              <p>Tên tiếng Anh: Premier Property Management Vietnam Company Limited</p>
+              <p>Trụ sở chính: 110 Cầu Thành, Phường 4, Quận 3, TP. Hồ Chí Minh, Việt Nam</p>
+              <p>Hotline: 0898 514 239</p>
+              <p>Email: vanhan@ppmvn.vn</p>
             </div>
-          ))}
+          </div>
+        </div>
+        <div className={styles['container-button']}>
+          <button className={styles['watch-more-btn']}> 
+            <Link className={styles['watch-more-btn-link']} to={`/about`}>Xem thêm</Link>
+          </button>
         </div>
       </section>
 
-      {/* Services Section */}
-      <div className={styles.container}>
-        <h1>Dịch vụ của chúng tôi</h1>
-        <div className={styles.servicesGrid}>
-          {/* Service Card 1 */}
-          <div className={styles.serviceCard}>
-            <div className={styles.content}>
-              <div className={styles.serviceIcon}>
-                <img src="/assets/images/service1.svg" alt="Quản lý vận hành icon" loading="lazy" />
+      {/* value section */}
+      <section className={styles['container-value']}>
+        <h1 className={styles['section-title']}>GIÁ TRỊ CỐT LÕI</h1>
+        <Swiper
+          className={styles["value-swiper"]}
+          spaceBetween={16}
+          slidesPerView={3}
+          breakpoints={{
+            1024: { slidesPerView: 3 }, // desktop
+            768: { slidesPerView: 2 },  // tablet
+            0: { slidesPerView: 1 },    // mobile
+          }}
+        >
+          <SwiperSlide>
+            <div className={styles['value-item']}>
+              <div className={styles['value-img']}>
+                <img src="./assets/images/4.jpg" className={styles['image']} />
               </div>
-              <h3 className={styles.serviceTitle}>Quản lý vận hành</h3>
-              <p className={styles.serviceDescription}>
-                Dịch vụ trọn gói quản lý khai thác vận hành cho mọi loại hình bất động sản nhằm mang đến môi trường làm việc, sinh sống an toàn hiệu quả cho khách hàng.
+              <h2 className={styles['value-name']}>PREMIER</h2>
+              <p className={styles['value-description']}>
+                Chất lượng cao cấp, dẫn đầu nghành
               </p>
             </div>
-          </div>
-          {/* Service Card 2 */}
-          <div className={styles.serviceCard}>
-            <div className={styles.content}>
-              <div className={styles.serviceIcon}>
-                <img src="/assets/images/service2.svg" alt="Cung cấp nhân sự icon" loading="lazy" />
+          </SwiperSlide>
+
+          <SwiperSlide>
+            <div className={styles['value-item']}>
+              <div className={styles['value-img']}>
+                <img src="./assets/images/4.jpg" className={styles['image']} />
               </div>
-              <h3 className={styles.serviceTitle}>Cung cấp nhân sự</h3>
-              <p className={styles.serviceDescription}>
-                Cung cấp đội ngũ Nhân sự, dịch vụ chất lượng cao từ Lễ tân, Bảo vệ, Quản lý đến vận hành các Tòa nhà chung cư, Tòa nhà văn phòng, Trung tâm thương mại, Khu đô thị, Khu nghỉ dưỡng.
+              <h2 className={styles['value-name']}>PROPERTY</h2>
+              <p className={styles['value-description']}>
+                Quản lý bất động sản, phát triển tài sản
               </p>
             </div>
-          </div>
-          {/* Service Card 3 */}
-          <div className={styles.serviceCard}>
-            <div className={styles.content}>
-              <div className={styles.serviceIcon}>
-                <img src="/assets/images/service3.svg" alt="Tư vấn vận hành icon" loading="lazy" />
+          </SwiperSlide>
+
+          <SwiperSlide>
+            <div className={styles['value-item']}>
+              <div className={styles['value-img']}>
+                <img src="./assets/images/3.jpg" className={styles['image']} />
               </div>
-              <h3 className={styles.serviceTitle}>Tư vấn vận hành</h3>
-              <p className={styles.serviceDescription}>
-                Tư vấn & cung cấp các giải pháp quản lý hiệu quả nhằm tối ưu hóa, quản lý và khai thác vận hành tòa nhà. Tư vấn kỹ thuật, hệ thống quy trình tác nghiệp cũng như an ninh trật tự.
+              <h2 className={styles['value-name']}>MANAGEMENT</h2>
+              <p className={styles['value-description']}>
+                Chuyên nghiệp, duy trì giá trị bền vững
               </p>
             </div>
-          </div>
-          {/* Service Card 4 */}
-          <div className={styles.serviceCard}>
-            <div className={styles.content}>
-              <div className={styles.serviceIcon}>
-                <img src="/assets/images/service4.svg" alt="Bảo trì, Bảo dưỡng icon" loading="lazy" />
-              </div>
-              <h3 className={styles.serviceTitle}>Bảo trì, Bảo dưỡng</h3>
-              <p className={styles.serviceDescription}>
-                Cung cấp dịch vụ vận hành, bảo trì bảo dưỡng giúp nâng cao năng suất, chất lượng tổng thể của hệ thống thiết bị, kỹ thuật tòa nhà thông qua các chương trình kiểm tra định kỳ.
-              </p>
-            </div>
-          </div>
-          {/* Service Card 5 */}
-          <div className={styles.serviceCard}>
-            <div className={styles.content}>
-              <div className={styles.serviceIcon}>
-                <img src="/assets/images/service5.svg" alt="Dịch vụ Vệ sinh icon" loading="lazy" />
-              </div>
-              <h3 className={styles.serviceTitle}>Dịch vụ Vệ sinh</h3>
-              <p className={styles.serviceDescription}>
-                Cung cấp dịch vụ Vệ sinh, Xử lý côn trùng, Khử khuẩn cho toàn bộ Tòa nhà với Đội ngũ Vệ sinh nhiệt huyết và giám sát giàu kinh nghiệm.
-              </p>
-            </div>
-          </div>
-          {/* Service Card 6 */}
-          <div className={styles.serviceCard}>
-            <div className={styles.content}>
-              <div className={styles.serviceIcon}>
-                <img src="/assets/images/service6.svg" alt="Cảnh quan môi trường icon" loading="lazy" />
-              </div>
-              <h3 className={styles.serviceTitle}>Cảnh quan môi trường</h3>
-              <p className={styles.serviceDescription}>
-                Dịch vụ chăm sóc cảnh quan, tạo môi trường làm việc ngập tràn cây xanh được chăm sóc cắt tỉa cẩn thận. Định kỳ phòng trừ các loại vật gây hại như mối, côn trùng, sâu bọ...
-              </p>
-            </div>
+          </SwiperSlide>
+        </Swiper>
+      </section>
+
+      {/* event section */}
+      <section className={styles['container-event']}>
+        <h1 className={styles['section-title']}>SỰ KIỆN NỔI BẬT</h1>
+        <div className={styles['event-list']}>
+          <div className={styles['event-item']}>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Video Section */}
-      <section className={styles['video-section']}>
-          <h2>Video Giới Thiệu</h2>
-          <div className={styles['video-container']}>
-            <video
-              controls
-              preload="metadata"
-              poster="../assets/images/video-thumbnail.jpg" // Optional: thêm thumbnail
-            >
-              <source src="../assets/videos/PPMVN_Introduction.mp4" type="video/mp4" />
-              Trình duyệt của bạn không hỗ trợ phát video.
-            </video>
-          </div>
-        </section>
+    
 
       {/* Benefits Section */}
       <h2 className={styles['benefits-title']}>Phúc lợi công ty</h2>
