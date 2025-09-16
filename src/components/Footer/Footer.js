@@ -1,7 +1,9 @@
 import React from 'react';
 import styles from './Footer.module.css'; // Import CSS Module
+import { Link} from 'react-router-dom';
 
 const Footer = () => {
+
   return (
     <footer className={styles.footer}>
       <div className={styles['footer-container']}>
@@ -32,6 +34,13 @@ const Footer = () => {
                   </a>
                 </p>
               </div>
+               <Link
+        to="/"
+       
+        aria-label="Go to Home page"
+      >
+        <img className={styles.logo} src="/assets/images/logofooter.png" alt="Logo" loading="lazy" />
+              </Link>
             </div>
           </div>
           <div className={styles['footer-column']}>
@@ -39,25 +48,24 @@ const Footer = () => {
             <div className={styles['footer-info']}>
               <ul className={styles['footer-list']}>
                 <li>
-                  <a href="/about" aria-label="Learn about us">Về chúng tôi</a>
+                  <a href="/" aria-label="Learn about us">Trang chủ</a>
                 </li>
                 <li>
-                  <a href="/projects" aria-label="View our projects">Dự án</a>
+                  <a href="/about" aria-label="View our projects"> Về PPMVN</a>
                 </li>
+                
                 <li>
-                  <a href="/services" aria-label="Explore our products and services">
-                    Sản phẩm & Dịch vụ
+                  <a href="/news" aria-label="Explore our products and services">
+                    Life at PPMVN
                   </a>
                 </li>
-                <li>
-                  <a href="/careers" aria-label="View career opportunities">Tuyển dụng</a>
+                 <li>
+                  <a href="/JobContent" aria-label="View our projects"> Cơ hội nghề nghiệp</a>
                 </li>
                 <li>
-                  <a href="/news" aria-label="Read our latest news">Tin tức</a>
+                  <a href="/contact" aria-label="View career opportunities">Thông tin liên hệ</a>
                 </li>
-                <li>
-                  <a href="/contact" aria-label="Contact us">Liên hệ</a>
-                </li>
+                
               </ul>
             </div>
           </div>
@@ -66,7 +74,7 @@ const Footer = () => {
               <h3>Liên kết mạng xã hội</h3>
               <div className={styles['social-icons']}>
                 <a
-                  href="https://facebook.com"
+                  href="https://www.facebook.com/PPM.VN.Ltd"
                   className={styles['social-icon']}
                   aria-label="Visit our Facebook page"
                   target="_blank"
@@ -75,7 +83,7 @@ const Footer = () => {
                   <i className="fab fa-facebook-f"></i>
                 </a>
                 <a
-                  href="https://linkedin.com"
+                  href="https://www.linkedin.com/company/quanlitaisanpremiervn/"
                   className={styles['social-icon']}
                   aria-label="Visit our LinkedIn page"
                   target="_blank"
@@ -84,13 +92,13 @@ const Footer = () => {
                   <i className="fab fa-linkedin-in"></i>
                 </a>
                 <a
-                  href="https://tiktok.com"
+                  href="https://ppmvn.vn/"
                   className={styles['social-icon']}
-                  aria-label="Visit our TikTok page"
+                  aria-label="Linkwebsite"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <i className="fab fa-tiktok"></i>
+                  <i class="fa-solid fa-link"></i>
                 </a>
               </div>
             </div>

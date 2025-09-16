@@ -10,6 +10,7 @@
     animation: App-logo-spin infinite 20s linear;
   }
 }
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto+Slab:wght@400;700&display=swap');
 
 .App-header {
   background-color: #282c34;

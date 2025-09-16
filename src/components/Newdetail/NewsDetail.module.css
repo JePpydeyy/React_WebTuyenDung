@@ -145,9 +145,9 @@ x
     font-size: 1.5rem;
     font-weight: 600;
   color: #1a1a1a;
-  margin-bottom: 20px;
+  margin: 20px 0 ;
   padding-bottom: 10px;
-  border-bottom: 2px solid #a00;
+  border-bottom: 2px solid #1678f2;
 }
 
 /* News grid */

@@ -61,7 +61,7 @@ const Header = () => {
               onClick={() => handleLinkClick('/about')}
               aria-label="Go to About page"
             >
-              <i className="fas fa-info-circle"></i> Giới thiệu
+              <i className="fas fa-info-circle"></i> Về PPMVN
             </Link>
           </li>
           <li>
@@ -71,7 +71,7 @@ const Header = () => {
               onClick={() => handleLinkClick('/news')}
               aria-label="Go to News page"
             >
-              <i className="fas fa-newspaper"></i> Tin tức sự kiện
+              <i className="fas fa-newspaper"></i> Life at PPMVN
             </Link>
           </li>
           <li>
@@ -91,7 +91,7 @@ const Header = () => {
               onClick={() => handleLinkClick('/contact')}
               aria-label="Go to Contact page"
             >
-              <i className="fas fa-envelope"></i> Liên hệ
+              <i className="fas fa-envelope"></i> Thông tin liên hệ
             </Link>
           </li>
         </ul>
