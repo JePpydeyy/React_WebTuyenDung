@@ -393,7 +393,7 @@ const Index = () => {
         </div>
 
         <div className={styles['hot-jobs']}>
-          <h1>Việc làm nổi bật</h1>
+          <h1 className={styles['section-title']}>Việc làm nổi bật</h1>
           <div className={styles['job-list']}>
             {loading ? (
               <div>Đang tải...</div>

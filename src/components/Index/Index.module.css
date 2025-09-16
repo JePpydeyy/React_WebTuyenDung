@@ -394,6 +394,10 @@
   align-items: center;
   gap: 50px;
 }
+.section-title{
+  text-align: center;
+  margin-top: 30px;
+}
 
 
 /* ACFC Values Section */
