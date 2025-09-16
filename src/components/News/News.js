@@ -21,7 +21,6 @@ function formatDate(dateString) {
 function getImageUrl(url) {
   if (!url) return '';
   if (url.startsWith('http')) return url;
-  // Loại bỏ '/api' nếu có ở cuối biến môi trường để tránh lặp '/api/api'
   const baseUrl = process.env.REACT_APP_API_URL?.replace(/\/api\/?$/, '');
   return `${baseUrl}/${url.replace(/^\/+/, '')}`;
 }
@@ -37,13 +36,11 @@ const News = () => {
   const [showCount, setShowCount] = useState(getInitialShowCount());
   const timerRef = useRef(null);
   const bannerWrapperRef = useRef(null);
-  
-  // Touch/Swipe states
+
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
 
-  // Preload banner images
   useEffect(() => {
     bannerImages.forEach((src) => {
       const img = new Image();
@@ -51,7 +48,6 @@ const News = () => {
     });
   }, []);
 
-  // Banner auto slide
   useEffect(() => {
     const startAuto = () => {
       stopAuto();
@@ -64,7 +60,6 @@ const News = () => {
     return stopAuto;
   }, []);
 
-  // Banner hover pause
   useEffect(() => {
     const wrapper = bannerWrapperRef.current;
     if (!wrapper) return;
@@ -81,38 +76,35 @@ const News = () => {
     };
   }, []);
 
-  // Responsive grid
   useEffect(() => {
     const handleResize = () => setShowCount(getInitialShowCount());
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Fetch news
-  useEffect(() => {
-    console.log('API_URL:', process.env.REACT_APP_API_URL); // Debug biến môi trường
-    console.log('BASE_URL:', process.env.BASE_URL); // Debug biến môi trường
-    setLoading(true);
-    fetch(`${process.env.REACT_APP_API_URL}/new`)
-      .then((res) => res.json())
-      .then((data) => {
-        const sortedData = Array.isArray(data)
-          ? data
-              .filter((item) => item.status === 'show')
-              .sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt))
-              .slice(0, 10)
-          : [];
-        setNewsData(sortedData);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error('Lỗi khi fetch tin tức:', err);
-        setNewsData([]);
-        setLoading(false);
-      });
-  }, []);
+useEffect(() => {
+  console.log('API_URL:', process.env.REACT_APP_API_URL);
+  console.log('BASE_URL:', process.env.BASE_URL);
+  setLoading(true);
+  fetch(`${process.env.REACT_APP_API_URL}/new?category=news`)
+    .then((res) => res.json())
+    .then((data) => {
+      const sortedData = Array.isArray(data)
+        ? data
+            .filter((item) => item.status === 'show' && item.category === 'news') // Thêm điều kiện category === 'news'
+            .sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt))
+            .slice(0, 10)
+        : [];
+      setNewsData(sortedData);
+      setLoading(false);
+    })
+    .catch((err) => {
+      console.error('Lỗi khi fetch tin tức:', err);
+      setNewsData([]);
+      setLoading(false);
+    });
+}, []);
 
-  // Sắp xếp bài viết nổi bật theo views
   const featuredPosts = [...newsData].sort((a, b) => (b.views || 0) - (a.views || 0)).slice(0, 8);
   const featuredPost = featuredPosts[0];
   const featuredGridPosts = featuredPosts.slice(1, 8);
@@ -125,12 +117,10 @@ const News = () => {
   const prevSlide = () => setCurrent((prev) => (prev - 1 + bannerImages.length) % bannerImages.length);
   const handleViewMore = () => setShowCount(newsData.length);
 
-  // Touch/Swipe handlers
   const handleTouchStart = (e) => {
     setTouchEnd(null);
     setTouchStart(e.targetTouches[0].clientX);
     setIsDragging(true);
-    // Stop auto slide when user starts touching
     if (timerRef.current) clearInterval(timerRef.current);
   };
 
@@ -142,32 +132,22 @@ const News = () => {
   const handleTouchEnd = () => {
     if (!touchStart || !touchEnd) {
       setIsDragging(false);
-      // Restart auto slide
       timerRef.current = setInterval(nextSlide, 3000);
       return;
     }
-    
     const distance = touchStart - touchEnd;
     const isLeftSwipe = distance > 50;
     const isRightSwipe = distance < -50;
-
-    if (isLeftSwipe) {
-      nextSlide();
-    } else if (isRightSwipe) {
-      prevSlide();
-    }
-    
+    if (isLeftSwipe) nextSlide();
+    else if (isRightSwipe) prevSlide();
     setIsDragging(false);
-    // Restart auto slide
     timerRef.current = setInterval(nextSlide, 3000);
   };
 
-  // Mouse drag handlers for desktop
   const handleMouseDown = (e) => {
     setTouchEnd(null);
     setTouchStart(e.clientX);
     setIsDragging(true);
-    // Stop auto slide when user starts dragging
     if (timerRef.current) clearInterval(timerRef.current);
     e.preventDefault();
   };
@@ -180,30 +160,21 @@ const News = () => {
   const handleMouseUp = () => {
     if (!touchStart || !touchEnd) {
       setIsDragging(false);
-      // Restart auto slide
       timerRef.current = setInterval(nextSlide, 3000);
       return;
     }
-    
     const distance = touchStart - touchEnd;
     const isLeftSwipe = distance > 50;
     const isRightSwipe = distance < -50;
-
-    if (isLeftSwipe) {
-      nextSlide();
-    } else if (isRightSwipe) {
-      prevSlide();
-    }
-    
+    if (isLeftSwipe) nextSlide();
+    else if (isRightSwipe) prevSlide();
     setIsDragging(false);
-    // Restart auto slide
     timerRef.current = setInterval(nextSlide, 3000);
   };
 
   const handleMouseLeave = () => {
     if (isDragging) {
       setIsDragging(false);
-      // Restart auto slide
       timerRef.current = setInterval(nextSlide, 3000);
     }
   };
@@ -211,8 +182,8 @@ const News = () => {
   return (
     <>
       <section className={styles.banner}>
-        <div 
-          className={styles.bannerWrapper} 
+        <div
+          className={styles.bannerWrapper}
           ref={bannerWrapperRef}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
@@ -269,37 +240,7 @@ const News = () => {
       ) : (
         <>
           <div className={styles.containerLatest}>
-            <div className={styles.latestPost}>
-              <h2 className={styles.latestPostTitle}>Bài viết mới nhất</h2>
-              {latestPost ? (
-                <div className={styles.postItem}>
-                  <div className={styles.postImage}>
-                    <img
-                      src={getImageUrl(latestPost.thumbnailUrl)}
-                      alt={latestPost.title}
-                      loading="lazy"
-                    />
-                  </div>
-                  <div className={styles.postContent}>
-                    <Link to={`/news/${latestPost.id}`} className={styles.postTitle}>
-                      {latestPost.title}
-                    </Link>
-                    <div className={styles.postDate}>
-                      Ngày đăng {formatDate(latestPost.publishedAt)}
-                    </div>
-                    <div className={styles.postExcerpt}>
-                      {latestPost.contentBlocks &&
-                      latestPost.contentBlocks[0] &&
-                      latestPost.contentBlocks[0].content
-                        ? latestPost.contentBlocks[0].content.slice(0, 120) + '...'
-                        : ''}
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div>Không có bài viết mới nhất.</div>
-              )}
-            </div>
+            <h2 className={styles.latestPostTitle}>Bài viết mới nhất</h2>
             <div className={styles.postsGrid}>
               {latestGridPosts.length > 0 ? (
                 latestGridPosts.map((post, idx) => (
@@ -307,25 +248,32 @@ const News = () => {
                     className={`${styles.gridItem} ${idx >= showCount - 1 ? styles.hidden : ''}`}
                     key={post._id || idx}
                   >
-                    <div className={styles.gridImage}>
+                    <div className={styles.imageContainer}>
                       <img
                         src={getImageUrl(post.thumbnailUrl)}
                         alt={post.title}
-                        loading="lazy"
+                        className={styles.newsImage}
                       />
-                    </div>
-                    <Link to={`/news/${post.id}`} className={styles.gridTitle}>
-                      {post.title}
-                    </Link>
-                    <div className={styles.gridDate}>
-                      Ngày đăng {formatDate(post.publishedAt)}
-                    </div>
-                    <div className={styles.gridExcerpt}>
-                      {post.contentBlocks &&
-                      post.contentBlocks[0] &&
-                      post.contentBlocks[0].content
-                        ? post.contentBlocks[0].content.slice(0, 80) + '...'
-                        : ''}
+                      <div className={styles.overlay}>
+                        <h3 className={styles.title}>{post.title}</h3>
+                      </div>
+                      <div className={styles.hoverInfo}>
+                         <h3 className={styles.title}>{post.title}</h3>
+                         <hr></hr>
+                        <p className={styles.date}>
+                          Ngày đăng {formatDate(post.publishedAt)}
+                        </p>
+                        <p className={styles.excerpt}>
+                          {post.contentBlocks &&
+                          post.contentBlocks[0] &&
+                          post.contentBlocks[0].content
+                            ? post.contentBlocks[0].content.slice(0, 80) + '...'
+                            : ''}
+                        </p>
+                        <Link to={`/news/${post.slug}`} className={styles.viewMore}>
+                          Xem chi tiết
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 ))
@@ -345,60 +293,37 @@ const News = () => {
           </div>
           <hr className={styles.divider} />
           <div className={styles.containerFeatured}>
-            <div className={styles.featuredPost}>
-              <h2 className={styles.featuredPostTitle}>Bài viết nổi bật</h2>
-              {featuredPost ? (
-                <div className={styles.postItem}>
-                  <div className={styles.postImage}>
-                    <img
-                      src={getImageUrl(featuredPost.thumbnailUrl)}
-                      alt={featuredPost.title}
-                      loading="lazy"
-                    />
-                  </div>
-                  <div className={styles.postContent}>
-                    <Link to={`/news/${featuredPost.id}`} className={styles.postTitle}>
-                      {featuredPost.title}
-                    </Link>
-                    <div className={styles.postDate}>
-                      Ngày đăng {formatDate(featuredPost.publishedAt)}
-                    </div>
-                    <div className={styles.postExcerpt}>
-                      {featuredPost.contentBlocks &&
-                      featuredPost.contentBlocks[0] &&
-                      featuredPost.contentBlocks[0].content
-                        ? featuredPost.contentBlocks[0].content.slice(0, 120) + '...'
-                        : ''}
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div>Không có bài viết nổi bật.</div>
-              )}
-            </div>
+            <h2 className={styles.featuredPostTitle}>Bài viết nổi bật</h2>
             <div className={styles.postsGrid}>
               {featuredGridPosts.length > 0 ? (
                 featuredGridPosts.map((post, idx) => (
                   <div className={styles.gridItem} key={post._id || idx}>
-                    <div className={styles.gridImage}>
+                    <div className={styles.imageContainer}>
                       <img
                         src={getImageUrl(post.thumbnailUrl)}
                         alt={post.title}
-                        loading="lazy"
+                        className={styles.newsImage}
                       />
-                    </div>
-                    <Link to={`/news/${post.id}`} className={styles.gridTitle}>
-                      {post.title}
-                    </Link>
-                    <div className={styles.gridDate}>
-                      Ngày đăng {formatDate(post.publishedAt)}
-                    </div>
-                    <div className={styles.gridExcerpt}>
-                      {post.contentBlocks &&
-                      post.contentBlocks[0] &&
-                      post.contentBlocks[0].content
-                        ? post.contentBlocks[0].content.slice(0, 80) + '...'
-                        : ''}
+                      <div className={styles.overlay}>
+                        <h3 className={styles.title}>{post.title}</h3>
+                      </div>
+                      <div className={styles.hoverInfo}>
+                         <h3 className={styles.title}>{post.title}</h3>
+                         <hr></hr>
+                        <p className={styles.date}>
+                          Ngày đăng {formatDate(post.publishedAt)}
+                        </p>
+                        <p className={styles.excerpt}>
+                          {post.contentBlocks &&
+                          post.contentBlocks[0] &&
+                          post.contentBlocks[0].content
+                            ? post.contentBlocks[0].content.slice(0, 80) + '...'
+                            : ''}
+                        </p>
+                        <Link to={`/news/${post.slug}`} className={styles.viewMore}>
+                          Xem chi tiết
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 ))

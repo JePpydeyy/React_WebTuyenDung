@@ -260,6 +260,201 @@ const About = () => {
           </p>
         </div>
       </div>
+
+      {/* tầm nhìn sứ mệnh giá trị cốt lõi */}
+      <div className={styles.ss3}>
+        <h2 className={styles.sectionTitle3}>TẦM NHÌN - SỨ MỆNH - GIÁ TRỊ CỐT LÕI</h2>
+        <div className={styles.aboutContainer}>
+          <div className={styles.aboutTabsNav}>
+            <div className={styles.tabButton} data-tab="0">
+                <div className={styles.outerCircle}>
+                    <div className={styles.circle}></div>
+                </div>
+                <span className={styles.name}>Tầm nhìn</span>
+            </div>
+            <div className={styles.tabButton} data-tab="0">
+                <div className={styles.outerCircle}>
+                    <div className={styles.circle}></div>
+                </div>
+                <span className={styles.name}>Sứ mệnh</span>
+            </div>
+            <div className={styles.tabButton} data-tab="0">
+                <div className={styles.outerCircle}>
+                    <div className={styles.circle}></div>
+                </div>
+                <span className={styles.name}>Giá trị cốt lõi</span>
+            </div>
+          </div>
+
+          <div className={styles.aboutContent}>
+            <div className={styles.contentItem}>
+              <div className={styles.imageContent}>
+                <img className={styles.img} src='/assets/images/tamnhin.jpg' />
+              </div>
+              <div className={styles.textContent}>
+                <h3 className={styles.h3}>Tầm nhìn</h3>
+                <p>Trở thành đơn vị đào tạo và nghiên cứu khoa học hàng đầu trong lĩnh vực Ngân hàng,Tài
+                  chính, Công nghệ và các chuyên môn ưu tiên của phát triển kinh tế quan trọng tại khu vực. Là
+                  nơi hồi tụ tinh hoa trí thức, đào tạo sâu những giá trị thực nghiệm mang tính thời đại, ứng dụng
+                  công nghệ cao, trang bị sẵn sàng những kỹ năng kiến thức để cán bộ nhân viên học viên sẵn
+                  sàng với thời cuộc, vững vàng tiến tới tương lai, hiện thực hóa những giấc mơ cao đẹp.
+                </p>
+              </div>
+            </div>
+             <div className={styles.contentItem}>
+              <div className={styles.imageContent}>
+                <img className={styles.img} src='/assets/images/tamnhin.jpg' />
+              </div>
+              <div className={styles.textContent}>
+                <h3 className={styles.h3}>Tầm nhìn</h3>
+                <p> <strong>1. Với học viên và cộng đồng:</strong>  Xây dựng môi trường học tập chuyên nghiệp, đa chiều và sáng
+                    tạo, đào tạo nguồn nhân lực chất lượng cao cho thị trường lao động có trình độ chuyên môn
+                    sâu về ngân hàng, tài chính và thích ứng linh hoạt trong kỷ nguyên số. <br></br>
+                    <strong>2. Với ngành giáo dục và công nghệ</strong>: Liên kết tri thức Việt Nam với thế giới thông qua việc
+                    thúc đẩy nghiên cứu ứng dụng và chuyển giao công nghệ đột phá, góp phần nâng cao hiệu quả
+                    hoạt động của ngân hàng, các tổ chức tài chính và các doanh nghiệp tăng cường tính bảo mật
+                    và tinh cậy.<br></br>
+                    <strong>3. Với đối tác:</strong> Xây dựng và duy trì quan hệ hợp tác minh bạch, bền vững, quy tụ trí tuệ và
+                    nguồn lực quốc tế nhằm tạo giá trị gia tăng và phát triển toàn diện.
+                </p>
+              </div>
+            </div>
+             <div className={styles.contentItem}>
+              <div className={styles.imageContent}>
+                <img className={styles.img} src='/assets/images/tamnhin.jpg' />
+              </div>
+              <div className={styles.textContent}>
+                <h3 className={styles.h3}>Tầm nhìn</h3>
+                <p>Trở thành đơn vị đào tạo và nghiên cứu khoa học hàng đầu trong lĩnh vực Ngân hàng,Tài
+                  chính, Công nghệ và các chuyên môn ưu tiên của phát triển kinh tế quan trọng tại khu vực. Là
+                  nơi hồi tụ tinh hoa trí thức, đào tạo sâu những giá trị thực nghiệm mang tính thời đại, ứng dụng
+                  công nghệ cao, trang bị sẵn sàng những kỹ năng kiến thức để cán bộ nhân viên học viên sẵn
+                  sàng với thời cuộc, vững vàng tiến tới tương lai, hiện thực hóa những giấc mơ cao đẹp.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/*  */}
+      <div className={styles.bod}>
+        <h2 className={styles.sectionTitle3}>LỜI CHIA SẺ CỦA BOD</h2>
+        <div className={styles.listBod}>
+          <div className={styles.itemBod}>
+            <div className={styles.imageBod}>
+              <img className={styles.img} src='/assets/images/giamdoc.png'/>
+            </div>
+            <div className={styles.nameBod}>
+              <h3 className={styles.h3}>ông Trần Công Diệu</h3>
+            </div>
+            <div className={styles.desBod}>
+              <p className={styles.p}>PPM.VN tự hào tiên phong trong quản lý và tư vấn bất động sản, cam kết mang lại giá trị tối ưu với dịch vụ chuyên nghiệp, minh bạch. Đội ngũ giàu kinh nghiệm cùng mạng lưới đối tác trong và ngoài nước là nền tảng để chúng tôi đảm bảo sự hài lòng cho khách hàng, vận hành các dự án lớn hiệu quả và bền vững</p>
+            </div>
+          </div>
+          {/* <div className={styles.itemBod}>
+            <div className={styles.imageBod}>
+              <img className={styles.img} src='/assets/images/giamdoc.png'/>
+            </div>
+            <div className={styles.nameBod}>
+              <h3 className={styles.h3}>ông Trần Công Diệu</h3>
+            </div>
+            <div className={styles.desBod}>
+              <p className={styles.p}>PPM.VN tự hào tiên phong trong quản lý và tư vấn bất động sản, cam kết mang lại giá trị tối ưu với dịch vụ chuyên nghiệp, minh bạch. Đội ngũ giàu kinh nghiệm cùng mạng lưới đối tác trong và ngoài nước là nền tảng để chúng tôi đảm bảo sự hài lòng cho khách hàng, vận hành các dự án lớn hiệu quả và bền vững</p>
+            </div>
+          </div>
+          <div className={styles.itemBod}>
+            <div className={styles.imageBod}>
+              <img className={styles.img} src='/assets/images/giamdoc.png'/>
+            </div>
+            <div className={styles.nameBod}>
+              <h3 className={styles.h3}>ông Trần Công Diệu</h3>
+            </div>
+            <div className={styles.desBod}>
+              <p className={styles.p}>PPM.VN tự hào tiên phong trong quản lý và tư vấn bất động sản, cam kết mang lại giá trị tối ưu với dịch vụ chuyên nghiệp, minh bạch. Đội ngũ giàu kinh nghiệm cùng mạng lưới đối tác trong và ngoài nước là nền tảng để chúng tôi đảm bảo sự hài lòng cho khách hàng, vận hành các dự án lớn hiệu quả và bền vững</p>
+            </div>
+          </div> */}
+        </div>
+      </div>
+      <div className={styles.project}>
+        <h2 className={styles.sectionTitle4}>DỰ ÁN NỔI BẬT</h2>
+        <div className={styles.description}>
+          <p className={styles.p}>PPMVN tự hào mang đến những dự án chung cư và tòa nhà văn phòng hiện đại, đẳng cấp, đáp ứng nhu cầu sống và làm việc thời thượng. Với thiết kế tinh tế, vị trí chiến lược và tiện ích vượt trội, mỗi dự án là sự kết hợp hoàn hảo giữa không gian sống tiện nghi và môi trường làm việc chuyên nghiệp. PPMVN cam kết kiến tạo giá trị bền vững, nâng tầm chất lượng cuộc sống và thành công cho khách hàng</p>
+        </div>
+        <div className={styles.listProject}>
+          <div className={styles.itemProject}>
+            <div className={styles.imageProject}>
+              <img className={styles.img} src='/assets/images/pr.png'/>
+              <div className={styles.nameProject}>
+                <h3 className={styles.h3}>Dự án nổi bật</h3>
+              </div>
+            </div>
+          </div>
+          <div className={styles.itemProject}>
+            <div className={styles.imageProject}>
+              <img className={styles.img} src='/assets/images/pr.png'/>
+              <div className={styles.nameProject}>
+                <h3 className={styles.h3}>Dự án nổi bật</h3>
+                <button></button>
+              </div>
+            </div>
+          </div>
+          <div className={styles.itemProject}>
+            <div className={styles.imageProject}>
+              <img className={styles.img} src='/assets/images/pr.png'/>
+              <div className={styles.nameProject}>
+                <h3 className={styles.h3}>Dự án nổi bật</h3>
+                <button></button>
+              </div>
+            </div>
+          </div>
+          <div className={styles.itemProject}>
+            <div className={styles.imageProject}>
+              <img className={styles.img} src='/assets/images/pr.png'/>
+              <div className={styles.nameProject}>
+                <h3 className={styles.h3}>Dự án nổi bật</h3>
+                <button></button>
+              </div>
+            </div>
+          </div>
+          <div className={styles.itemProject}>
+            <div className={styles.imageProject}>
+              <img className={styles.img} src='/assets/images/pr.png'/>
+              <div className={styles.nameProject}>
+                <h3 className={styles.h3}>Dự án nổi bật</h3>
+                <button></button>
+              </div>
+            </div>
+          </div>
+          <div className={styles.itemProject}>
+            <div className={styles.imageProject}>
+              <img className={styles.img} src='/assets/images/pr.png'/>
+              <div className={styles.nameProject}>
+                <h3 className={styles.h3}>Dự án nổi bật</h3>
+                <button></button>
+              </div>
+            </div>
+          </div>
+          <div className={styles.itemProject}>
+            <div className={styles.imageProject}>
+              <img className={styles.img} src='/assets/images/pr.png'/>
+              <div className={styles.nameProject}>
+                <h3 className={styles.h3}>Dự án nổi bật</h3>
+                <button></button>
+              </div>
+            </div>
+          </div>
+          <div className={styles.itemProject}>
+            <div className={styles.imageProject}>
+              <img className={styles.img} src='/assets/images/pr.png'/>
+              <div className={styles.nameProject}>
+                <h3 className={styles.h3}>Dự án nổi bật</h3>
+                <button></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       
       
 <div className={styles.statsSection}>
@@ -284,10 +479,6 @@ const About = () => {
   </div>
 </div>
 
-  <div className={styles.sodocongty}>
-  <h2 className={styles.maptitle}>Sơ đồ công ty</h2>
-  <img src="/assets/images/PPMvn-SO-DO-TO-CHUC-Nen-trang.png" alt="Company Structure" className={styles.companyStructureImage} loading="lazy" />
-</div>
       {/* Brand */}
       <div className={styles.brand}>
         <h2>Đối Tác</h2>

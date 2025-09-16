@@ -1,7 +1,8 @@
 .footer {
-  background-color: #c6e2ff;
+  background-color: #0042A5;
   padding: 40px 0;
   width: 100%;
+  color:#fff;
 }
 
 .footer-container {
@@ -28,14 +29,14 @@
 .social-icons,
 .social-icon {
   font-size: 1.1rem;
-  color: #000000;
+ 
 }
 
 .footer-column h5,
 .social-links h3,
 .services-section h3 {
   font-size: 1.5rem;
-  color: #205aa7;
+ 
   margin-bottom: 15px;
 }
 
@@ -51,7 +52,7 @@
 .footer-list a,
 .footer-contact a,
 .social-icon {
-  color: #000000;
+  color:#fff;
   text-decoration: none;
   transition: color 0.3s ease;
 }
@@ -69,11 +70,10 @@
 .social-icons {
   display: flex;
   gap: 15px;
+  color:#fff;
 }
 
-.social-icon i {
-  color: #000000;
-}
+
 
 .social-icon:hover i {
   color: #007bff;

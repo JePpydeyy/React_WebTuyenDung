@@ -357,6 +357,7 @@
   padding-bottom: 20px;
   font-size: 28px;
   padding-top: 200px;
+  text-align: center;
 }
 .sectionTitle::after{
   content: "";
@@ -367,6 +368,39 @@
   margin: 12px auto 0;   /* canh giữa */
 
 }
+.sectionTitle3{
+  color: rgba(42, 99, 173, 1);
+  padding-bottom: 20px;
+  font-size: 28px;
+  padding-top: 130px;
+  text-align: center;
+}
+.sectionTitle3::after{
+  content: "";
+  display: block;
+  width: 50px;           /* chiều dài gạch */
+  height: 1px;           /* độ dày gạch */
+  background-color: rgba(42, 99, 173, 1); /* màu gạch (trắng vì nền xanh) */
+  margin: 12px auto 0;   /* canh giữa */
+
+}
+.sectionTitle4{
+color: white;
+  padding-bottom: 20px;
+  font-size: 28px;
+  padding-top: 80px;
+  text-align: center;
+}
+.sectionTitle4::after{
+  content: "";
+  display: block;
+  width: 50px;           /* chiều dài gạch */
+  height: 1px;           /* độ dày gạch */
+  background-color: rgb(255, 255, 255); /* màu gạch (trắng vì nền xanh) */
+  margin: 12px auto 0;   /* canh giữa */
+
+}
+
 
 .box{
   position: absolute;
@@ -406,6 +440,222 @@
 .text{
   font-size: 15px;
 }
+
+.ss3{
+  width: 70%;
+  margin: 0 auto ;
+}
+.aboutContainer{
+  max-width: 100%;
+  /* position: relative; */
+  display: flex;
+  justify-content: center;
+  /* align-items: center; */
+}
+.aboutTabsNav {
+  width: 25%;
+  display: flex;
+  flex-direction: column;
+  gap: 120px;
+  position: sticky;
+  top: 50px;
+  height: fit-content;
+}
+.aboutTabsNav::before {
+    content: '';
+    position: absolute;
+    left: 21.5px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: rgba(42, 99, 173, 1);
+}
+.aboutTabsNav>.tabButton {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #aaa;
+    font-weight: 500;
+    position: relative;
+    z-index: 1;
+    transition: color 0.3s 
+ease;
+}
+.tabButton>.outerCircle {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: rgba(42, 99, 173, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s 
+ease;
+}
+.tabButton>.outerCircle>.circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(42, 99, 173, 1);
+    border: 10px solid #fff;
+    transition: all 0.3s 
+ease;
+}
+.circle, .circle img {
+    border-radius: 999px !important;
+    -o-object-fit: cover;
+    object-fit: cover;
+}
+.aboutContent{
+  width: 75%;
+}
+.contentItem{
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 auto;
+margin-bottom: 250px;
+}
+.imageContent{
+  z-index: 0;
+  width: 100%;
+}
+.imageContent>.img{
+  z-index: 0;
+  max-width: 100%;
+}
+.textContent{
+  position: absolute;
+  z-index: 999;
+  width: 90%;
+  border-radius: 10px;
+  box-shadow: 0px 0px 8px rgb(189, 189, 189);
+  top: 390px;
+  background-color: white;
+  padding: 30px;
+  border-bottom: 10px solid rgba(42, 99, 173, 1) ;
+}
+.h3{
+  text-align: center;
+  color: rgba(42, 99, 173, 1);
+  padding: 0px 20px 20px 20px;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.bod{
+  width: 100%;
+  margin: 0 auto;
+  padding-bottom: 30px;
+}
+.listBod{
+  max-width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 100px;
+}
+.itemBod{
+  width: 20%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.imageBod{
+  max-width: 80%;
+}
+.imageBod>.img{
+  max-width: 100%;
+  border-radius: 30px;
+}
+.nameBod{
+  color: #0f5bb5;
+  text-align: center;
+  font-size: 22px;
+}
+.nameBod>.h3{
+  font-size: 22px;
+}
+.desBod>.p{
+  font-size: 16px;
+  color: #868585;
+}
+
+/* project */
+.project{
+  width: 100%;
+  background-color: #0f5bb5;
+  padding-bottom: 30px;
+}
+.description{
+  padding: 0% 25%;
+}
+.description>.p{
+  color: white;
+}
+
+.listProject{
+  width: 90%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  margin: 60px auto;
+  flex-wrap: wrap;
+}
+.itemProject{
+  width: 23%;
+}
+.imageProject {
+  position: relative; /* cha phải relative để con absolute */
+}
+
+.img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.nameProject {
+  position: absolute;
+  bottom: 20px; /* cách đáy ảnh 20px */
+  left: 20px;   /* cách trái 20px */
+   /* chữ trắng nổi bật */
+  background-color: white ;
+  display: flex;
+  width: 90%;
+  height: 40px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+}
+
+.nameProject>.h3 {
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #0a0000; 
+}
+
+
+/* .nameProject button {
+  margin-top: 10px;
+  padding: 6px 12px;
+  background: #1E64B7;
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  cursor: pointer;
+} */
+
+
+
+
+
+
 
 /* Gia Tri Cot Loi Section */
 .Aboutcty {
@@ -888,6 +1138,9 @@
   .text{
   margin: 5px 16px;
 }
+.aboutTabsNav{
+  display: none;
+}
 }
 
 /* Breakpoint <= 480px */
@@ -973,5 +1226,26 @@
   }
   .maptitle {
     font-size: 1.8rem;
+  }
+}
+@media (max-width: 768px) {
+  .ss3{
+    width: 100%;
+    margin: 0 auto ;
+  }
+  .contentItem{
+    margin-bottom: 30px;
+  }
+  .textContent{
+    position: static;
+  }
+  .itemBod{
+    width: 100%;
+  }
+  .desBod{
+    padding: 0 16px;
+  }
+  .bod{
+    padding-bottom: 30px;
   }
 }
