@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import styles from "./JobDetail.module.css";
-import JobApplyBox from "./JobApplyBox";
+import { Link } from 'react-router-dom';
 
 const JobDetail = () => {
   const { jobId } = useParams();
   const [job, setJob] = useState(null);
   const [relatedJobs, setRelatedJobs] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchJob = async () => {
@@ -38,10 +37,9 @@ const JobDetail = () => {
     <div className={styles.container}>
       {/* Left Box */}
       <div className={styles.leftBox}>
-        <Link to={`/jobshow/${job.JobType}`} className={styles.backLink}>
+       <Link to={`/jobshow/${job.JobType}`} className={styles.backLink}>
           Quay lại
         </Link>
-
         <div className={styles.header}>
           <h2>{job.Name}</h2>
         </div>
@@ -69,20 +67,9 @@ const JobDetail = () => {
           </ul>
         </div>
 
-        {/* Nút mở modal ứng tuyển */}
-        <button
-          className={styles.applyBtn}
-          onClick={() => setIsModalOpen(true)}
-        >
+        <button className={styles.applyBtn}>
           <i className="fas fa-paper-plane"></i> Ứng tuyển ngay
         </button>
-
-        {/* Modal ứng tuyển */}
-        <JobApplyBox
-          job={job}
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-        />
       </div>
 
       {/* Right Box */}
@@ -110,7 +97,7 @@ const JobDetail = () => {
                   <i className="fas fa-graduation-cap"></i> {item.Degree} |{" "}
                   <i className="far fa-calendar-alt"></i> {new Date(item["Due date"]).toLocaleDateString()}
                 </div>
-                <Link to={`/Detailjob/${item._id}`} className={styles.viewBtn}>Xem ngay</Link>
+                <a href={`/Detailjob/${item._id}`} className={styles.viewBtn}>Xem ngay</a>
               </div>
             ))}
 

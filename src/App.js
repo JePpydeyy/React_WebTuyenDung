@@ -17,6 +17,7 @@ import Login from './Admin/pages/Login';
 import ProtectedRoute from './Admin/components/ProtectedRoute/ProtectedRoute';
 import './App.css';
 import { AuthProvider } from './Admin/components/AuthContext/AuthContext';
+import JobShow from './pages/JobShow';
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
             <Route path="/contact" element={<UserContact />} /> {/* Sử dụng UserContact */}
             <Route path="/JobContent" element={<Jobcontent />} />
             <Route path="/DetailJob/:jobId" element={<JobDetail />} />
+            <Route path="/jobshow/:jobType" element={<JobShow />} />
 
             {/* Admin login route */}
             <Route path="/admin/login" element={<Login />} />

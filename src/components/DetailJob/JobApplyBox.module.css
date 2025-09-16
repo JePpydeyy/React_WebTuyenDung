@@ -1,0 +1,219 @@
+/* JobApplyBox.module.css */
+
+/* Modal */
+.modal {
+  display: block;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  overflow: auto;
+}
+
+/* Modal Content */
+.modalContent {
+  background-color: #fff;
+  margin: 5% auto;
+  padding: 0;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Modal Header */
+.modalHeader {
+  padding: 20px;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modalHeader h3 {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+.closeBtn {
+  font-size: 24px;
+  font-weight: bold;
+  color: #aaa;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+.closeBtn:hover {
+  color: #333;
+}
+
+.closeBtn:focus {
+  outline: 2px solid #1678f2;
+  outline-offset: 2px;
+}
+
+/* Modal Body */
+.modalBody {
+  padding: 20px;
+  max-height: calc(90vh - 120px);
+  overflow-y: auto;
+}
+
+/* Form */
+.formGroup {
+  margin-bottom: 15px;
+}
+
+.formRow {
+  display: flex;
+  gap: 15px;
+}
+
+.formRow .formGroup {
+  flex: 1;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  color: #333;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+label span {
+  color: red;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 2px solid #1678f2;
+  border-color: #1678f2;
+}
+
+.error {
+  color: red;
+  font-size: 12px;
+  margin-top: 5px;
+  display: block;
+}
+
+/* Modal Footer */
+.modalFooter {
+  padding: 20px;
+  border-top: 1px solid #ddd;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  background: #fff;
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+}
+
+.cancelBtn {
+  background: #6c757d;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.cancelBtn:hover {
+  background: #5a6268;
+}
+
+.cancelBtn:focus {
+  outline: 2px solid #1678f2;
+  outline-offset: 2px;
+}
+
+.submitBtn {
+  background: #1678f2;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.submitBtn:hover {
+  background: #0056b3;
+}
+
+.submitBtn:focus {
+  outline: 2px solid #1678f2;
+  outline-offset: 2px;
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+  .modalContent {
+    width: 95%;
+    max-height: 85vh;
+    margin: 2% auto;
+  }
+  .modalBody {
+    max-height: calc(85vh - 120px);
+  }
+}
+
+@media (max-width: 780px) {
+  .modalContent {
+    width: 98%;
+    max-height: 80vh;
+    margin: 1% auto;
+  }
+  .modalBody {
+    max-height: calc(80vh - 100px);
+    padding: 15px;
+  }
+  .modalFooter {
+    padding: 15px;
+  }
+}
+
+@media (max-width: 380px) {
+  .modalContent {
+    width: 100%;
+    max-height: 75vh;
+    margin: 0 auto;
+    border-radius: 0;
+  }
+  .modalBody {
+    max-height: calc(75vh - 90px);
+    padding: 10px;
+  }
+  .modalFooter {
+    padding: 10px;
+  }
+  .modalHeader h3 {
+    font-size: 16px;
+  }
+  .closeBtn {
+    font-size: 20px;
+  }
+}

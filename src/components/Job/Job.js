@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './Job.module.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import MainRouter from "./components/JobRouter";
 
 const bannerImages = [
   '/assets/images/BANNER1.jpg',
@@ -377,8 +378,9 @@ const Jobcontent = () => {
         </div>
       </section>
 
-      {/* Job Search Section */}
-      <div className={styles.jobSearch}>
+      <MainRouter/>
+      
+      {/* <div className={styles.jobSearch}>
         <div className={styles.jobSearchContainer}>
           <p className={styles.jobSearchTitle}>Tìm kiếm công việc phù hợp</p>
           <form className={styles.jobSearchForm} onSubmit={handleSearchSubmit}>
@@ -444,7 +446,6 @@ const Jobcontent = () => {
         </div>
       </div>
 
-      {/* Job Listings - Store */}
       <section className={styles.jobListings}>
         <h1 className={styles.jobListingsTitle}>Việc làm tại Cửa hàng</h1>
         <div className={styles.jobListingsGrid}>
@@ -506,7 +507,6 @@ const Jobcontent = () => {
         )}
       </section>
 
-      {/* Job Listings - Office */}
       <section className={styles.jobListings}>
         <h1 className={styles.jobListingsTitle}>Việc làm tại văn phòng</h1>
         <div className={styles.jobListingsGrid}>
@@ -566,7 +566,7 @@ const Jobcontent = () => {
             </button>
           </div>
         )}
-      </section>
+      </section> */}
     </main>
   );
 };
