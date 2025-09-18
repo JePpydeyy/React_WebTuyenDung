@@ -99,6 +99,23 @@ const About = () => {
     }
   };
 
+  const visionRef = useRef(null);
+  const missionRef = useRef(null);
+  const valueRef = useRef(null);
+
+  const handleScroll = (ref) => {
+    ref.current.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+
+  const [activeTab, setActiveTab] = useState(null);
+
+  const handleClick = (ref, index) => {
+    setActiveTab(index); // Lưu tab đang active
+    ref.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+
   // Banner event listeners
   const bannerWrapperRef = useRef(null);
   useEffect(() => {
@@ -266,28 +283,40 @@ const About = () => {
         <h2 className={styles.sectionTitle3}>TẦM NHÌN - SỨ MỆNH - GIÁ TRỊ CỐT LÕI</h2>
         <div className={styles.aboutContainer}>
           <div className={styles.aboutTabsNav}>
-            <div className={styles.tabButton} data-tab="0">
+              <div
+                className={`${styles.tabButton} ${activeTab === 0 ? styles.active : ""}`}
+                onClick={() => handleClick(visionRef, 0)}
+              >
                 <div className={styles.outerCircle}>
-                    <div className={styles.circle}></div>
+                  <div className={`${styles.circle} ${activeTab === 0 ? styles.animate : ''}`}></div>
                 </div>
                 <span className={styles.name}>Tầm nhìn</span>
-            </div>
-            <div className={styles.tabButton} data-tab="0">
+              </div>
+
+               <div
+                  className={`${styles.tabButton} ${activeTab === 1 ? styles.active : ""}`}
+                  onClick={() => handleClick(missionRef, 1)}
+                >
                 <div className={styles.outerCircle}>
-                    <div className={styles.circle}></div>
+                  <div className={`${styles.circle} ${activeTab === 1 ? styles.animate : ''}`}></div>
                 </div>
                 <span className={styles.name}>Sứ mệnh</span>
-            </div>
-            <div className={styles.tabButton} data-tab="0">
+              </div>
+
+              <div
+                className={`${styles.tabButton} ${activeTab === 2 ? styles.active : ""}`}
+                onClick={() => handleClick(valueRef, 2)}
+              >
                 <div className={styles.outerCircle}>
-                    <div className={styles.circle}></div>
+                  <div className={`${styles.circle} ${activeTab === 2 ? styles.animate : ''}`}></div>
                 </div>
                 <span className={styles.name}>Giá trị cốt lõi</span>
+              </div>
             </div>
-          </div>
+
 
           <div className={styles.aboutContent}>
-            <div className={styles.contentItem}>
+            <div className={styles.contentItem} ref={visionRef}>
               <div className={styles.imageContent}>
                 <img className={styles.img} src='/assets/images/tamnhin.jpg' />
               </div>
@@ -301,12 +330,12 @@ const About = () => {
                 </p>
               </div>
             </div>
-             <div className={styles.contentItem}>
+             <div className={styles.contentItem} ref={missionRef}>
               <div className={styles.imageContent}>
                 <img className={styles.img} src='/assets/images/tamnhin.jpg' />
               </div>
               <div className={styles.textContent}>
-                <h3 className={styles.h3}>Tầm nhìn</h3>
+                <h3 className={styles.h3}>Sứ mệnh</h3>
                 <p> <strong>1. Với học viên và cộng đồng:</strong>  Xây dựng môi trường học tập chuyên nghiệp, đa chiều và sáng
                     tạo, đào tạo nguồn nhân lực chất lượng cao cho thị trường lao động có trình độ chuyên môn
                     sâu về ngân hàng, tài chính và thích ứng linh hoạt trong kỷ nguyên số. <br></br>
@@ -319,12 +348,12 @@ const About = () => {
                 </p>
               </div>
             </div>
-             <div className={styles.contentItem}>
+             <div className={styles.contentItem} ref={valueRef}>
               <div className={styles.imageContent}>
                 <img className={styles.img} src='/assets/images/tamnhin.jpg' />
               </div>
               <div className={styles.textContent}>
-                <h3 className={styles.h3}>Tầm nhìn</h3>
+                <h3 className={styles.h3}>Giá trị cốt lõi</h3>
                 <p>Trở thành đơn vị đào tạo và nghiên cứu khoa học hàng đầu trong lĩnh vực Ngân hàng,Tài
                   chính, Công nghệ và các chuyên môn ưu tiên của phát triển kinh tế quan trọng tại khu vực. Là
                   nơi hồi tụ tinh hoa trí thức, đào tạo sâu những giá trị thực nghiệm mang tính thời đại, ứng dụng
