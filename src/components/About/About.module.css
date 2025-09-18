@@ -497,25 +497,11 @@ ease;
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: rgb(255, 255, 255);
-    border: 10px solid rgba(42, 99, 173, 1);
-    transition: transform 0.3s ease;
+    background: rgba(42, 99, 173, 1);
+    border: 10px solid #fff;
+    transition: all 0.3s 
+ease;
 }
-.circle.animate {
-    animation: zoomInOut 1.5s infinite ease-in-out;
-}
-@keyframes zoomInOut {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.3);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
 .circle, .circle img {
     border-radius: 999px !important;
     -o-object-fit: cover;
@@ -1261,26 +1247,5 @@ margin-bottom: 250px;
   }
   .bod{
     padding-bottom: 30px;
-  }
-
-  .listProject{
-    width: 90%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 30px;
-    margin: 60px auto;
-    flex-wrap: wrap;
-  }
-  .itemProject{
-    width: 100%;
-  }
-  .description{
-    padding: 0% 20px;
-    text-align: center;
-  }
-  .sectionTitle3{
-    font-size: 19px;
   }
 }
