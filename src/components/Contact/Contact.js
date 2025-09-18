@@ -393,7 +393,7 @@ const Contact = () => {
       {/* News Section */}
       <div className={styles.newsSection}>
         <div className={styles.newsContainer}>
-          <h2 className={styles.newsTitle}>Tips Phỏng Vấn</h2>
+          <h1 className={styles.newsTitle}>Tips Phỏng Vấn</h1>
           {newsLoading ? (
             <div className={styles.newsLoading}>
               <div className={styles.spinner}></div>
@@ -441,7 +441,7 @@ const Contact = () => {
       {/* FAQ Section */}
       <div className={styles.faqSection}>
         <div className={styles.faqContainer}>
-          <h2 className={styles.faqTitle}>Câu hỏi thường gặp</h2>
+          <h1 className={styles.faqTitle}>Câu hỏi thường gặp</h1>
           <div className={styles.faqList}>
             {faqData.map((item, index) => (
               <div key={index} className={styles.faqItem}>

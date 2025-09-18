@@ -371,7 +371,7 @@
 .sectionTitle3{
   color: rgba(42, 99, 173, 1);
   padding-bottom: 20px;
-  font-size: 28px;
+  font-size: 32px;
   padding-top: 130px;
   text-align: center;
 }
@@ -387,7 +387,7 @@
 .sectionTitle4{
 color: white;
   padding-bottom: 20px;
-  font-size: 28px;
+  font-size: 32px;
   padding-top: 80px;
   text-align: center;
 }
@@ -410,7 +410,7 @@ color: white;
   border-radius: 10px;
   box-shadow: 0 0 8px rgb(197, 195, 195);
   margin-top: -240px;
-  margin-left: 425px;
+  margin-left:calc(50% - 335px);
 }
 .aboutText{
   padding: 0px 450px 0px 450px;
@@ -438,6 +438,7 @@ color: white;
   border-radius: 10px;
 }
 .text{
+  margin-top: 20px;
   font-size: 15px;
 }
 
@@ -532,7 +533,8 @@ margin-bottom: 250px;
   width: 90%;
   border-radius: 10px;
   box-shadow: 0px 0px 8px rgb(189, 189, 189);
-  top: 390px;
+top: 100%; /* Đặt ở giữa theo chiều dọc */
+  transform: translateY(-50%); 
   background-color: white;
   padding: 30px;
   border-bottom: 10px solid rgba(42, 99, 173, 1) ;
