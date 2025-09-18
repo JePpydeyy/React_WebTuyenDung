@@ -1,0 +1,5 @@
+build:
+  root: .
+  command: npm install && npm run build
+start:
+  command: npm start
