@@ -50,6 +50,7 @@ const NewsManagement = () => {
   const categoryDisplayMap = {
     news: 'Tin tức',
     interview_tip: 'Tip phỏng vấn',
+    project: 'Dự án',
   };
 
   const categoryBackendMap = {
@@ -380,39 +381,67 @@ const saveNews = async () => {
     // Thêm các trường cơ bản
     formData.append('title', editForm.title);
     formData.append('slug', editForm.slug);
-    formData.append('thumbnailCaption', editForm.thumbnailCaption);
+    formData.append('thumbnailCaption', editForm.thumbnailCaption || '');
     formData.append('publishedAt', new Date(editForm.publishedAt).toISOString());
     formData.append('views', editForm.views.toString());
-    formData.append('status', statusBackendMap[editForm.status] || editForm.status);
-    formData.append('category', categoryBackendMap[editForm.category] || editForm.category);
+    
+    // Map status và category
+    const status = statusBackendMap[editForm.status] || 'show';
+    const category = categoryBackendMap[editForm.category] || 'news';
+    
+    formData.append('status', status);
+    formData.append('category', category);
 
     // Xử lý thumbnail
     if (editForm.thumbnailFile) {
       formData.append('thumbnail', editForm.thumbnailFile);
     }
-    formData.append('thumbnailUrl', editForm.thumbnailUrl);
+    if (editForm.thumbnailUrl) {
+      formData.append('thumbnailUrl', editForm.thumbnailUrl);
+    }
 
-    // Xử lý contentBlocks
+    // Xử lý contentBlocks và tạo contentHtml
     const processedBlocks = editForm.contentBlocks.map(block => ({
-      type: block.type === 'richtext' ? 'text' : block.type, // Chuyển richtext thành text
+      type: block.type === 'richtext' ? 'text' : block.type,
       content: block.content || '',
-      url: block.type === 'image' ? block.url || '' : '',
-      caption: block.type === 'image' ? block.caption || '' : ''
+      url: block.type === 'image' ? (block.url || '') : '',
+      caption: block.type === 'image' ? (block.caption || '') : ''
     }));
 
+    // Tạo contentHtml từ các blocks
+    const contentHtml = processedBlocks.map(block => {
+      if (block.type === 'text') {
+        return block.content;
+      } else if (block.type === 'image') {
+        return `<figure>
+          <img src="${block.url}" alt="${block.caption}" />
+          ${block.caption ? `<figcaption>${block.caption}</figcaption>` : ''}
+        </figure>`;
+      }
+      return '';
+    }).join('');
+
+    // Thêm contentHtml vào formData
+    formData.append('contentHtml', contentHtml);
+
     // Thêm files từ content blocks
-    editForm.contentBlocks.forEach((block, index) => {
+    let imageCounter = 0;
+    editForm.contentBlocks.forEach((block) => {
       if (block.type === 'image' && block.file) {
         formData.append('contentImages', block.file);
-        // Cập nhật URL tạm thời trong processedBlocks
-        processedBlocks[index].url = `temp_${Date.now()}_${index}`;
+        processedBlocks[imageCounter].url = `temp_${Date.now()}_${imageCounter}`;
+        imageCounter++;
       }
     });
 
-    // Thêm contentBlocks đã xử lý vào formData
     formData.append('contentBlocks', JSON.stringify(processedBlocks));
 
-    // Gửi request
+    // Debug logs
+    console.log('ContentHtml being sent:', contentHtml);
+    for (let pair of formData.entries()) {
+      console.log(pair[0], pair[1]);
+    }
+
     const token = localStorage.getItem('adminToken');
     const response = await fetch(`${API_URL}/${editForm.slug}`, {
       method: 'PUT',
@@ -424,12 +453,11 @@ const saveNews = async () => {
 
     if (!response.ok) {
       const errorData = await response.json();
+      console.error('Server error:', errorData);
       throw new Error(errorData.message || `Không thể cập nhật tin tức: ${response.status}`);
     }
 
     const result = await response.json();
-    
-    // Xử lý sau khi lưu thành công
     showNotification(result.message || 'Đã cập nhật tin tức thành công', 'success');
     revokePreviewUrls();
     setIsEditing(false);
@@ -439,9 +467,6 @@ const saveNews = async () => {
   } catch (error) {
     console.error('Lỗi saveNews:', error);
     showNotification(`Lỗi khi cập nhật tin tức: ${error.message}`, 'error');
-    if (error.message.includes('401')) {
-      showNotification('Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại', 'error');
-    }
   }
 };
 
@@ -587,6 +612,7 @@ const saveNews = async () => {
           <option value="">- Tất cả danh mục -</option>
           <option value="Tin tức">Tin tức</option>
           <option value="Tip phỏng vấn">Tip phỏng vấn</option>
+            <option value="Dự án">Dự án </option>
         </select>
         <button onClick={applyFilters}><i className="fa-solid fa-filter"></i> Áp dụng</button>
         <button onClick={resetFilters}><i className="fa-solid fa-rotate"></i> Đặt lại</button>
@@ -765,6 +791,7 @@ const saveNews = async () => {
                       onChange={(e) => handleFormChange(e, null, null, 'create')}
                     >
                       <option value="Tin tức">Tin tức</option>
+                      <option value="Dự án">Dự án</option>
                       <option value="Tip phỏng vấn">Tip phỏng vấn</option>
                     </select>
                   </div>
@@ -942,6 +969,7 @@ const saveNews = async () => {
                       onChange={handleFormChange}
                     >
                       <option value="Tin tức">Tin tức</option>
+                       <option value="Dự án">Dự án</option>
                       <option value="Tip phỏng vấn">Tip phỏng vấn</option>
                     </select>
                   </div>
