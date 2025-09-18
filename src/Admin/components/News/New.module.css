@@ -45,7 +45,14 @@
   flex-wrap: wrap;
   gap: var(--spacing-md);
 }
-
+.contentEditable {
+  width: 100%;
+  min-height: 100px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  direction: ltr; /* Đảm bảo hướng văn bản từ trái sang phải */
+  unicode-bidi: embed; /* Hỗ trợ tốt hơn cho ký tự Unicode */
+}
 .filters select,
 .filters input {
   padding: var(--spacing-sm);

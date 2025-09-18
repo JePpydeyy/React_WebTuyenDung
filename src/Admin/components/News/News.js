@@ -1,9 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
+import RichTextEditor from './edit'; // Assuming this is the path to RichTextEditor.jsx
 import styles from './New.module.css';
 import { v4 as uuidv4 } from 'uuid';
 
-const API_URL = process.env.REACT_APP_API_URL ? `https://api-tuyendung-cty.onrender.com/api/new` : '/api/new';
+const API_URL = `${process.env.REACT_APP_API_URL}/new`;
 const BASE_URL = process.env.REACT_APP_BASE_URL || '';
 
 const getImageUrl = (url) => {
@@ -55,6 +55,7 @@ const NewsManagement = () => {
   const categoryBackendMap = {
     'Tin tức': 'news',
     'Tip phỏng vấn': 'interview_tip',
+    'Dự án': 'project',
   };
 
   const showNotification = (message, type = 'success') => {
@@ -111,7 +112,15 @@ const NewsManagement = () => {
           status: statusDisplayMap[item.status] || item.status || 'Hiển thị',
           category: categoryDisplayMap[item.category] || item.category || 'Tin tức',
           views: item.views || 0,
-          contentBlocks: Array.isArray(item.contentBlocks) ? item.contentBlocks : [],
+          contentBlocks: Array.isArray(item.contentBlocks)
+            ? item.contentBlocks.map(block => ({
+                ...block,
+                type: block.type === 'text' ? 'richtext' : block.type,
+                content: block.content || '',
+                url: block.type === 'image' ? getImageUrl(block.url) : block.url || '',
+                caption: block.caption || '',
+              }))
+            : [],
         }))
         .sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
       return sanitizedData;
@@ -151,108 +160,97 @@ const NewsManagement = () => {
   const handlePageChange = (page) => {
     displayNews(page, filteredNews);
   };
+const viewNews = async (slug) => {
+  try {
+    if (!slug) throw new Error('Slug tin tức không hợp lệ');
+    const token = localStorage.getItem('adminToken');
+    const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+    const response = await fetch(`${API_URL}/${slug}`, { headers });
+    if (!response.ok) throw new Error(`Không tìm thấy tin tức: ${response.status}`);
+    const newsItem = await response.json();
+    const formattedNewsItem = {
+      ...newsItem,
+      id: sanitizeHTML(newsItem.id.toString()),
+      title: sanitizeHTML(newsItem.title || ''),
+      slug: sanitizeHTML(newsItem.slug || ''),
+      thumbnailUrl: getImageUrl(newsItem.thumbnailUrl),
+      thumbnailCaption: sanitizeHTML(newsItem.thumbnailCaption || ''),
+      publishedAt: formatDate(newsItem.publishedAt),
+      status: statusDisplayMap[newsItem.status] || newsItem.status || 'Hiển thị',
+      category: categoryDisplayMap[newsItem.category] || newsItem.category || 'Tin tức',
+      contentBlocks: Array.isArray(newsItem.contentBlocks)
+        ? newsItem.contentBlocks.map(block => ({
+            ...block,
+            type: block.type === 'text' ? 'richtext' : block.type,
+            content: block.content || '',
+            url: block.type === 'image' ? getImageUrl(block.url) : block.url || '',
+            caption: block.caption || '',
+          }))
+        : [],
+    };
+    setSelectedNews(formattedNewsItem);
+    setIsEditing(false);
+    return formattedNewsItem;
+  } catch (error) {
+    console.error('Lỗi viewNews:', error);
+    showNotification(`Lỗi khi tải thông tin tin tức: ${error.message}`, 'error');
+    return null;
+  }
+};
 
-  const viewNews = async (id) => {
-    try {
-      if (!id) throw new Error('ID tin tức không hợp lệ');
-      const token = localStorage.getItem('adminToken');
-      const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
-      const response = await fetch(`${API_URL}/${id}`, { headers });
-      if (!response.ok) throw new Error(`Không tìm thấy tin tức: ${response.status}`);
-      const newsItem = await response.json();
-      const formattedNewsItem = {
-        ...newsItem,
-        id: sanitizeHTML(newsItem.id.toString()),
-        title: sanitizeHTML(newsItem.title || ''),
-        slug: sanitizeHTML(newsItem.slug || ''),
-        thumbnailUrl: getImageUrl(newsItem.thumbnailUrl),
-        thumbnailCaption: sanitizeHTML(newsItem.thumbnailCaption || ''),
-        publishedAt: formatDate(newsItem.publishedAt),
-        status: statusDisplayMap[newsItem.status] || newsItem.status || 'Hiển thị',
-        category: categoryDisplayMap[newsItem.category] || newsItem.category || 'Tin tức',
-        contentBlocks: Array.isArray(newsItem.contentBlocks)
-          ? newsItem.contentBlocks.map(block => ({
-              ...block,
-              content: block.type === 'text' ? sanitizeHTML(block.content || '') : block.content,
-              url: block.type === 'image' ? getImageUrl(block.url) : block.url,
-              caption: block.caption ? sanitizeHTML(block.caption) : block.caption,
-            }))
-          : [],
-      };
-      setSelectedNews(formattedNewsItem);
-      setIsEditing(false);
-      return formattedNewsItem;
-    } catch (error) {
-      console.error('Lỗi viewNews:', error);
-      showNotification(`Lỗi khi tải thông tin tin tức: ${error.message}`, 'error');
-      return null;
-    }
-  };
-
-  const toggleNewsVisibility = async (id) => {
-    if (!id) {
-      showNotification('ID tin tức không hợp lệ', 'error');
+const toggleNewsVisibility = async (slug) => {
+  try {
+    if (!slug) {
+      showNotification('Slug tin tức không hợp lệ', 'error');
       return;
     }
+
     const token = localStorage.getItem('adminToken');
     if (!token) {
       showNotification('Bạn cần đăng nhập với tư cách admin để thực hiện hành động này', 'error');
       return;
     }
-    const currentNews = news.find(n => n.id === id);
-    const currentStatus = currentNews?.status;
+
+    // Tìm tin tức theo slug
+    const currentNews = news.find(n => n.slug === slug);
+    if (!currentNews) {
+      showNotification('Không tìm thấy tin tức', 'error');
+      return;
+    }
+
+    const currentStatus = currentNews.status;
     if (!currentStatus) {
       showNotification('Không thể xác định trạng thái hiện tại', 'error');
       return;
     }
-    if (window.confirm(`Bạn có chắc chắn muốn ${currentStatus === 'Hiển thị' ? 'ẩn' : 'khôi phục'} tin tức này?`)) {
-      try {
-        const response = await fetch(`${API_URL}/${id}/toggle-visibility`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-        });
-        if (!response.ok) throw new Error(`Không thể cập nhật trạng thái tin tức: ${response.status}`);
-        const result = await response.json();
-        showNotification(result.message || 'Đã cập nhật trạng thái tin tức thành công', 'success');
-        const updatedNewsItem = {
-          ...result.news,
-          id: sanitizeHTML(result.news.id.toString()),
-          title: sanitizeHTML(result.news.title || ''),
-          slug: sanitizeHTML(result.news.slug || ''),
-          thumbnailUrl: getImageUrl(result.news.thumbnailUrl),
-          thumbnailCaption: sanitizeHTML(result.news.thumbnailCaption || ''),
-          publishedAt: formatDate(result.news.publishedAt),
-          status: statusDisplayMap[result.news.status] || result.news.status || 'Hiển thị',
-          category: categoryDisplayMap[result.news.category] || result.news.category || 'Tin tức',
-          views: result.news.views || 0,
-          contentBlocks: Array.isArray(result.news.contentBlocks)
-            ? result.news.contentBlocks.map(block => ({
-                ...block,
-                url: block.type === 'image' ? getImageUrl(block.url) : block.url,
-              }))
-            : [],
-        };
-        const updatedNews = news.map(item => item.id === id ? updatedNewsItem : item);
-        setNews(updatedNews);
-        if (filteredNews) {
-          const updatedFilteredNews = filteredNews.map(item => item.id === id ? updatedNewsItem : item);
-          setFilteredNews(updatedFilteredNews);
+
+    const confirmMessage = currentStatus === 'Hiển thị' ? 'ẩn' : 'hiển thị';
+    if (window.confirm(`Bạn có chắc chắn muốn ${confirmMessage} tin tức này?`)) {
+      const response = await fetch(`${API_URL}/${slug}/toggle-visibility`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
         }
-        if (selectedNews && selectedNews.id === id) {
-          setSelectedNews(updatedNewsItem);
-        }
-      } catch (error) {
-        console.error('Lỗi toggleNewsVisibility:', error);
-        showNotification(`Lỗi khi cập nhật trạng thái tin tức: ${error.message}`, 'error');
-        if (error.message.includes('401')) {
-          showNotification('Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại', 'error');
-        }
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || `Không thể thay đổi trạng thái: ${response.status}`);
       }
+
+      const result = await response.json();
+      showNotification(result.message || 'Đã thay đổi trạng thái thành công');
+      await displayNews(currentPage, filteredNews);
     }
-  };
+  } catch (error) {
+    console.error('Lỗi toggleNewsVisibility:', error);
+    showNotification(`Lỗi khi thay đổi trạng thái: ${error.message}`, 'error');
+    if (error.message.includes('401')) {
+      showNotification('Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại', 'error');
+    }
+  }
+};  
 
   const editNews = (newsItem) => {
     if (!newsItem || !newsItem.id) {
@@ -268,16 +266,20 @@ const NewsManagement = () => {
       thumbnailUrl: newsItem.thumbnailUrl || '',
       thumbnailFile: null,
       thumbnailCaption: newsItem.thumbnailCaption || '',
-      publishedAt: newsItem.publishedAt ? newsItem.publishedAt.split('/').reverse().join('-') : new Date().toISOString().split('T')[0],
+      publishedAt: newsItem.publishedAt 
+        ? newsItem.publishedAt.includes('/') 
+          ? newsItem.publishedAt.split('/').reverse().join('-') 
+          : new Date(newsItem.publishedAt).toISOString().split('T')[0]
+        : new Date().toISOString().split('T')[0],
       views: newsItem.views || 0,
       status: newsItem.status || 'Hiển thị',
       category: newsItem.category || 'Tin tức',
       contentBlocks: Array.isArray(newsItem.contentBlocks)
         ? newsItem.contentBlocks.map(block => ({
-            type: block.type || 'text',
-            content: block.content || '',
-            url: block.url || '',
-            caption: block.caption || '',
+            type: block.type || 'richtext',
+            content: block.type === 'richtext' ? block.content || '<p></p>' : '',
+            url: block.type === 'image' ? block.url || '' : '',
+            caption: block.type === 'image' ? block.caption || '' : '',
             file: null,
           }))
         : [],
@@ -334,14 +336,24 @@ const NewsManagement = () => {
     }
   };
 
-  const addContentBlock = (type = 'text', formType = 'edit') => {
-    const targetForm = formType === 'edit' ? editForm : createForm;
-    const setForm = formType === 'edit' ? setEditForm : setCreateForm;
-    setForm({
-      ...targetForm,
-      contentBlocks: [...targetForm.contentBlocks, { type, content: '', url: '', caption: '', file: null }],
-    });
+const addContentBlock = (type = 'text', formType = 'edit') => {
+  const targetForm = formType === 'edit' ? editForm : createForm;
+  const setForm = formType === 'edit' ? setEditForm : setCreateForm;
+
+  const newBlock = {
+    type: type,
+    content: type === 'text' ? '<p></p>' : '',
+    url: '',
+    caption: '',
+    file: null
   };
+
+  setForm({
+    ...targetForm,
+    contentBlocks: [...targetForm.contentBlocks, newBlock]
+  });
+};
+
 
   const removeContentBlock = (index, formType = 'edit') => {
     const targetForm = formType === 'edit' ? editForm : createForm;
@@ -357,64 +369,81 @@ const NewsManagement = () => {
     });
   };
 
-  const saveNews = async () => {
-    try {
-      if (!editForm) throw new Error('Dữ liệu chỉnh sửa không hợp lệ');
-      if (!editForm.slug) throw new Error('Slug không hợp lệ');
-      const formData = new FormData();
-      formData.append('title', editForm.title);
-      formData.append('slug', editForm.slug);
-      formData.append('thumbnailUrl', editForm.thumbnailUrl);
-      if (editForm.thumbnailFile) {
-        formData.append('thumbnail', editForm.thumbnailFile);
-      }
-      formData.append('thumbnailCaption', editForm.thumbnailCaption);
-      formData.append('publishedAt', new Date(editForm.publishedAt).toISOString());
-      formData.append('views', editForm.views.toString());
-      formData.append('status', statusBackendMap[editForm.status] || editForm.status);
-      formData.append('category', categoryBackendMap[editForm.category] || editForm.category);
-      const contentBlocksForSubmission = editForm.contentBlocks.map(block => ({
-        type: block.type,
-        content: block.type === 'text' ? block.content : '',
-        url: block.url && !block.file ? block.url : '',
-        caption: block.type === 'image' ? block.caption : '',
-      }));
-      formData.append('contentBlocks', JSON.stringify(contentBlocksForSubmission));
-      editForm.contentBlocks.forEach((block, index) => {
-        if (block.type === 'image' && block.file) {
-          formData.append('contentImages', block.file);
-        }
-      });
-      const token = localStorage.getItem('adminToken');
-      if (!token) {
-        showNotification('Bạn cần đăng nhập với tư cách admin để thực hiện hành động này', 'error');
-        return;
-      }
-      const response = await fetch(`${API_URL}/${editForm.slug}`, {
-        method: 'PUT',
-        body: formData,
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || `Không thể cập nhật tin tức: ${response.status}`);
-      }
-      const result = await response.json();
-      showNotification(result.message || 'Đã cập nhật tin tức thành công', 'success');
-      revokePreviewUrls();
-      setIsEditing(false);
-      setSelectedNews(null);
-      await displayNews(currentPage, filteredNews);
-    } catch (error) {
-      console.error('Lỗi saveNews:', error);
-      showNotification(`Lỗi khi cập nhật tin tức: ${error.message}`, 'error');
-      if (error.message.includes('401')) {
-        showNotification('Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại', 'error');
-      }
+
+const saveNews = async () => {
+  try {
+    if (!editForm) throw new Error('Dữ liệu chỉnh sửa không hợp lệ');
+    if (!editForm.slug) throw new Error('Slug không hợp lệ');
+
+    const formData = new FormData();
+
+    // Thêm các trường cơ bản
+    formData.append('title', editForm.title);
+    formData.append('slug', editForm.slug);
+    formData.append('thumbnailCaption', editForm.thumbnailCaption);
+    formData.append('publishedAt', new Date(editForm.publishedAt).toISOString());
+    formData.append('views', editForm.views.toString());
+    formData.append('status', statusBackendMap[editForm.status] || editForm.status);
+    formData.append('category', categoryBackendMap[editForm.category] || editForm.category);
+
+    // Xử lý thumbnail
+    if (editForm.thumbnailFile) {
+      formData.append('thumbnail', editForm.thumbnailFile);
     }
-  };
+    formData.append('thumbnailUrl', editForm.thumbnailUrl);
+
+    // Xử lý contentBlocks
+    const processedBlocks = editForm.contentBlocks.map(block => ({
+      type: block.type === 'richtext' ? 'text' : block.type, // Chuyển richtext thành text
+      content: block.content || '',
+      url: block.type === 'image' ? block.url || '' : '',
+      caption: block.type === 'image' ? block.caption || '' : ''
+    }));
+
+    // Thêm files từ content blocks
+    editForm.contentBlocks.forEach((block, index) => {
+      if (block.type === 'image' && block.file) {
+        formData.append('contentImages', block.file);
+        // Cập nhật URL tạm thời trong processedBlocks
+        processedBlocks[index].url = `temp_${Date.now()}_${index}`;
+      }
+    });
+
+    // Thêm contentBlocks đã xử lý vào formData
+    formData.append('contentBlocks', JSON.stringify(processedBlocks));
+
+    // Gửi request
+    const token = localStorage.getItem('adminToken');
+    const response = await fetch(`${API_URL}/${editForm.slug}`, {
+      method: 'PUT',
+      body: formData,
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || `Không thể cập nhật tin tức: ${response.status}`);
+    }
+
+    const result = await response.json();
+    
+    // Xử lý sau khi lưu thành công
+    showNotification(result.message || 'Đã cập nhật tin tức thành công', 'success');
+    revokePreviewUrls();
+    setIsEditing(false);
+    setSelectedNews(null);
+    await displayNews(currentPage, filteredNews);
+
+  } catch (error) {
+    console.error('Lỗi saveNews:', error);
+    showNotification(`Lỗi khi cập nhật tin tức: ${error.message}`, 'error');
+    if (error.message.includes('401')) {
+      showNotification('Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại', 'error');
+    }
+  }
+};
 
   const createNews = async () => {
     try {
@@ -441,7 +470,7 @@ const NewsManagement = () => {
       formData.append('category', categoryBackendMap[createForm.category] || createForm.category);
       const contentBlocksForSubmission = createForm.contentBlocks.map(block => ({
         type: block.type,
-        content: block.type === 'text' ? block.content : '',
+        content: block.type === 'richtext' ? block.content : '',
         url: block.type === 'image' && block.file ? `placeholder-${Date.now()}.jpg` : (block.url || ''),
         caption: block.type === 'image' ? block.caption : '',
       }));
@@ -592,13 +621,13 @@ const NewsManagement = () => {
                   <td><span className={`${styles.status} ${getStatusClass(item.status)}`}>{item.status}</span></td>
                   <td>
                     <div className={styles.actionButtons}>
-                      <button className={styles.view} onClick={() => viewNews(item.id)}>
-                        <i className="fa-solid fa-eye"></i>
-                      </button>
+                    <button className={styles.view} onClick={() => viewNews(item.slug)}>
+                      <i className="fa-solid fa-eye"></i>
+                    </button>
                       <button className={styles.edit} onClick={() => editNews(item)} disabled={!item.id}>
                         <i className="fa-solid fa-edit"></i>
                       </button>
-                      <button className={styles.delete} onClick={() => toggleNewsVisibility(item.id)}>
+                      <button className={styles.delete} onClick={() => toggleNewsVisibility(item.slug)}>
                         {item.status === 'Đã ẩn' ? (
                           <i className="fa-solid fa-play"></i>
                         ) : (
@@ -747,15 +776,30 @@ const NewsManagement = () => {
                           value={block.type}
                           onChange={(e) => handleFormChange({ target: { value: e.target.value } }, index, 'type', 'create')}
                         >
-                          <option value="text">Văn bản</option>
+                          <option value="richtext">Văn bản</option>
                           <option value="image">Hình ảnh</option>
                         </select>
-                        {block.type === 'text' ? (
-                          <textarea
-                            value={block.content}
-                            onChange={(e) => handleFormChange(e, index, 'content', 'create')}
-                            placeholder="Nội dung văn bản"
-                          />
+                        {block.type === 'richtext' ? (
+                          <div className={styles.textEditor}>
+                            <RichTextEditor
+                              value={block.content || '<p></p>'}
+                              onChange={(contentData) => {
+                                let actualContent = '';
+                                if (typeof contentData === 'string') {
+                                  actualContent = contentData;
+                                } else if (contentData && contentData.htmlContent) {
+                                  actualContent = contentData.htmlContent;
+                                }
+                                const updatedBlocks = [...createForm.contentBlocks];
+                                updatedBlocks[index] = { 
+                                  ...updatedBlocks[index], 
+                                  content: actualContent 
+                                };
+                                setCreateForm({ ...createForm, contentBlocks: updatedBlocks });
+                              }}
+                              placeholder="Nội dung văn bản"
+                            />
+                          </div>
                         ) : (
                           <>
                             <input
@@ -794,7 +838,7 @@ const NewsManagement = () => {
                       </div>
                     ))}
                     <div className={styles.addBlockButtons}>
-                      <button onClick={() => addContentBlock('text', 'create')}>Thêm khối văn bản</button>
+                      <button onClick={() => addContentBlock('richtext', 'create')}>Thêm khối văn bản</button>
                       <button onClick={() => addContentBlock('image', 'create')}>Thêm khối hình ảnh</button>
                     </div>
                   </div>
@@ -909,15 +953,30 @@ const NewsManagement = () => {
                           value={block.type}
                           onChange={(e) => handleFormChange({ target: { value: e.target.value } }, index, 'type')}
                         >
-                          <option value="text">Văn bản</option>
+                          <option value="richtext">Văn bản</option>
                           <option value="image">Hình ảnh</option>
                         </select>
-                        {block.type === 'text' ? (
-                          <textarea
-                            value={block.content}
-                            onChange={(e) => handleFormChange(e, index, 'content')}
-                            placeholder="Nội dung văn bản"
-                          />
+                        {block.type === 'richtext' ? (
+                          <div className={styles.textEditor}>
+                            <RichTextEditor
+                              value={block.content || '<p></p>'}
+                              onChange={(contentData) => {
+                                let actualContent = '';
+                                if (typeof contentData === 'string') {
+                                  actualContent = contentData;
+                                } else if (contentData && contentData.htmlContent) {
+                                  actualContent = contentData.htmlContent;
+                                }
+                                const updatedBlocks = [...editForm.contentBlocks];
+                                updatedBlocks[index] = { 
+                                  ...updatedBlocks[index], 
+                                  content: actualContent 
+                                };
+                                setEditForm({ ...editForm, contentBlocks: updatedBlocks });
+                              }}
+                              placeholder="Nội dung văn bản"
+                            />
+                          </div>
                         ) : (
                           <>
                             <input
@@ -956,7 +1015,7 @@ const NewsManagement = () => {
                       </div>
                     ))}
                     <div className={styles.addBlockButtons}>
-                      <button onClick={() => addContentBlock('text')}>Thêm khối văn bản</button>
+                      <button onClick={() => addContentBlock('richtext')}>Thêm khối văn bản</button>
                       <button onClick={() => addContentBlock('image')}>Thêm khối hình ảnh</button>
                     </div>
                   </div>
@@ -1033,8 +1092,11 @@ const NewsManagement = () => {
                       <label>Nội dung:</label>
                       {selectedNews.contentBlocks.map((block, index) => (
                         <div key={index} className={styles.contentBlock}>
-                          {block.type === 'text' ? (
-                            <div className={styles.contentText}>{block.content}</div>
+                          {block.type === 'richtext' ? (
+                            <div 
+                              className={styles.contentText} 
+                              dangerouslySetInnerHTML={{ __html: block.content || '<p></p>' }}
+                            />
                           ) : (
                             <div>
                               {block.url ? (

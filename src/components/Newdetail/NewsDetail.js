@@ -167,9 +167,10 @@ const NewsDetail = () => {
             <div className={styles.articleContent}>
               {article.contentBlocks.map((block, idx) =>
                 block.type === 'text' ? (
-                  <div className={styles.contentBlock} key={idx}>
-                    <div className={styles.contentText}>{block.content}</div>
-                  </div>
+                 <div 
+                    className={styles.contentText}
+                    dangerouslySetInnerHTML={{ __html: block.content }}
+                  />
                 ) : (
                   <div className={styles.contentBlock} key={idx}>
                     <img
@@ -224,13 +225,15 @@ const NewsDetail = () => {
                     <div className={styles.gridDate}>
                       Ngày đăng {formatDate(news.publishedAt)}
                     </div>
-                    <div className={styles.gridExcerpt}>
-                      {news.contentBlocks &&
-                      news.contentBlocks[0] &&
-                      news.contentBlocks[0].content
-                        ? news.contentBlocks[0].content.slice(0, 80) + '...'
-                        : ''}
-                    </div>
+              <div className={styles.gridExcerpt}>
+                  {news.contentBlocks &&
+                  news.contentBlocks[0] &&
+                  news.contentBlocks[0].content
+                    ? news.contentBlocks[0].content
+                        .replace(/<[^>]*>/g, '') // Loại bỏ HTML tags cho excerpt
+                        .slice(0, 80) + '...'
+                    : ''}
+                </div>
                   </div>
                 ))
               ) : (
