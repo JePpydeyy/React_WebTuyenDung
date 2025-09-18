@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import styles from "./JobShow.module.css";
-import { Link } from 'react-router-dom';
 
 const JobShow = () => {
   const { jobType } = useParams();
@@ -10,8 +9,9 @@ const JobShow = () => {
   const [jobs, setJobs] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
-  const [workplaces, setWorkplaces] = useState([]); // lưu danh sách nơi làm việc
-  const [selectedWorkplace, setSelectedWorkplace] = useState(""); // lọc theo nơi làm việc
+  const [workplaces, setWorkplaces] = useState([]);
+  const [selectedWorkplaces, setSelectedWorkplaces] = useState([]); // Array for multiple workplaces
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -26,7 +26,6 @@ const JobShow = () => {
 
           setJobs(filteredJobs);
 
-          // Lấy tất cả workplaces rồi tách thành mảng duy nhất
           const allWorkplaces = filteredJobs.flatMap((job) =>
             job.Workplace ? job.Workplace.split(",").map((w) => w.trim()) : []
           );
@@ -48,12 +47,39 @@ const JobShow = () => {
     fetchJobs();
   }, [jobType]);
 
-  // Lọc job theo workplace được chọn
-  const filteredJobs = selectedWorkplace
-    ? jobs.filter((job) =>
-        job.Workplace?.toLowerCase().includes(selectedWorkplace.toLowerCase())
-      )
-    : jobs;
+  // Handle search input change
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+    setCurrentPage(1);
+  };
+
+  // Handle workplace filter toggle
+  const handleWorkplaceToggle = (place) => {
+    setSelectedWorkplaces((prev) =>
+      prev.includes(place)
+        ? prev.filter((p) => p !== place)
+        : [...prev, place]
+    );
+    setCurrentPage(1);
+  };
+
+  // Filter jobs based on search query and selected workplaces
+  const filteredJobs = jobs.filter((job) => {
+    const searchLower = searchQuery.toLowerCase();
+    const matchesSearch =
+      job.Name.toLowerCase().includes(searchLower) ||
+      job.Brands?.some((brand) => brand.toLowerCase().includes(searchLower)) ||
+      job.Workplace?.toLowerCase().includes(searchLower) ||
+      job.Position?.toLowerCase().includes(searchLower);
+
+    const matchesWorkplace = selectedWorkplaces.length
+      ? job.Workplace?.split(",")
+          .map((w) => w.trim().toLowerCase())
+          .some((w) => selectedWorkplaces.map((p) => p.toLowerCase()).includes(w))
+      : true;
+
+    return matchesSearch && matchesWorkplace;
+  });
 
   const totalPages = Math.ceil(filteredJobs.length / jobsPerPage);
   const showJobs = filteredJobs.slice(
@@ -83,7 +109,12 @@ const JobShow = () => {
           <h3>Tìm kiếm việc làm</h3>
           <div className={styles.jobshowSearchBox}>
             <i className="fas fa-search"></i>
-            <input type="text" placeholder="Tìm kiếm việc làm, công ty..." />
+            <input
+              type="text"
+              placeholder="Tìm kiếm việc làm, công ty..."
+              value={searchQuery}
+              onChange={handleSearchChange}
+            />
           </div>
 
           {workplaces.length > 0 && (
@@ -93,13 +124,13 @@ const JobShow = () => {
                 {workplaces.map((place, idx) => (
                   <a
                     key={idx}
+                    href="#"
                     onClick={(e) => {
                       e.preventDefault();
-                      setSelectedWorkplace(place === selectedWorkplace ? "" : place);
-                      setCurrentPage(1);
+                      handleWorkplaceToggle(place);
                     }}
                     className={
-                      place === selectedWorkplace ? styles.activeFilter : ""
+                      selectedWorkplaces.includes(place) ? styles.activeFilter : ""
                     }
                   >
                     {place}
@@ -118,7 +149,7 @@ const JobShow = () => {
             <p>
               {jobType
                 ? `Không tìm thấy công việc nào thuộc nhóm ${jobType}.`
-                : "Hiện tại chưa có công việc nào."}
+                : "Không tìm thấy công việc phù hợp với từ khóa hoặc bộ lọc."}
             </p>
           ) : (
             <div className={styles.jobshowJobCards}>
@@ -140,9 +171,9 @@ const JobShow = () => {
                       </span>
                     </div>
                     <div className={styles.jobshowJobMeta}>
-                        <Link to={`/DetailJob/${job._id}`} className={styles.jobshowViewBtn}>
-                            Xem chi tiết
-                        </Link>
+                      <Link to={`/DetailJob/${job._id}`} className={styles.jobshowViewBtn}>
+                        Xem chi tiết
+                      </Link>
                     </div>
                   </div>
                 </div>
@@ -166,7 +197,9 @@ const JobShow = () => {
           )}
         </div>
       </div>
+      
     </div>
+    
   );
 };
 

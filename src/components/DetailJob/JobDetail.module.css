@@ -28,7 +28,7 @@
 .rightBox {
   flex: 0 0 35%;
   background: #fff;
-  padding: 25px;
+  padding: 15px;
   border-radius: 12px;
   box-shadow: var(--shadow);
 }
@@ -97,7 +97,7 @@
 .details {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 15px;
+  row-gap: 15px;
   margin: 25px 0;
   padding: 20px;
   background: var(--primary-light);
@@ -107,9 +107,15 @@
 
 .details div {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 14px;
+  flex-direction: column; /* Thay đổi để xếp dọc */
+  gap: 8px; /* Khoảng cách giữa icon+span và p */
+}
+
+.details div > div {
+  flex-direction: row;
+  display: flex;
+  align-items: center; /* Căn giữa icon và span theo chiều dọc */
+  gap: 10px; /* Khoảng cách giữa icon và span */
 }
 
 .details i {
@@ -120,7 +126,6 @@
 
 .details span {
   font-weight: 600;
-  min-width: 100px;
   color: var(--dark);
 }
 
@@ -220,8 +225,8 @@
 }
 
 .moreBtn {
-  display: inline-block;          /* Cho phép áp dụng padding, width, và hover tốt */
-  width: 100%;                    /* Chiếm toàn bộ chiều ngang */
+  display: inline-block;
+  width: 100%;
   background: var(--primary-light);
   color: var(--dark);
   border: 1px solid var(--primary);
@@ -230,17 +235,16 @@
   cursor: pointer;
   margin-top: 10px;
   font-weight: 600;
-  text-align: center;             /* Giữ chữ ở giữa nếu dùng <Link> */
-  text-decoration: none;          /* Loại bỏ gạch chân của <Link> */
+  text-align: center;
+  text-decoration: none;
   transition: all 0.2s ease;
 }
 
 .moreBtn:hover {
-  background: var(--primary);     /* Hiệu ứng hover đổi màu nền */
-  color: #fff;                    /* Chữ nổi bật hơn khi hover */
+  background: var(--primary);
+  color: #fff;
   border-color: var(--primary-dark);
 }
-
 
 .tag {
   display: inline-block;
@@ -276,4 +280,3 @@
     font-size: 19px;
   }
 }
-/* moda */

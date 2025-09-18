@@ -86,39 +86,78 @@ const JobDetail = () => {
       </div>
 
       {/* Right Box */}
-      <div className={styles.rightBox}>
-        <div className={styles.details}>
-          <div><i className="fas fa-money-bill-wave"></i><span>Mức lương:</span><p>{job.Salary}</p></div>
-          <div><i className="fas fa-map-marker-alt"></i><span>Địa điểm:</span><p>{job.Workplace}</p></div>
-          <div><i className="fas fa-graduation-cap"></i><span>Bằng cấp:</span><p>{job.Degree}</p></div>
-          <div><i className="fas fa-users"></i><span>Số lượng:</span><p>{job.Slot}</p></div>
-          <div><i className="fas fa-briefcase"></i><span>Kinh nghiệm:</span><p>{job["Work Experience"]}</p></div>
-          <div><i className="far fa-calendar-alt"></i><span>Hạn nộp:</span><p>{new Date(job["Due date"]).toLocaleDateString()}</p></div>
+   <div className={styles.rightBox}>
+  <div className={styles.details}>
+    <div>
+      <div>
+        <i className="fas fa-money-bill-wave"></i>
+        <span>Mức lương:</span>
+      </div>
+      <p>{job.Salary}</p>
+    </div>
+    <div>
+      <div>
+        <i className="fas fa-map-marker-alt"></i>
+        <span>Địa điểm:</span>
+      </div>
+      <p>{job.Workplace}</p>
+    </div>
+    <div>
+      <div>
+        <i className="fas fa-graduation-cap"></i>
+        <span>Bằng cấp:</span>
+      </div>
+      <p>{job.Degree}</p>
+    </div>
+    <div>
+      <div>
+        <i className="fas fa-users"></i>
+        <span>Số lượng:</span>
+      </div>
+      <p>{job.Slot}</p>
+    </div>
+    <div>
+      <div>
+        <i className="fas fa-briefcase"></i>
+        <span>Kinh nghiệm:</span>
+      </div>
+      <p>{job["Work Experience"]}</p>
+    </div>
+    <div>
+      <div>
+        <i className="far fa-calendar-alt"></i>
+        <span>Hạn nộp:</span>
+      </div>
+      <p>{new Date(job["Due date"]).toLocaleDateString()}</p>
+    </div>
+  </div>
+
+  {relatedJobs.length > 0 && (
+    <>
+      <div className={styles.sectionTitle}>
+        <i className="fas fa-briefcase"></i> Công việc liên quan
+      </div>
+
+      {relatedJobs.map((item) => (
+        <div key={item._id} className={styles.jobList}>
+          <h4>{item.Name}</h4>
+          <div>
+            <i className="fas fa-map-marker-alt"></i> {item.Workplace} |{" "}
+            <i className="fas fa-graduation-cap"></i> {item.Degree} |{" "}
+            <i className="far fa-calendar-alt"></i>{" "}
+            {new Date(item["Due date"]).toLocaleDateString()}
+          </div>
+          <Link to={`/Detailjob/${item._id}`} className={styles.viewBtn}>
+            Xem ngay
+          </Link>
         </div>
+      ))}
 
-        {relatedJobs.length > 0 && (
-          <>
-            <div className={styles.sectionTitle}>
-              <i className="fas fa-briefcase"></i> Công việc liên quan
-            </div>
-
-            {relatedJobs.map((item) => (
-              <div key={item._id} className={styles.jobList}>
-                <h4>{item.Name}</h4>
-                <div>
-                  <i className="fas fa-map-marker-alt"></i> {item.Workplace} |{" "}
-                  <i className="fas fa-graduation-cap"></i> {item.Degree} |{" "}
-                  <i className="far fa-calendar-alt"></i> {new Date(item["Due date"]).toLocaleDateString()}
-                </div>
-                <Link to={`/Detailjob/${item._id}`} className={styles.viewBtn}>Xem ngay</Link>
-              </div>
-            ))}
-
-            <Link to={`/jobshow/${job.JobType}`} className={styles.moreBtn}>
-              Xem thêm
-            </Link>
-          </>
-        )}
+      <Link to={`/jobshow/${job.JobType}`} className={styles.moreBtn}>
+        Xem thêm
+      </Link>
+    </>
+  )}
       </div>
     </div>
   );

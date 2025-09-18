@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './Index.module.css';
@@ -60,6 +61,8 @@ const Index = () => {
   const [translateX, setTranslateX] = useState(0);
   const bannerTimer = useRef(null);
   const bannerRef = useRef(null);
+  const [newsData, setNewsData] = useState([]);
+  const [newsLoading, setNewsLoading] = useState(true);
 
   const nextBannerSlide = useCallback(() => {
     setBannerIdx((prev) => (prev + 1) % bannerImages.length);
@@ -190,7 +193,29 @@ const Index = () => {
   }, []);
 
   useEffect(() => {
-    // Generate options for search dropdowns
+    const fetchNews = async () => {
+      try {
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/new?category=news`);
+        if (!res.ok) throw new Error('Không thể tải dữ liệu tin tức');
+        const data = await res.json();
+        const sortedData = Array.isArray(data)
+          ? data
+              .filter((item) => item.status === 'show' && item.category === 'news')
+              .sort((a, b) => (b.views || 0) - (a.views || 0))
+              .slice(0, 3)
+          : [];
+        setNewsData(sortedData);
+      } catch (err) {
+        console.error('Lỗi khi lấy tin tức:', err);
+        setNewsData([]);
+      } finally {
+        setNewsLoading(false);
+      }
+    };
+    fetchNews();
+  }, []);
+
+  useEffect(() => {
     const brands = Array.from(
       new Set(
         jobs
@@ -242,7 +267,6 @@ const Index = () => {
     setVisibleJobs((prev) => prev + 4);
   };
 
-  // Format date to DD/MM/YYYY
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     if (isNaN(date)) return 'Không xác định';
@@ -253,9 +277,15 @@ const Index = () => {
     });
   };
 
+  const getImageUrl = (url) => {
+    if (!url) return '';
+    if (url.startsWith('http')) return url;
+    const baseUrl = process.env.REACT_APP_API_URL?.replace(/\/api\/?$/, '') || '';
+    return `${baseUrl}/${url.replace(/^\/+/, '')}`;
+  };
+
   return (
     <main>
-      {/* Banner Section */}
       <section className={styles.banner}>
         <div
           className={styles['banner-wrapper']}
@@ -319,7 +349,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Job Search and Listings */}
       <section className={styles['container-lastest']}>
         <div className={styles['job-search']}>
           <div className={styles['job-search_container']}>
@@ -437,7 +466,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* PPMVN Abouts Section */}
       <section className={styles['container-about']}>
         <h1 className={styles['section-title']}>GIỚI THIỆU VỀ PPM.VN</h1>
         <div className={styles['about-content']}>
@@ -466,7 +494,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* value section */}
       <section className={styles['container-value']}>
         <h1 className={styles['section-title']}>GIÁ TRỊ CỐT LÕI</h1>
         <Swiper
@@ -474,9 +501,9 @@ const Index = () => {
           spaceBetween={16}
           slidesPerView={3}
           breakpoints={{
-            1024: { slidesPerView: 3 }, // desktop
-            768: { slidesPerView: 2 },  // tablet
-            0: { slidesPerView: 1 },    // mobile
+            1024: { slidesPerView: 3 },
+            768: { slidesPerView: 2 },
+            0: { slidesPerView: 1 },
           }}
         >
           <SwiperSlide>
@@ -490,7 +517,6 @@ const Index = () => {
               </p>
             </div>
           </SwiperSlide>
-
           <SwiperSlide>
             <div className={styles['value-item']}>
               <div className={styles['value-img']}>
@@ -502,7 +528,6 @@ const Index = () => {
               </p>
             </div>
           </SwiperSlide>
-
           <SwiperSlide>
             <div className={styles['value-item']}>
               <div className={styles['value-img']}>
@@ -517,20 +542,50 @@ const Index = () => {
         </Swiper>
       </section>
 
-      {/* event section */}
       <section className={styles['container-event']}>
         <h1 className={styles['section-title']}>SỰ KIỆN NỔI BẬT</h1>
-        <div className={styles['event-list']}>
-          <div className={styles['event-item']}>
-          </div>
+        <div className={styles['news-list']}>
+          {newsLoading ? (
+            <div className={styles.loading}>
+              <div className={styles.spinner}></div>
+              Đang tải tin tức...
+            </div>
+          ) : newsData.length === 0 ? (
+            <div>Không có tin tức nổi bật.</div>
+          ) : (
+            newsData.map((news, idx) => (
+              <div key={news._id || idx} className={styles['news-card']}>
+                <div className={styles['news-image-container']}>
+                  <img
+                    src={getImageUrl(news.thumbnailUrl)}
+                    alt={news.title || `Tin tức ${idx + 1}`}
+                    className={styles['news-image']}
+                    loading="lazy"
+                  />
+                  <div className={styles['news-overlay']}>
+                    <h3 className={styles['news-title']}>{news.title}</h3>
+                  </div>
+                  <div className={styles['news-hover-info']}>
+                    <h3 className={styles['news-title']}>{news.title}</h3>
+                    <hr />
+                    <p className={styles['news-date']}>Ngày đăng: {formatDate(news.publishedAt)}</p>
+                    <p className={styles['news-excerpt']}>
+                      {news.contentBlocks && news.contentBlocks[0] && news.contentBlocks[0].content
+                        ? news.contentBlocks[0].content.slice(0, 80) + '...'
+                        : ''}
+                    </p>
+                    <Link to={`/news/${news.slug}`} className={styles['news-apply-btn']}>
+                      Xem chi tiết
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </section>
 
-      {/* Video Section */}
-    
-
-      {/* Benefits Section */}
-      <h2 className={styles['benefits-title']}>Phúc lợi công ty</h2>
+      <h1 className={styles['section-title']}>Phúc lợi công ty</h1>
       <section className={styles['benefits-container']}>
         {benefits.map((benefit, idx) => (
           <div key={idx} className={styles['benefit-card']}>
