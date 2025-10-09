@@ -1,777 +1,719 @@
 <!DOCTYPE html>
-<html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tìm kiếm việc làm</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Janus Capital JSC - Transformative Growth, Long-term Impact</title>
     <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: "Segoe UI", Arial, sans-serif;
-      }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-      body {
-        background: linear-gradient(to top, #ffffff, #daf4ff);
-        color: #333;
-        line-height: 1.6;
-        min-height: 100vh;
-      }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            overflow-x: hidden;
+        }
 
-      .container {
-        max-width: 1200px;
-        margin: 20px auto;
-        padding: 0 15px;
-        display: flex;
-        gap: 25px;
-      }
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(10, 25, 45, 0.95);
+            backdrop-filter: blur(15px);
+            z-index: 1000;
+            padding: 1rem 0;
+            transition: all 0.4s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
 
-      /* Header */
-      .header {
-        background: #1e40af00;
-        color: rgb(0, 0, 0);
-        padding: 2vw 0 1.5vw;
-        max-width: 80%;
-        margin: 0 auto; /* Center header content */
-        margin-bottom: 10px;
-      }
+        nav {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
 
-      .header-content {
-        max-width: 500px;
-        padding: 0 15px;
-      }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-      .header h1 {
-        font-size: clamp(1.8rem, 5vw, 2.2rem); /* Responsive font size */
-        margin-bottom: 12px;
-        font-weight: 700;
-        letter-spacing: -0.5px;
-      }
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #c9a96e, #f4d03f);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: #0a192d;
+            font-size: 18px;
+            box-shadow: 0 4px 15px rgba(201, 169, 110, 0.3);
+        }
 
-      .header p {
-        font-size: clamp(0.9rem, 3vw, 1rem);
-        line-height: 1.5;
-        opacity: 0.85;
-      }
+        .logo-text {
+            color: white;
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
 
-      /* Search and Filters */
-      .search-filters {
-        flex: 0 0 350px;
-        background-color: #ffffff00;
-        border-radius: 10px;
-        padding: 20px;
-        align-self: flex-start;
-        position: sticky;
-        top: 20px;
-      }
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+        }
 
-      .search-filters h3 {
-        font-size: clamp(1rem, 2.5vw, 1.2rem);
-        margin-bottom: 18px;
-        color: #000000;
-        font-weight: 600;
-        padding-bottom: 8px;
-        border-bottom: 1px solid #eee;
-      }
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            font-size: 0.95rem;
+        }
 
-      .search-box {
-        margin-bottom: 20px;
-        position: relative;
-      }
+        .nav-links a:hover {
+            color: #c9a96e;
+        }
 
-      .search-box input {
-        width: 100%;
-        padding: 12px 15px 12px 40px;
-        border: 1px solid #e1e5eb;
-        border-radius: 8px;
-        font-size: clamp(0.85rem, 2.5vw, 0.95rem);
-        transition: all 0.3s ease;
-      }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -6px;
+            left: 0;
+            background: linear-gradient(135deg, #c9a96e, #f4d03f);
+            transition: width 0.3s ease;
+        }
 
-      .search-box input:focus {
-        outline: none;
-        border-color: #2563eb;
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-      }
+        .nav-links a:hover::after {
+            width: 100%;
+        }
 
-      .search-box i {
-        position: absolute;
-        left: 15px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #7b7b7b;
-        font-size: 1rem;
-      }
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(135deg, #0a192d 0%, #1e3a8a 50%, #3b82f6 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
 
-      .search-buton {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        margin-bottom: 20px;
-      }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(201,169,110,0.1)"/><circle cx="75" cy="75" r="1.5" fill="rgba(244,208,63,0.08)"/><circle cx="50" cy="10" r="0.8" fill="rgba(201,169,110,0.06)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            animation: float 25s linear infinite;
+        }
 
-      .search-buton > a {
-        border: 1px solid #ddd;
-        padding: 8px 14px;
-        font-size: clamp(0.8rem, 2vw, 0.85rem);
-        text-decoration: none;
-        border-radius: 6px;
-        color: #555;
-        transition: all 0.2s ease;
-        background: #f8f9fa;
-      }
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+            100% { transform: translateY(0px) rotate(360deg); }
+        }
 
-      .search-buton > a:hover {
-        background: #e9ecef;
-        border-color: #ccc;
-      }
+        .hero-content {
+            text-align: center;
+            color: white;
+            max-width: 900px;
+            padding: 0 2rem;
+            z-index: 2;
+            position: relative;
+        }
 
-      /* Job Listings */
-      .job-listings {
-        flex: 1;
-      }
+        .company-name {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #ffffff, #c9a96e, #f4d03f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeInUp 1s ease-out;
+            letter-spacing: -1px;
+        }
 
-      .job-cards {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-      }
+        .hero-tagline {
+            font-size: 1.4rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.95;
+            animation: fadeInUp 1s ease-out 0.3s both;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
 
-      .job-card {
-        background-color: white;
-        border-radius: 10px;
-        padding: 20px;
-        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
-        display: flex;
-        justify-content: space-between;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        border-left: 4px solid transparent;
-      }
+        .hero-slogans {
+            margin-bottom: 3rem;
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
 
-      .job-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        border-left-color: #2563eb;
-      }
+        .slogan {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
 
-      .job-info {
-        flex: 1;
-      }
+        .slogan:last-child {
+            margin-bottom: 0;
+            font-style: italic;
+            opacity: 0.8;
+        }
 
-      .job-title {
-        font-size: clamp(1rem, 3vw, 1.2rem);
-        font-weight: 600;
-        color: #000000;
-        margin-bottom: 12px;
-        line-height: 1.4;
-      }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(60px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-      .company-info {
-        display: flex;
-        align-items: center;
-        margin-bottom: 15px;
-        color: #666;
-        font-size: clamp(0.8rem, 2.5vw, 0.9rem);
-        flex-wrap: wrap;
-        gap: 8px;
-      }
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            animation: fadeInUp 1s ease-out 0.9s both;
+        }
 
-      .company-name {
-        font-weight: 600;
-        color: #444;
-      }
+        .cta-primary {
+            display: inline-block;
+            padding: 1.2rem 3rem;
+            background: linear-gradient(135deg, #c9a96e, #f4d03f);
+            color: #0a192d;
+            text-decoration: none;
+            font-weight: 700;
+            border-radius: 50px;
+            transition: all 0.4s ease;
+            box-shadow: 0 15px 35px rgba(201, 169, 110, 0.3);
+            font-size: 1.05rem;
+        }
 
-      .divider {
-        color: #ddd;
-      }
+        .cta-secondary {
+            display: inline-block;
+            padding: 1.2rem 3rem;
+            background: transparent;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 50px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.4s ease;
+            font-size: 1.05rem;
+        }
 
-      .job-meta {
-        display: flex;
-        gap: 15px;
-        margin-top: 15px;
-      }
+        .cta-primary:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(201, 169, 110, 0.4);
+        }
 
-      .view-btn {
-        background-color: #c0dbfe;
-        color: #1e40af;
-        border: none;
-        padding: 10px 18px;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: clamp(0.85rem, 2.5vw, 0.9rem);
-        transition: all 0.3s ease;
-        white-space: nowrap;
-        font-weight: 500;
-      }
+        .cta-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #c9a96e;
+        }
 
-      .view-btn:hover {
-        color: #ffffff;
-        background-color: #1e40af;
-        box-shadow: 0 3px 8px rgba(37, 99, 235, 0.25);
-      }
+        /* Sectors Section */
+        .sectors {
+            padding: 8rem 2rem;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
 
-      /* Pagination */
-      .pagination {
-        display: flex;
-        justify-content: center;
-        gap: 10px;
-        margin-top: 20px;
-        flex-wrap: wrap; /* Allow buttons to wrap on small screens */
-      }
-
-      .pagination button {
-        padding: 8px 14px;
-        border: 1px solid #ddd;
-        border-radius: 6px;
-        background: #f8f9fa;
-        cursor: pointer;
-        font-size: clamp(0.85rem, 2.5vw, 0.9rem);
-        transition: all 0.2s ease;
-        min-width: 40px; /* Ensure buttons are touch-friendly */
-      }
-
-      .pagination button:hover {
-        background: #e9ecef;
-        border-color: #ccc;
-      }
-
-      .pagination button.active {
-        background: #2563eb;
-        color: white;
-        border-color: #2563eb;
-      }
-
-      .pagination button:disabled {
-        cursor: not-allowed;
-        opacity: 0.5;
-      }
-
-      /* Responsive Design */
-      @media (max-width: 900px) {
         .container {
-          flex-direction: column;
-          gap: 15px;
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
-        .search-filters {
-          width: 100%;
-          position: static;
-          padding: 15px;
+        .section-title {
+            text-align: center;
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            color: #0a192d;
+            letter-spacing: -1px;
         }
 
-        .header-content {
-          margin: 0 auto;
-          max-width: 100%;
-          text-align: center; /* Center text on smaller screens */
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #64748b;
+            margin-bottom: 5rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.7;
         }
 
-        .search-buton {
-          justify-content: center; /* Center filter buttons */
-        }
-      }
-
-      @media (max-width: 576px) {
-        .job-card {
-          flex-direction: column;
-          padding: 15px;
+        .sectors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2.5rem;
+            margin-top: 3rem;
         }
 
-        .company-info {
-          gap: 5px;
-          flex-direction: column; /* Stack company info vertically */
-          align-items: flex-start;
+        .sector-card {
+            background: white;
+            padding: 3rem 2.5rem;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s ease;
+            border: 1px solid rgba(201, 169, 110, 0.1);
+            position: relative;
+            overflow: hidden;
         }
 
-        .divider {
-          display: none; /* Hide dividers on small screens */
+        .sector-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(135deg, #c9a96e, #f4d03f);
         }
 
-        .view-btn {
-          width: 100%; /* Full-width button on mobile */
-          text-align: center;
+        .sector-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.12);
         }
 
-        .pagination button {
-          padding: 6px 12px;
-          font-size: 0.8rem;
+        .sector-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #c9a96e, #f4d03f);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: #0a192d;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 25px rgba(201, 169, 110, 0.3);
         }
 
-        .header {
-          padding: 15px 0;
+        .sector-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #0a192d;
         }
 
-        .search-box input {
-          padding: 10px 15px 10px 35px;
+        .sector-card p {
+            color: #64748b;
+            line-height: 1.8;
+            font-size: 1.05rem;
         }
 
-        .search-box i {
-          font-size: 0.9rem;
-        }
-      }
-
-      @media (max-width: 400px) {
-        .header h1 {
-          font-size: 1.5rem;
+        /* Vision Section */
+        .vision-section {
+            padding: 8rem 2rem;
+            background: linear-gradient(135deg, #0a192d, #1e3a8a);
+            color: white;
+            position: relative;
         }
 
-        .header p {
-          font-size: 0.85rem;
+        .vision-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
         }
 
-        .search-filters h3 {
-          font-size: 1rem;
+        .vision-title {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, #ffffff, #c9a96e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        .search-buton > a {
-          padding: 6px 10px;
-          font-size: 0.75rem;
+        .vision-text {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            opacity: 0.9;
+            font-weight: 300;
+            margin-bottom: 3rem;
         }
 
-        .job-title {
-          font-size: 1rem;
+        .commitment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
         }
 
-        .company-info {
-          font-size: 0.75rem;
+        .commitment-item {
+            text-align: center;
+            padding: 2rem 1rem;
         }
-      }
+
+        .commitment-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .commitment-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #c9a96e;
+        }
+
+        .commitment-desc {
+            opacity: 0.8;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        footer {
+            background: #0a192d;
+            color: white;
+            padding: 4rem 2rem 2rem;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .footer-brand {
+            padding-right: 2rem;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-desc {
+            color: #94a3b8;
+            line-height: 1.7;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h4 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #c9a96e;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-section ul li a {
+            color: #94a3b8;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .footer-section ul li a:hover {
+            color: #c9a96e;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #1e3a8a;
+            color: #94a3b8;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .company-name {
+                font-size: 2.8rem;
+            }
+
+            .hero-tagline {
+                font-size: 1.1rem;
+            }
+
+            .slogan {
+                font-size: 1.4rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .sectors-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+
+        /* Scroll animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
     </style>
-  </head>
-  <body>
-    <div class="header">
-      <div class="header-content">
-        <h1>Công việc khối văn phòng</h1>
-        <p>
-          Khám phá các cơ hội việc làm khối văn phòng hấp dẫn tại PPM. Cùng bạn
-          xây dựng sự nghiệp vững chắc trong môi trường chuyên nghiệp và năng
-          động
-        </p>
-      </div>
-    </div>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="logo">
+                <div class="logo-icon">JC</div>
+                <div class="logo-text">JANUS CAPITAL</div>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#sectors">Sectors</a></li>
+                <li><a href="#vision">Vision</a></li>
+                <li><a href="#impact">Impact</a></li>
+                <li><a href="#partnerships">Partnerships</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
 
-    <div class="container">
-      <!-- Search and Filters Sidebar -->
-      <div class="search-filters">
-        <h3>Tìm kiếm việc làm</h3>
-        <div class="search-box">
-          <i class="fas fa-search"></i>
-          <input type="text" placeholder="Tìm kiếm việc làm, công ty..." />
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="company-name">JANUS CAPITAL JSC</h1>
+            <p class="hero-tagline">Transformative Growth • Long-term Impact</p>
+            
+            <div class="hero-slogans">
+                <div class="slogan">"You have worked hard for your money.<br>Now your money will work hard for you"</div>
+                <div class="slogan">"Hard-working past creates comfortable future"</div>
+            </div>
+            
+            <div class="cta-buttons">
+                <a href="#contact" class="cta-primary">Start Your Journey</a>
+                <a href="#vision" class="cta-secondary">Our Vision</a>
+            </div>
         </div>
-        <h3>Nơi làm việc</h3>
-        <div class="search-buton">
-          <a href="">Hồ Chí Minh</a>
-          <a href="">Quận 1</a>
-          <a href="">Quận 3</a>
-          <a href="">Quận 7</a>
-          <a href="">Bình Thạnh</a>
-          <a href="">Tân Bình</a>
+    </section>
+
+    <!-- Sectors Section -->
+    <section class="sectors" id="sectors">
+        <div class="container">
+            <h2 class="section-title fade-in">Strategic Sectors</h2>
+            <p class="section-subtitle fade-in">
+                With a strategic presence across key industries, we drive innovation and opportunity through smart capital deployment and visionary partnerships.
+            </p>
+            
+            <div class="sectors-grid">
+                <div class="sector-card fade-in">
+                    <div class="sector-icon">💼</div>
+                    <h3>Finance</h3>
+                    <p>Advanced financial solutions and investment strategies that create sustainable wealth and drive economic growth across diverse markets and sectors.</p>
+                </div>
+                
+                <div class="sector-card fade-in">
+                    <div class="sector-icon">🎓</div>
+                    <h3>Education</h3>
+                    <p>Empowering minds through innovative educational platforms and institutions that shape the leaders and innovators of tomorrow.</p>
+                </div>
+                
+                <div class="sector-card fade-in">
+                    <div class="sector-icon">💻</div>
+                    <h3>Technology</h3>
+                    <p>Cutting-edge technological innovations and digital transformation initiatives that revolutionize industries and enhance human potential.</p>
+                </div>
+                
+                <div class="sector-card fade-in">
+                    <div class="sector-icon">🎬</div>
+                    <h3>Entertainment</h3>
+                    <p>Creative content and entertainment experiences that inspire, engage, and connect communities while building sustainable media enterprises.</p>
+                </div>
+                
+                <div class="sector-card fade-in">
+                    <div class="sector-icon">🏢</div>
+                    <h3>Real Estate</h3>
+                    <p>Strategic property investments and development projects that create value while contributing to sustainable urban development and community growth.</p>
+                </div>
+            </div>
         </div>
-      </div>
+    </section>
 
-      <!-- Job Listings -->
-      <div class="job-listings">
-        <div class="job-cards" id="jobCards">
-          <!-- Job Card 1 -->
-          <div class="job-card">
-            <div class="job-info">
-              <div class="job-title">
-                NHÂN VIÊN BÁN HÀNG QUẬN 7/QUẬN 1/BÌNH THẠNH - ARMANI EXCHANGE
-              </div>
-              <div class="company-info">
-                <span class="company-name">ARMANI EXCHANGE</span>
-                <span class="divider">|</span>
-                <span>Quận 7, Hồ Chí Minh</span>
-                <span class="divider">|</span>
-                <span>Đại Học</span>
-                <span class="divider">|</span>
-                <span>29/06/2025</span>
-              </div>
-              <div class="job-meta">
-                <button class="view-btn">Xem chi tiết</button>
-              </div>
+    <!-- Vision Section -->
+    <section class="vision-section" id="vision">
+        <div class="vision-container">
+            <h2 class="vision-title fade-in">Our Vision & Commitment</h2>
+            <p class="vision-text fade-in">
+                Janus Capital JSC is a forward-thinking investment group rooted in a vision of transformative growth and long-term impact. 
+                Guided by a commitment to excellence and social advancement, we empower communities and businesses alike through smart 
+                capital deployment and visionary partnerships. As we continue to expand our global footprint, we remain dedicated to 
+                shaping a sustainable future through bold leadership and purposeful investment.
+            </p>
+            
+            <div class="commitment-grid">
+                <div class="commitment-item fade-in">
+                    <div class="commitment-icon">🌍</div>
+                    <div class="commitment-title">Global Impact</div>
+                    <div class="commitment-desc">Expanding our presence worldwide while maintaining local community focus</div>
+                </div>
+                
+                <div class="commitment-item fade-in">
+                    <div class="commitment-icon">🚀</div>
+                    <div class="commitment-title">Innovation Drive</div>
+                    <div class="commitment-desc">Pioneering new solutions and embracing transformative technologies</div>
+                </div>
+                
+                <div class="commitment-item fade-in">
+                    <div class="commitment-icon">🤝</div>
+                    <div class="commitment-title">Social Advancement</div>
+                    <div class="commitment-desc">Creating positive change and empowering communities through our investments</div>
+                </div>
+                
+                <div class="commitment-item fade-in">
+                    <div class="commitment-icon">♻️</div>
+                    <div class="commitment-title">Sustainable Future</div>
+                    <div class="commitment-desc">Building a better tomorrow through responsible and sustainable practices</div>
+                </div>
             </div>
-          </div>
-
-          <div class="job-card">
-            <div class="job-info">
-              <div class="job-title">
-                NHÂN VIÊN BÁN HÀNG QUẬN 7/QUẬN 1/BÌNH THẠNH - ARMANI EXCHANGE
-              </div>
-              <div class="company-info">
-                <span class="company-name">ARMANI EXCHANGE</span>
-                <span class="divider">|</span>
-                <span>Quận 7, Hồ Chí Minh</span>
-                <span class="divider">|</span>
-                <span>Đại Học</span>
-                <span class="divider">|</span>
-                <span>29/06/2025</span>
-              </div>
-              <div class="job-meta">
-                <button class="view-btn">Xem chi tiết</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="job-card">
-            <div class="job-info">
-              <div class="job-title">
-                NHÂN VIÊN BÁN HÀNG QUẬN 7/QUẬN 1/BÌNH THẠNH - ARMANI EXCHANGE
-              </div>
-              <div class="company-info">
-                <span class="company-name">ARMANI EXCHANGE</span>
-                <span class="divider">|</span>
-                <span>Quận 7, Hồ Chí Minh</span>
-                <span class="divider">|</span>
-                <span>Đại Học</span>
-                <span class="divider">|</span>
-                <span>29/06/2025</span>
-              </div>
-              <div class="job-meta">
-                <button class="view-btn">Xem chi tiết</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="job-card">
-            <div class="job-info">
-              <div class="job-title">
-                NHÂN VIÊN BÁN HÀNG QUẬN 7/QUẬN 1/BÌNH THẠNH - ARMANI EXCHANGE
-              </div>
-              <div class="company-info">
-                <span class="company-name">ARMANI EXCHANGE</span>
-                <span class="divider">|</span>
-                <span>Quận 7, Hồ Chí Minh</span>
-                <span class="divider">|</span>
-                <span>Đại Học</span>
-                <span class="divider">|</span>
-                <span>29/06/2025</span>
-              </div>
-              <div class="job-meta">
-                <button class="view-btn">Xem chi tiết</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="job-card">
-            <div class="job-info">
-              <div class="job-title">
-                NHÂN VIÊN BÁN HÀNG QUẬN 7/QUẬN 1/BÌNH THẠNH - ARMANI EXCHANGE
-              </div>
-              <div class="company-info">
-                <span class="company-name">ARMANI EXCHANGE</span>
-                <span class="divider">|</span>
-                <span>Quận 7, Hồ Chí Minh</span>
-                <span class="divider">|</span>
-                <span>Đại Học</span>
-                <span class="divider">|</span>
-                <span>29/06/2025</span>
-              </div>
-              <div class="job-meta">
-                <button class="view-btn">Xem chi tiết</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="job-card">
-            <div class="job-info">
-              <div class="job-title">
-                NHÂN VIÊN BÁN HÀNG QUẬN 7/QUẬN 1/BÌNH THẠNH - ARMANI EXCHANGE
-              </div>
-              <div class="company-info">
-                <span class="company-name">ARMANI EXCHANGE</span>
-                <span class="divider">|</span>
-                <span>Quận 7, Hồ Chí Minh</span>
-                <span class="divider">|</span>
-                <span>Đại Học</span>
-                <span class="divider">|</span>
-                <span>29/06/2025</span>
-              </div>
-              <div class="job-meta">
-                <button class="view-btn">Xem chi tiết</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="job-card">
-            <div class="job-info">
-              <div class="job-title">
-                NHÂN VIÊN BÁN HÀNG QUẬN 7/QUẬN 1/BÌNH THẠNH - ARMANI EXCHANGE
-              </div>
-              <div class="company-info">
-                <span class="company-name">ARMANI EXCHANGE</span>
-                <span class="divider">|</span>
-                <span>Quận 7, Hồ Chí Minh</span>
-                <span class="divider">|</span>
-                <span>Đại Học</span>
-                <span class="divider">|</span>
-                <span>29/06/2025</span>
-              </div>
-              <div class="job-meta">
-                <button class="view-btn">Xem chi tiết</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="job-card">
-            <div class="job-info">
-              <div class="job-title">
-                NHÂN VIÊN BÁN HÀNG QUẬN 7/QUẬN 1/BÌNH THẠNH - ARMANI EXCHANGE
-              </div>
-              <div class="company-info">
-                <span class="company-name">ARMANI EXCHANGE</span>
-                <span class="divider">|</span>
-                <span>Quận 7, Hồ Chí Minh</span>
-                <span class="divider">|</span>
-                <span>Đại Học</span>
-                <span class="divider">|</span>
-                <span>29/06/2025</span>
-              </div>
-              <div class="job-meta">
-                <button class="view-btn">Xem chi tiết</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="job-card">
-            <div class="job-info">
-              <div class="job-title">
-                NHÂN VIÊN BÁN HÀNG QUẬN 7/QUẬN 1/BÌNH THẠNH - ARMANI EXCHANGE
-              </div>
-              <div class="company-info">
-                <span class="company-name">ARMANI EXCHANGE</span>
-                <span class="divider">|</span>
-                <span>Quận 7, Hồ Chí Minh</span>
-                <span class="divider">|</span>
-                <span>Đại Học</span>
-                <span class="divider">|</span>
-                <span>29/06/2025</span>
-              </div>
-              <div class="job-meta">
-                <button class="view-btn">Xem chi tiết</button>
-              </div>
-            </div>
-          </div>
-          <div class="job-card">
-            <div class="job-info">
-              <div class="job-title">
-                NHÂN VIÊN BÁN HÀNG QUẬN 7/QUẬN 1/BÌNH THẠNH - ARMANI EXCHANGE
-              </div>
-              <div class="company-info">
-                <span class="company-name">ARMANI EXCHANGE</span>
-                <span class="divider">|</span>
-                <span>Quận 7, Hồ Chí Minh</span>
-                <span class="divider">|</span>
-                <span>Đại Học</span>
-                <span class="divider">|</span>
-                <span>29/06/2025</span>
-              </div>
-              <div class="job-meta">
-                <button class="view-btn">Xem chi tiết</button>
-              </div>
-            </div>
-          </div>
-          <div class="job-card">
-            <div class="job-info">
-              <div class="job-title">
-                NHÂN VIÊN BÁN HÀNG QUẬN 7/QUẬN 1/BÌNH THẠNH - ARMANI EXCHANGE
-              </div>
-              <div class="company-info">
-                <span class="company-name">ARMANI EXCHANGE</span>
-                <span class="divider">|</span>
-                <span>Quận 7, Hồ Chí Minh</span>
-                <span class="divider">|</span>
-                <span>Đại Học</span>
-                <span class="divider">|</span>
-                <span>29/06/2025</span>
-              </div>
-              <div class="job-meta">
-                <button class="view-btn">Xem chi tiết</button>
-              </div>
-            </div>
-          </div>
-          <div class="job-card">
-            <div class="job-info">
-              <div class="job-title">
-                NHÂN VIÊN BÁN HÀNG QUẬN 7/QUẬN 1/BÌNH THẠNH - ARMANI EXCHANGE
-              </div>
-              <div class="company-info">
-                <span class="company-name">ARMANI EXCHANGE</span>
-                <span class="divider">|</span>
-                <span>Quận 7, Hồ Chí Minh</span>
-                <span class="divider">|</span>
-                <span>Đại Học</span>
-                <span class="divider">|</span>
-                <span>29/06/2025</span>
-              </div>
-              <div class="job-meta">
-                <button class="view-btn">Xem chi tiết</button>
-              </div>
-            </div>
-          </div>
-          <div class="job-card">
-            <div class="job-info">
-              <div class="job-title">
-                NHÂN VIÊN BÁN HÀNG QUẬN 7/QUẬN 1/BÌNH THẠNH - ARMANI EXCHANGE
-              </div>
-              <div class="company-info">
-                <span class="company-name">ARMANI EXCHANGE</span>
-                <span class="divider">|</span>
-                <span>Quận 7, Hồ Chí Minh</span>
-                <span class="divider">|</span>
-                <span>Đại Học</span>
-                <span class="divider">|</span>
-                <span>29/06/2025</span>
-              </div>
-              <div class="job-meta">
-                <button class="view-btn">Xem chi tiết</button>
-              </div>
-            </div>
-          </div>
-          <div class="job-card">
-            <div class="job-info">
-              <div class="job-title">
-                NHÂN VIÊN BÁN HÀNG QUẬN 7/QUẬN 1/BÌNH THẠNH - ARMANI EXCHANGE
-              </div>
-              <div class="company-info">
-                <span class="company-name">ARMANI EXCHANGE</span>
-                <span class="divider">|</span>
-                <span>Quận 7, Hồ Chí Minh</span>
-                <span class="divider">|</span>
-                <span>Đại Học</span>
-                <span class="divider">|</span>
-                <span>29/06/2025</span>
-              </div>
-              <div class="job-meta">
-                <button class="view-btn">Xem chi tiết</button>
-              </div>
-            </div>
-          </div>
-          <div class="job-card">
-            <div class="job-info">
-              <div class="job-title">
-                NHÂN VIÊN BÁN HÀNG QUẬN 7/QUẬN 1/BÌNH THẠNH - ARMANI EXCHANGE
-              </div>
-              <div class="company-info">
-                <span class="company-name">ARMANI EXCHANGE</span>
-                <span class="divider">|</span>
-                <span>Quận 7, Hồ Chí Minh</span>
-                <span class="divider">|</span>
-                <span>Đại Học</span>
-                <span class="divider">|</span>
-                <span>29/06/2025</span>
-              </div>
-              <div class="job-meta">
-                <button class="view-btn">Xem chi tiết</button>
-              </div>
-            </div>
-          </div>
-          <div class="job-card">
-            <div class="job-info">
-              <div class="job-title">
-                NHÂN VIÊN BÁN HÀNG QUẬN 7/QUẬN 1/BÌNH THẠNH - ARMANI EXCHANGE
-              </div>
-              <div class="company-info">
-                <span class="company-name">ARMANI EXCHANGE</span>
-                <span class="divider">|</span>
-                <span>Quận 7, Hồ Chí Minh</span>
-                <span class="divider">|</span>
-                <span>Đại Học</span>
-                <span class="divider">|</span>
-                <span>29/06/2025</span>
-              </div>
-              <div class="job-meta">
-                <button class="view-btn">Xem chi tiết</button>
-              </div>
-            </div>
-          </div>
-          <div class="job-card">
-            <div class="job-info">
-              <div class="job-title">
-                NHÂN VIÊN BÁN HÀNG QUẬN 7/QUẬN 1/BÌNH THẠNH - ARMANI EXCHANGE
-              </div>
-              <div class="company-info">
-                <span class="company-name">ARMANI EXCHANGE</span>
-                <span class="divider">|</span>
-                <span>Quận 7, Hồ Chí Minh</span>
-                <span class="divider">|</span>
-                <span>Đại Học</span>
-                <span class="divider">|</span>
-                <span>29/06/2025</span>
-              </div>
-              <div class="job-meta">
-                <button class="view-btn">Xem chi tiết</button>
-              </div>
-            </div>
-          </div>
         </div>
-        <div class="pagination" id="pagination"></div>
-      </div>
-    </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <div class="footer-logo">
+                    <div class="logo-icon">JC</div>
+                    <div class="logo-text">JANUS CAPITAL JSC</div>
+                </div>
+                <p class="footer-desc">
+                    A forward-thinking investment group driving transformative growth and long-term impact across Finance, Education, Technology, Entertainment, and Real Estate sectors.
+                </p>
+            </div>
+            
+            <div class="footer-section">
+                <h4>Sectors</h4>
+                <ul>
+                    <li><a href="#finance">Finance</a></li>
+                    <li><a href="#education">Education</a></li>
+                    <li><a href="#technology">Technology</a></li>
+                    <li><a href="#entertainment">Entertainment</a></li>
+                    <li><a href="#realestate">Real Estate</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="#about">About Us</a></li>
+                    <li><a href="#leadership">Leadership</a></li>
+                    <li><a href="#careers">Careers</a></li>
+                    <li><a href="#news">News & Insights</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h4>Impact</h4>
+                <ul>
+                    <li><a href="#sustainability">Sustainability</a></li>
+                    <li><a href="#community">Community</a></li>
+                    <li><a href="#partnerships">Partnerships</a></li>
+                    <li><a href="#reports">Impact Reports</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Janus Capital JSC. All rights reserved. Building the future through purposeful investment.</p>
+        </div>
+    </footer>
 
     <script>
-      const jobsPerPage = 8;
-      const jobCards = document.querySelectorAll(".job-card");
-      const totalPages = Math.ceil(jobCards.length / jobsPerPage);
-      let currentPage = 1;
-
-      function showPage(page) {
-        currentPage = page;
-        const start = (page - 1) * jobsPerPage;
-        const end = start + jobsPerPage;
-
-        // Hide all job cards
-        jobCards.forEach((card, index) => {
-          card.style.display = index >= start && index < end ? "flex" : "none";
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
         });
 
-        // Update pagination buttons
-        updatePagination();
-      }
+        // Scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
 
-      function updatePagination() {
-        const pagination = document.getElementById("pagination");
-        pagination.innerHTML = "";
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
 
-        // Calculate the range of pages to show (max 3 buttons)
-        let startPage = Math.max(1, currentPage - 1);
-        let endPage = Math.min(totalPages, startPage + 2);
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
 
-        // Adjust startPage if endPage is at the maximum
-        if (endPage - startPage < 2) {
-          startPage = Math.max(1, endPage - 2);
-        }
+        // Header background on scroll
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(10, 25, 45, 0.98)';
+            } else {
+                header.style.background = 'rgba(10, 25, 45, 0.95)';
+            }
+        });
 
-        // First page button
-        const firstButton = document.createElement("button");
-        firstButton.textContent = "Đầu";
-        firstButton.disabled = currentPage === 1;
-        firstButton.addEventListener("click", () => showPage(currentPage - 1));
-        pagination.appendChild(firstButton);
-
-        // Page number buttons
-        for (let i = startPage; i <= endPage; i++) {
-          const button = document.createElement("button");
-          button.textContent = i;
-          button.className = i === currentPage ? "active" : "";
-          button.addEventListener("click", () => showPage(i));
-          pagination.appendChild(button);
-        }
-
-        // Last page button
-        const lastButton = document.createElement("button");
-        lastButton.textContent = "Cuối";
-        lastButton.disabled = currentPage === totalPages;
-        lastButton.addEventListener("click", () => showPage(currentPage + 1));
-        pagination.appendChild(lastButton);
-      }
-
-      // Initialize the first page
-      showPage(1);
+        // Parallax effect for hero background
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallax = document.querySelector('.hero::before');
+            if (parallax) {
+                const speed = scrolled * 0.5;
+            }
+        });
     </script>
-  </body>
+</body>
 </html>

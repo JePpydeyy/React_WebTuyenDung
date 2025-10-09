@@ -66,7 +66,7 @@ export default function MainRouter() {
             <div className="career-card" key={jobType}>
               <div className="career-img-container">
                 <img
-                  src="https://imgt.taimienphi.vn/cf/Images/np/2022/8/16/anh-gai-xinh-cute-de-thuong-hot-girl-2.jpg"
+                  src="/assets/images/PW.png"
                   alt={jobType}
                   className="career-image"
                 />

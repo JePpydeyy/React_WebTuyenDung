@@ -1250,4 +1250,25 @@ top: 100%; /* Đặt ở giữa theo chiều dọc */
   .bod{
     padding-bottom: 30px;
   }
+
+  .listProject{
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    margin: 60px auto;
+    flex-wrap: wrap;
+  }
+  .itemProject{
+    width: 100%;
+  }
+  .description{
+    padding: 0% 20px;
+    text-align: center;
+  }
+  .sectionTitle3{
+    font-size: 19px;
+  }
 }

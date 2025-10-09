@@ -72,6 +72,16 @@ const NewsManagement = () => {
     return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
   };
 
+  const generateSlug = (title) => {
+    if (!title) return `untitled-${Date.now()}`;
+    let slug = normalizeVietnamese(title)
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      || `untitled-${Date.now()}`;
+    return slug;
+  };
+
   const formatDate = (dateString) => {
     if (!dateString) return 'N/A';
     const date = new Date(dateString);
@@ -161,97 +171,91 @@ const NewsManagement = () => {
   const handlePageChange = (page) => {
     displayNews(page, filteredNews);
   };
-const viewNews = async (slug) => {
-  try {
-    if (!slug) throw new Error('Slug tin tức không hợp lệ');
-    const token = localStorage.getItem('adminToken');
-    const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
-    const response = await fetch(`${API_URL}/${slug}`, { headers });
-    if (!response.ok) throw new Error(`Không tìm thấy tin tức: ${response.status}`);
-    const newsItem = await response.json();
-    const formattedNewsItem = {
-      ...newsItem,
-      id: sanitizeHTML(newsItem.id.toString()),
-      title: sanitizeHTML(newsItem.title || ''),
-      slug: sanitizeHTML(newsItem.slug || ''),
-      thumbnailUrl: getImageUrl(newsItem.thumbnailUrl),
-      thumbnailCaption: sanitizeHTML(newsItem.thumbnailCaption || ''),
-      publishedAt: formatDate(newsItem.publishedAt),
-      status: statusDisplayMap[newsItem.status] || newsItem.status || 'Hiển thị',
-      category: categoryDisplayMap[newsItem.category] || newsItem.category || 'Tin tức',
-      contentBlocks: Array.isArray(newsItem.contentBlocks)
-        ? newsItem.contentBlocks.map(block => ({
-            ...block,
-            type: block.type === 'text' ? 'richtext' : block.type,
-            content: block.content || '',
-            url: block.type === 'image' ? getImageUrl(block.url) : block.url || '',
-            caption: block.caption || '',
-          }))
-        : [],
-    };
-    setSelectedNews(formattedNewsItem);
-    setIsEditing(false);
-    return formattedNewsItem;
-  } catch (error) {
-    console.error('Lỗi viewNews:', error);
-    showNotification(`Lỗi khi tải thông tin tin tức: ${error.message}`, 'error');
-    return null;
-  }
-};
 
-const toggleNewsVisibility = async (slug) => {
-  try {
-    if (!slug) {
-      showNotification('Slug tin tức không hợp lệ', 'error');
-      return;
+  const viewNews = async (slug) => {
+    try {
+      if (!slug) throw new Error('Slug tin tức không hợp lệ');
+      const token = localStorage.getItem('adminToken');
+      const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+      const response = await fetch(`${API_URL}/${slug}`, { headers });
+      if (!response.ok) throw new Error(`Không tìm thấy tin tức: ${response.status}`);
+      const newsItem = await response.json();
+      const formattedNewsItem = {
+        ...newsItem,
+        id: sanitizeHTML(newsItem.id.toString()),
+        title: sanitizeHTML(newsItem.title || ''),
+        slug: sanitizeHTML(newsItem.slug || ''),
+        thumbnailUrl: getImageUrl(newsItem.thumbnailUrl),
+        thumbnailCaption: sanitizeHTML(newsItem.thumbnailCaption || ''),
+        publishedAt: formatDate(newsItem.publishedAt),
+        status: statusDisplayMap[newsItem.status] || newsItem.status || 'Hiển thị',
+        category: categoryDisplayMap[newsItem.category] || newsItem.category || 'Tin tức',
+        contentBlocks: Array.isArray(newsItem.contentBlocks)
+          ? newsItem.contentBlocks.map(block => ({
+              ...block,
+              type: block.type === 'text' ? 'richtext' : block.type,
+              content: block.content || '',
+              url: block.type === 'image' ? getImageUrl(block.url) : block.url || '',
+              caption: block.caption || '',
+            }))
+          : [],
+      };
+      setSelectedNews(formattedNewsItem);
+      setIsEditing(false);
+      return formattedNewsItem;
+    } catch (error) {
+      console.error('Lỗi viewNews:', error);
+      showNotification(`Lỗi khi tải thông tin tin tức: ${error.message}`, 'error');
+      return null;
     }
+  };
 
-    const token = localStorage.getItem('adminToken');
-    if (!token) {
-      showNotification('Bạn cần đăng nhập với tư cách admin để thực hiện hành động này', 'error');
-      return;
-    }
-
-    // Tìm tin tức theo slug
-    const currentNews = news.find(n => n.slug === slug);
-    if (!currentNews) {
-      showNotification('Không tìm thấy tin tức', 'error');
-      return;
-    }
-
-    const currentStatus = currentNews.status;
-    if (!currentStatus) {
-      showNotification('Không thể xác định trạng thái hiện tại', 'error');
-      return;
-    }
-
-    const confirmMessage = currentStatus === 'Hiển thị' ? 'ẩn' : 'hiển thị';
-    if (window.confirm(`Bạn có chắc chắn muốn ${confirmMessage} tin tức này?`)) {
-      const response = await fetch(`${API_URL}/${slug}/toggle-visibility`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || `Không thể thay đổi trạng thái: ${response.status}`);
+  const toggleNewsVisibility = async (slug) => {
+    try {
+      if (!slug) {
+        showNotification('Slug tin tức không hợp lệ', 'error');
+        return;
       }
-
-      const result = await response.json();
-      showNotification(result.message || 'Đã thay đổi trạng thái thành công');
-      await displayNews(currentPage, filteredNews);
+      const token = localStorage.getItem('adminToken');
+      if (!token) {
+        showNotification('Bạn cần đăng nhập với tư cách admin để thực hiện hành động này', 'error');
+        return;
+      }
+      const currentNews = news.find(n => n.slug === slug);
+      if (!currentNews) {
+        showNotification('Không tìm thấy tin tức', 'error');
+        return;
+      }
+      const currentStatus = currentNews.status;
+      if (!currentStatus) {
+        showNotification('Không thể xác định trạng thái hiện tại', 'error');
+        return;
+      }
+      const confirmMessage = currentStatus === 'Hiển thị' ? 'ẩn' : 'hiển thị';
+      if (window.confirm(`Bạn có chắc chắn muốn ${confirmMessage} tin tức này?`)) {
+        const response = await fetch(`${API_URL}/${slug}/toggle-visibility`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || `Không thể thay đổi trạng thái: ${response.status}`);
+        }
+        const result = await response.json();
+        showNotification(result.message || 'Đã thay đổi trạng thái thành công');
+        await displayNews(currentPage, filteredNews);
+      }
+    } catch (error) {
+      console.error('Lỗi toggleNewsVisibility:', error);
+      showNotification(`Lỗi khi thay đổi trạng thái: ${error.message}`, 'error');
+      if (error.message.includes('401')) {
+        showNotification('Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại', 'error');
+      }
     }
-  } catch (error) {
-    console.error('Lỗi toggleNewsVisibility:', error);
-    showNotification(`Lỗi khi thay đổi trạng thái: ${error.message}`, 'error');
-    if (error.message.includes('401')) {
-      showNotification('Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại', 'error');
-    }
-  }
-};  
+  };
 
   const editNews = (newsItem) => {
     if (!newsItem || !newsItem.id) {
@@ -259,11 +263,10 @@ const toggleNewsVisibility = async (slug) => {
       showNotification('Không thể chỉnh sửa: Tin tức không hợp lệ', 'error');
       return;
     }
-    setSelectedNews(newsItem);
     const formattedNewsItem = {
       id: newsItem.id,
       title: newsItem.title || '',
-      slug: newsItem.slug || '',
+      slug: newsItem.slug || generateSlug(newsItem.title),
       thumbnailUrl: newsItem.thumbnailUrl || '',
       thumbnailFile: null,
       thumbnailCaption: newsItem.thumbnailCaption || '',
@@ -286,6 +289,7 @@ const toggleNewsVisibility = async (slug) => {
         : [],
     };
     setEditForm(formattedNewsItem);
+    setSelectedNews(newsItem);
     setIsEditing(true);
   };
 
@@ -337,24 +341,21 @@ const toggleNewsVisibility = async (slug) => {
     }
   };
 
-const addContentBlock = (type = 'text', formType = 'edit') => {
-  const targetForm = formType === 'edit' ? editForm : createForm;
-  const setForm = formType === 'edit' ? setEditForm : setCreateForm;
-
-  const newBlock = {
-    type: type,
-    content: type === 'text' ? '<p></p>' : '',
-    url: '',
-    caption: '',
-    file: null
+  const addContentBlock = (type = 'text', formType = 'edit') => {
+    const targetForm = formType === 'edit' ? editForm : createForm;
+    const setForm = formType === 'edit' ? setEditForm : setCreateForm;
+    const newBlock = {
+      type: type,
+      content: type === 'text' ? '<p></p>' : '',
+      url: '',
+      caption: '',
+      file: null
+    };
+    setForm({
+      ...targetForm,
+      contentBlocks: [...targetForm.contentBlocks, newBlock]
+    });
   };
-
-  setForm({
-    ...targetForm,
-    contentBlocks: [...targetForm.contentBlocks, newBlock]
-  });
-};
-
 
   const removeContentBlock = (index, formType = 'edit') => {
     const targetForm = formType === 'edit' ? editForm : createForm;
@@ -370,105 +371,81 @@ const addContentBlock = (type = 'text', formType = 'edit') => {
     });
   };
 
-
-const saveNews = async () => {
-  try {
-    if (!editForm) throw new Error('Dữ liệu chỉnh sửa không hợp lệ');
-    if (!editForm.slug) throw new Error('Slug không hợp lệ');
-
-    const formData = new FormData();
-
-    // Thêm các trường cơ bản
-    formData.append('title', editForm.title);
-    formData.append('slug', editForm.slug);
-    formData.append('thumbnailCaption', editForm.thumbnailCaption || '');
-    formData.append('publishedAt', new Date(editForm.publishedAt).toISOString());
-    formData.append('views', editForm.views.toString());
-    
-    // Map status và category
-    const status = statusBackendMap[editForm.status] || 'show';
-    const category = categoryBackendMap[editForm.category] || 'news';
-    
-    formData.append('status', status);
-    formData.append('category', category);
-
-    // Xử lý thumbnail
-    if (editForm.thumbnailFile) {
-      formData.append('thumbnail', editForm.thumbnailFile);
-    }
-    if (editForm.thumbnailUrl) {
-      formData.append('thumbnailUrl', editForm.thumbnailUrl);
-    }
-
-    // Xử lý contentBlocks và tạo contentHtml
-    const processedBlocks = editForm.contentBlocks.map(block => ({
-      type: block.type === 'richtext' ? 'text' : block.type,
-      content: block.content || '',
-      url: block.type === 'image' ? (block.url || '') : '',
-      caption: block.type === 'image' ? (block.caption || '') : ''
-    }));
-
-    // Tạo contentHtml từ các blocks
-    const contentHtml = processedBlocks.map(block => {
-      if (block.type === 'text') {
-        return block.content;
-      } else if (block.type === 'image') {
-        return `<figure>
-          <img src="${block.url}" alt="${block.caption}" />
-          ${block.caption ? `<figcaption>${block.caption}</figcaption>` : ''}
-        </figure>`;
+  const saveNews = async () => {
+    try {
+      if (!editForm) throw new Error('Dữ liệu chỉnh sửa không hợp lệ');
+      if (!editForm.slug) throw new Error('Slug không hợp lệ');
+      const formData = new FormData();
+      formData.append('title', editForm.title);
+      formData.append('slug', editForm.slug);
+      formData.append('thumbnailCaption', editForm.thumbnailCaption || '');
+      formData.append('publishedAt', new Date(editForm.publishedAt).toISOString());
+      formData.append('views', editForm.views.toString());
+      const status = statusBackendMap[editForm.status] || 'show';
+      const category = categoryBackendMap[editForm.category] || 'news';
+      formData.append('status', status);
+      formData.append('category', category);
+      if (editForm.thumbnailFile) {
+        formData.append('thumbnail', editForm.thumbnailFile);
       }
-      return '';
-    }).join('');
-
-    // Thêm contentHtml vào formData
-    formData.append('contentHtml', contentHtml);
-
-    // Thêm files từ content blocks
-    let imageCounter = 0;
-    editForm.contentBlocks.forEach((block) => {
-      if (block.type === 'image' && block.file) {
-        formData.append('contentImages', block.file);
-        processedBlocks[imageCounter].url = `temp_${Date.now()}_${imageCounter}`;
-        imageCounter++;
+      if (editForm.thumbnailUrl) {
+        formData.append('thumbnailUrl', editForm.thumbnailUrl);
       }
-    });
-
-    formData.append('contentBlocks', JSON.stringify(processedBlocks));
-
-    // Debug logs
-    console.log('ContentHtml being sent:', contentHtml);
-    for (let pair of formData.entries()) {
-      console.log(pair[0], pair[1]);
-    }
-
-    const token = localStorage.getItem('adminToken');
-    const response = await fetch(`${API_URL}/${editForm.slug}`, {
-      method: 'PUT',
-      body: formData,
-      headers: {
-        'Authorization': `Bearer ${token}`
+      const processedBlocks = editForm.contentBlocks.map(block => ({
+        type: block.type === 'richtext' ? 'text' : block.type,
+        content: block.content || '',
+        url: block.type === 'image' ? (block.url || '') : '',
+        caption: block.type === 'image' ? (block.caption || '') : ''
+      }));
+      const contentHtml = processedBlocks.map(block => {
+        if (block.type === 'text') {
+          return block.content;
+        } else if (block.type === 'image') {
+          return `<figure>
+            <img src="${block.url}" alt="${block.caption}" />
+            ${block.caption ? `<figcaption>${block.caption}</figcaption>` : ''}
+          </figure>`;
+        }
+        return '';
+      }).join('');
+      formData.append('contentHtml', contentHtml);
+      let imageCounter = 0;
+      editForm.contentBlocks.forEach((block) => {
+        if (block.type === 'image' && block.file) {
+          formData.append('contentImages', block.file);
+          processedBlocks[imageCounter].url = `temp_${Date.now()}_${imageCounter}`;
+          imageCounter++;
+        }
+      });
+      formData.append('contentBlocks', JSON.stringify(processedBlocks));
+      console.log('ContentHtml being sent:', contentHtml);
+      for (let pair of formData.entries()) {
+        console.log(pair[0], pair[1]);
       }
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error('Server error:', errorData);
-      throw new Error(errorData.message || `Không thể cập nhật tin tức: ${response.status}`);
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch(`${API_URL}/${editForm.slug}`, {
+        method: 'PUT',
+        body: formData,
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Server error:', errorData);
+        throw new Error(errorData.message || `Không thể cập nhật tin tức: ${response.status}`);
+      }
+      const result = await response.json();
+      showNotification(result.message || 'Đã cập nhật tin tức thành công', 'success');
+      revokePreviewUrls();
+      setIsEditing(false);
+      setSelectedNews(null);
+      await displayNews(currentPage, filteredNews);
+    } catch (error) {
+      console.error('Lỗi saveNews:', error);
+      showNotification(`Lỗi khi cập nhật tin tức: ${error.message}`, 'error');
     }
-
-    const result = await response.json();
-    showNotification(result.message || 'Đã cập nhật tin tức thành công', 'success');
-    revokePreviewUrls();
-    setIsEditing(false);
-    setSelectedNews(null);
-    await displayNews(currentPage, filteredNews);
-
-  } catch (error) {
-    console.error('Lỗi saveNews:', error);
-    showNotification(`Lỗi khi cập nhật tin tức: ${error.message}`, 'error');
-  }
-};
+  };
 
   const createNews = async () => {
     try {
@@ -494,17 +471,33 @@ const saveNews = async () => {
       formData.append('status', statusBackendMap[createForm.status] || createForm.status);
       formData.append('category', categoryBackendMap[createForm.category] || createForm.category);
       const contentBlocksForSubmission = createForm.contentBlocks.map(block => ({
-        type: block.type,
+        type: block.type === 'richtext' ? 'text' : block.type,
         content: block.type === 'richtext' ? block.content : '',
         url: block.type === 'image' && block.file ? `placeholder-${Date.now()}.jpg` : (block.url || ''),
         caption: block.type === 'image' ? block.caption : '',
       }));
-      formData.append('contentBlocks', JSON.stringify(contentBlocksForSubmission));
+      const contentHtml = contentBlocksForSubmission.map(block => {
+        if (block.type === 'text') {
+          return block.content;
+        } else if (block.type === 'image') {
+          return `<figure>
+            <img src="${block.url}" alt="${block.caption}" />
+            ${block.caption ? `<figcaption>${block.caption}</figcaption>` : ''}
+          </figure>`;
+        }
+        return '';
+      }).join('');
+      formData.append('contentHtml', contentHtml);
       createForm.contentBlocks.forEach((block, index) => {
         if (block.type === 'image' && block.file) {
           formData.append('contentImages', block.file);
         }
       });
+      formData.append('contentBlocks', JSON.stringify(contentBlocksForSubmission));
+      console.log('ContentHtml being sent:', contentHtml);
+      for (let pair of formData.entries()) {
+        console.log(pair[0], pair[1]);
+      }
       const token = localStorage.getItem('adminToken');
       if (!token) {
         showNotification('Bạn cần đăng nhập với tư cách admin để thực hiện hành động này', 'error');
@@ -586,6 +579,24 @@ const saveNews = async () => {
     await displayNews(1);
   };
 
+  // Auto-generate slug for createForm
+  useEffect(() => {
+    setCreateForm(prev => ({
+      ...prev,
+      slug: generateSlug(prev.title),
+    }));
+  }, [createForm.title]);
+
+  // Auto-generate slug for editForm
+  useEffect(() => {
+    if (isEditing && editForm) {
+      setEditForm(prev => ({
+        ...prev,
+        slug: generateSlug(prev.title),
+      }));
+    }
+  }, [editForm?.title, isEditing]);
+
   useEffect(() => {
     displayNews(1);
     return () => revokePreviewUrls();
@@ -612,7 +623,7 @@ const saveNews = async () => {
           <option value="">- Tất cả danh mục -</option>
           <option value="Tin tức">Tin tức</option>
           <option value="Tip phỏng vấn">Tip phỏng vấn</option>
-            <option value="Dự án">Dự án </option>
+          <option value="Dự án">Dự án</option>
         </select>
         <button onClick={applyFilters}><i className="fa-solid fa-filter"></i> Áp dụng</button>
         <button onClick={resetFilters}><i className="fa-solid fa-rotate"></i> Đặt lại</button>
@@ -647,9 +658,9 @@ const saveNews = async () => {
                   <td><span className={`${styles.status} ${getStatusClass(item.status)}`}>{item.status}</span></td>
                   <td>
                     <div className={styles.actionButtons}>
-                    <button className={styles.view} onClick={() => viewNews(item.slug)}>
-                      <i className="fa-solid fa-eye"></i>
-                    </button>
+                      <button className={styles.view} onClick={() => viewNews(item.slug)}>
+                        <i className="fa-solid fa-eye"></i>
+                      </button>
                       <button className={styles.edit} onClick={() => editNews(item)} disabled={!item.id}>
                         <i className="fa-solid fa-edit"></i>
                       </button>
@@ -719,7 +730,8 @@ const saveNews = async () => {
                       type="text"
                       name="slug"
                       value={createForm.slug}
-                      onChange={(e) => handleFormChange(e, null, null, 'create')}
+                      readOnly
+                      placeholder="Tự động tạo từ tiêu đề"
                     />
                   </div>
                   <div className={styles.detailGroup}>
@@ -897,7 +909,8 @@ const saveNews = async () => {
                       type="text"
                       name="slug"
                       value={editForm.slug}
-                      onChange={handleFormChange}
+                      readOnly
+                      placeholder="Tự động tạo từ tiêu đề"
                     />
                   </div>
                   <div className={styles.detailGroup}>
@@ -969,7 +982,7 @@ const saveNews = async () => {
                       onChange={handleFormChange}
                     >
                       <option value="Tin tức">Tin tức</option>
-                       <option value="Dự án">Dự án</option>
+                      <option value="Dự án">Dự án</option>
                       <option value="Tip phỏng vấn">Tip phỏng vấn</option>
                     </select>
                   </div>
